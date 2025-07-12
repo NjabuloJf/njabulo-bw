@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FREDI SPORTS DASHBOARD</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    :root {
+      --red-primary: #ff3b3f;
+      --red-secondary: #ff6f61;
+      --dark: #1e1e24;
+      --light: #fff;
+      --glass: rgba(255, 255, 255, 0.05);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #0d0d0f;
+      color: var(--light);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--red-primary);
+      padding: 12px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      box-shadow: 0 4px 10px rgba(255, 59, 63, 0.2);
+    }
+
+    .top-nav h1 {
+      font-size: 18px;
+      color: #fff;
+    }
+
+    .top-nav .menu-btn {
+      font-size: 20px;
+      background: transparent;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .slide-menu {
+      position: fixed;
+      bottom: -100%;
+      left: 0;
+      width: 100%;
+      max-height: 50%;
+      background: rgba(255, 59, 63, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.5);
+      border-radius: 25px 25px 0 0;
+      transition: all 0.4s ease;
+      z-index: 998;
+    }
+
+    .slide-menu.active {
+      bottom: 0;
+    }
+
+    .slide-menu a {
+      display: block;
+      color: #fff;
+      margin: 10px 0;
+      font-size: 16px;
+      text-decoration: none;
+    }
+
+    .dashboard {
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--glass);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 20px;
+      backdrop-filter: blur(8px);
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(255, 59, 63, 0.2);
+    }
+
+    .card h3 {
+      color: var(--red-secondary);
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 14px;
+      color: #ddd;
+    }
+
+  .card-btn {
+    margin-top: 15px;
+    display: inline-block;
+    background: var(--red-primary);
+    color: #fff;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.3s;
+    font-size: 14px;
+  }
+
+  .card-btn:hover {
+    background: var(--red-secondary);
+    box-shadow: 0 5px 15px rgba(255, 59, 63, 0.3);
+  }
+  
+   .menu-footer {
+      padding: 15px;
+      text-align: center;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+   @media (max-width: 600px) {
+      .menu-items {
+       grid-template-columns: 1fr;
+            }
+            
+   .user-info {
+      flex-direction: column;
+            }
+        }
+  
+    .contact-fab {
+      position: fixed;
+      bottom: 15px;
+      left: 15px;
+      background: var(--red-primary);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 15px rgba(255, 59, 63, 0.4);
+      z-index: 1000;
+    }
+
+    .contact-fab:hover {
+      background: #c0392b;
+    }
+
+    @media (max-width: 600px) {
+      .card p {
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- TOP NAV -->
+  <div class="top-nav">
+    <h1>FREDI SPORTS CENTER</h1>
+    <button class="menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+  </div>
+
+  <!-- SLIDE DOWN MENU -->
+  <div class="slide-menu" id="slideMenu">
+    <a href="/sports/match-history">Match History</a>
+    <a href="/sports/venue-search">Venue Search</a>
+    <A href="/sports/player-search">Player Search</a>
+    <a href="/sports/cricket">Cricket</a>
+    <a href="/sports/team-search">Teams Search</a>
+    <a href="/sports/standings">Standings</a>
+    <a href="/sports/top-scorers">Top Scorers</a>
+    <a href="/sports/upcoming-matches">Upcoming Matches</a>
+    <a href="/sports/matches">Matches</a>
+  </div>
+
+  <!-- DASHBOARD CARDS -->
+  <div class="dashboard">
+<div class="card">
+  <h3>Match History</h3>
+  <p>View historical results of football matches, scores, and team performance over time.</p>
+  <a href="/sports/match-history" class="card-btn">Explore</a>
+</div>
+
+<div class="card">
+  <h3>Venue Search</h3>
+  <p>Find stadiums and sports venues by name, location, or teams that play there.</p>
+  <a href="/sports/venue-search" class="card-btn">Explore</a>
+</div>
+
+<div class="card">
+  <h3>Player Search</h3>
+  <p>Search football player profiles including stats, teams, and match appearances.</p>
+  <a href="/sports/player-search" class="card-btn">Explore</a>
+</div>
+
+<div class="card">
+  <h3>Cricket Insights</h3>
+  <p>Access real-time and historical cricket match data, teams, and statistics.</p>
+  <a href="/sports/cricket" class="card-btn">Explore</a>
+</div>
+
+<div class="card">
+  <h3>Team Search</h3>
+  <p>Search for teams across multiple leagues with detailed rosters and info.</p>
+  <a href="/sports/team-search" class="card-btn">Explore</a>
+</div>
+
+<div class="card">
+  <h3>League Standings</h3>
+  <p>Check current league positions, points, wins, draws, and losses for all teams.</p>
+  <a href="/sports/standings" class="card-btn">Explore</a>
+</div>
+
+<div class="card">
+  <h3>Top Scorers</h3>
+  <p>View the leading goal scorers from top leagues and current goal tallies.</p>
+  <a href="/sports/top-scorers" class="card-btn">Explore</a>
+</div>
+
+<div class="card">
+  <h3>Upcoming Matches</h3>
+  <p>See upcoming football fixtures, match dates, teams, and kickoff times.</p>
+  <a href="/sports/upcoming-matches" class="card-btn">Explore</a>
+</div>
+
+<div class="card">
+  <h3>Live Matches</h3>
+  <p>Track ongoing and recently played matches with live updates and stats.</p>
+  <a href="/sports/matches" class="card-btn">Explore</a>
+</div>
+  </div>
+  
+  <!-- FOOTER -->
+  <div class="menu-footer">
+            © 2025 FREDI PREMIUM SPORTS CENTER | ALL RIGHT RESERVED 
+        </div>
+
+  <!-- CONTACT ICON -->
+  <a href="https://fredi-ai-contacts-us.vercel.app" class="contact-fab" title="Contact Us">
+    <i class="fas fa-headset"></i>
+  </a>
+
+  <!-- SCRIPT -->
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById('slideMenu');
+      menu.classList.toggle('active');
+    }
+  </script>
+</body>
+</html>

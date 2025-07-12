@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FREDI AI SITE CENTER</title>
+    <meta name="description" content="Advanced site center interface for Fredi projects">
+    <meta name="keywords" content="fredi, site center, dashboard, tools">
+    <meta name="author" content="Fredi">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #e74c3c;
+            --primary-dark: #c0392b;
+            --secondary: #00cec9;
+            --accent: #fd79a8;
+            --dark: #1e272e;
+            --darker: #0c0f14;
+            --light: #f5f6fa;
+            --success: #00b894;
+            --warning: #fdcb6e;
+            --danger: #d63031;
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --fredi-blue: #e74c3c;
+            --fredi-purple: #9b59b6;
+            --animation-timing: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: radial-gradient(circle at 10% 20%, #130f40 0%, #0c0f14 90%);
+            color: var(--light);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            line-height: 1.6;
+            transition: var(--transition);
+            overflow-x: hidden;
+        }
+        
+        body.light-mode {
+            background: radial-gradient(circle at 10% 20%, #e0e5ec 0%, #f5f7fa 90%);
+            color: var(--dark);
+        }
+        
+        .premium-container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--glass);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border-radius: 20px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            position: relative;
+            z-index: 1;
+            transition: var(--transition);
+            margin: 20px;
+        }
+        
+        .light-mode .premium-container {
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .premium-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 70% 30%, rgba(108, 92, 231, 0.15) 0%, transparent 50%);
+            z-index: -1;
+            animation: rotate 60s linear infinite;
+        }
+        
+        .light-mode .premium-container::before {
+            background: radial-gradient(circle at 70% 30%, rgba(108, 92, 231, 0.05) 0%, transparent 50%);
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .premium-header {
+            padding: 20px 25px;
+            background: linear-gradient(90deg, rgba(108, 92, 231, 0.8) 0%, rgba(0, 206, 201, 0.8) 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .light-mode .premium-header {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+        
+        .premium-header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
+            opacity: 0.3;
+        }
+        
+        .header-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .greeting {
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        
+        .datetime {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+        
+        .system-info {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .menu-title {
+            padding: 18px 25px;
+            font-size: 1.6rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(30, 39, 46, 0.5);
+            position: relative;
+            transition: var(--transition);
+        }
+        
+        .light-mode .menu-title {
+            background: rgba(255, 255, 255, 0.5);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--dark);
+        }
+        
+        .menu-title::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), transparent);
+            opacity: 0.5;
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            padding: 25px;
+        }
+        
+        .menu-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            transition: var(--transition);
+            border: 1px solid var(--glass-border);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            will-change: transform;
+        }
+        
+        .light-mode .menu-item {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.12);
+        }
+        
+        .light-mode .menu-item:hover {
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+            z-index: 0;
+        }
+        
+        .light-mode .menu-item::before {
+            background: linear-gradient(135deg, transparent, rgba(0, 0, 0, 0.02), transparent);
+        }
+        
+        .menu-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .menu-item:hover::after {
+            opacity: 1;
+        }
+        
+        .menu-item-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .item-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            color: white;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+            transition: var(--transition);
+        }
+        
+        .light-mode .item-icon {
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+        }
+        
+        .item-name {
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: white;
+            font-size: 1.1rem;
+            letter-spacing: 0.3px;
+            transition: var(--transition);
+        }
+        
+        .light-mode .item-name {
+            color: var(--dark);
+        }
+        
+        .item-desc {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            line-height: 1.5;
+            flex-grow: 1;
+            transition: var(--transition);
+        }
+        
+        .light-mode .item-desc {
+            color: var(--dark);
+            opacity: 0.8;
+        }
+        
+        .premium-footer {
+            padding: 15px 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.85rem;
+            background: rgba(30, 39, 46, 0.5);
+            position: relative;
+            transition: var(--transition);
+        }
+        
+        .light-mode .premium-footer {
+            background: rgba(255, 255, 255, 0.5);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--dark);
+        }
+        
+        .premium-footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        }
+        
+        .light-mode .premium-footer::before {
+            background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .social-link {
+            color: var(--light);
+            font-size: 1.2rem;
+            transition: var(--transition);
+            opacity: 0.7;
+        }
+        
+        .light-mode .social-link {
+            color: var(--dark);
+        }
+        
+        .social-link:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+        
+        .social-link.facebook:hover { color: #1877f2; }
+        .social-link.twitter:hover { color: #1da1f2; }
+        .social-link.instagram:hover { color: #e1306c; }
+        .social-link.linkedin:hover { color: #0077b5; }
+        .social-link.youtube:hover { color: #ff0000; }
+        .social-link.github:hover { color: #6e5494; }
+        
+        .copyright {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            text-align: center;
+            width: 100%;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .light-mode .copyright {
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--secondary);
+            font-weight: 500;
+        }
+        
+        .light-mode .status-indicator {
+            color: var(--primary-dark);
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--secondary);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 10px var(--secondary);
+        }
+        
+        .light-mode .status-dot {
+            background: var(--primary-dark);
+            box-shadow: 0 0 10px var(--primary);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            font-weight: 500;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .light-mode .theme-toggle {
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--dark);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .light-mode .theme-toggle:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Search command item */
+        .search-command {
+            grid-column: span 1;
+        }
+        
+        /* Download command item */
+        .download-command .item-icon {
+            background: linear-gradient(135deg, var(--success) 0%, var(--secondary) 100%);
+        }
+        
+        /* Fun command item */
+        .fun-command .item-icon {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--warning) 100%);
+        }
+        
+        /* Editing command item */
+        .editing-command .item-icon {
+            background: linear-gradient(135deg, #0984e3 0%, #00cec9 100%);
+        }
+        
+        /* Logo command item */
+        .logo-command .item-icon {
+            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+        }
+        
+        /* Premium badge */
+        .premium-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, var(--warning) 0%, var(--accent) 100%);
+            color: white;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(253, 203, 110, 0.3);
+        }
+        
+        .light-mode .premium-badge {
+            box-shadow: 0 2px 8px rgba(253, 203, 110, 0.2);
+        }
+
+        /* New Message Button Styles */
+        .message-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(253, 121, 168, 0.4);
+            z-index: 100;
+            transition: all 0.3s var(--animation-timing);
+            border: none;
+            outline: none;
+            animation: pulse-glow 2s infinite;
+            will-change: transform;
+        }
+
+        .light-mode .message-button {
+            box-shadow: 0 10px 30px rgba(253, 121, 168, 0.3);
+        }
+
+        .message-button:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 15px 40px rgba(253, 121, 168, 0.6);
+        }
+
+        .message-button::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            animation: ripple-out 1.5s infinite;
+            z-index: -1;
+        }
+
+        .message-button .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger);
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(253, 121, 168, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(253, 121, 168, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(253, 121, 168, 0); }
+        }
+
+        @keyframes ripple-out {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* Message Modal */
+        .message-modal {
+            position: fixed;
+            bottom: 120px;
+            right: 30px;
+            width: 350px;
+            background: var(--glass);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            z-index: 101;
+            transform: translateY(20px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s var(--animation-timing);
+        }
+
+        .light-mode .message-modal {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .message-modal.active {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .message-header {
+            padding: 15px 20px;
+            background: linear-gradient(90deg, rgba(108, 92, 231, 0.8) 0%, rgba(0, 206, 201, 0.8) 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .light-mode .message-header {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        .message-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .close-message {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .close-message:hover {
+            transform: rotate(90deg);
+        }
+
+        .message-content {
+            padding: 20px;
+        }
+
+        .message-content p {
+            margin: 0 0 15px;
+            line-height: 1.6;
+        }
+
+        .message-contact {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s var(--animation-timing);
+        }
+
+        .message-contact:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
+        }
+
+        /* Fredi Site Bar - Now at the bottom */
+        .fredi-bar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 800px;
+            background: linear-gradient(90deg, var(--fredi-blue) 0%, var(--fredi-purple) 100%);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.4);
+            z-index: 99;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideInUp 0.5s ease-out;
+        }
+
+        .light-mode .fredi-bar {
+            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .fredi-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .fredi-title i {
+            font-size: 1.3rem;
+        }
+
+        .fredi-links {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .fredi-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 6px 15px;
+            border-radius: 20px;
+            transition: all 0.3s var(--animation-timing);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .fredi-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .fredi-link.support {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .fredi-link.support:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes slideInUp {
+            from {
+                transform: translate(-50%, 100%);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
+        }
+
+        /* Floating particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            will-change: transform;
+        }
+        
+        .light-mode .particle {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Modern scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+        
+        .light-mode ::-webkit-scrollbar-thumb {
+            background: var(--primary-dark);
+        }
+        
+        /* Ripple effect */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+            will-change: transform;
+        }
+        
+        @keyframes ripple {
+            to {
+                transform: scale(2.5);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .menu-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .premium-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+                padding: 20px;
+            }
+            
+            .system-info {
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 15px;
+                align-items: center;
+            }
+
+            .fredi-bar {
+                flex-direction: column;
+                gap: 10px;
+                padding: 15px;
+                border-radius: 15px;
+                text-align: center;
+            }
+            
+            .fredi-links {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .menu-grid {
+                grid-template-columns: 1fr;
+                padding: 15px;
+            }
+            
+            .menu-item {
+                padding: 18px;
+            }
+            
+            .premium-header, .menu-title, .premium-footer {
+                padding: 15px;
+            }
+            
+            .social-links {
+                gap: 10px;
+            }
+
+            .fredi-bar {
+                bottom: 10px;
+                width: calc(100% - 20px);
+            }
+            
+            .fredi-link {
+                padding: 5px 10px;
+                font-size: 0.8rem;
+            }
+            
+            .message-button {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .message-modal {
+                width: calc(100% - 40px);
+                right: 20px;
+                bottom: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="premium-container">
+        <div class="premium-header">
+            <div class="header-info">
+                <div class="greeting" id="greeting">Welcome</div>
+                <div class="datetime" id="datetime">Loading...</div>
+            </div>
+            <div class="system-info">
+                <!-- Removed IP address as requested -->
+            </div>
+        </div>
+        
+        <div class="menu-title">
+            <div class="logo-icon">F</div>
+            FREDI SITE CENTER
+        </div>
+        
+        <div class="menu-grid">
+            <div class="menu-item" onclick="window.location.href='/ai'">
+                <div class="menu-item-content">
+                    <div class="item-icon"><i class="fas fa-robot"></i></div>
+                    <div>
+                        <div class="item-name">AI TOOLS</div>
+                        <div class="item-desc">Advanced artificial intelligence and machine learning tools</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="menu-item" onclick="window.location.href='/coding'">
+                <div class="menu-item-content">
+                    <div class="item-icon"><i class="fas fa-code"></i></div>
+                    <div>
+                        <div class="item-name">CODING</div>
+                        <div class="item-desc">Developer tools, compilers and programming utilities</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="menu-item search-command" onclick="window.location.href='/search'">
+                <div class="menu-item-content">
+                    <div class="item-icon"><i class="fas fa-search"></i></div>
+                    <div>
+                        <div class="item-name">SEARCH</div>
+                        <div class="item-desc">Search across all systems and databases</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="menu-item download-command" onclick="window.location.href='/download'">
+                <div class="premium-badge">Premium</div>
+                <div class="menu-item-content">
+                    <div class="item-icon"><i class="fas fa-download"></i></div>
+                    <div>
+                        <div class="item-name">DOWNLOAD</div>
+                        <div class="item-desc">High-speed download manager</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="menu-item" onclick="window.location.href='/sports'">
+                <div class="menu-item-content">
+                    <div class="item-icon"><i class="fas fa-running"></i></div>
+                    <div>
+                        <div class="item-name">SPORTS</div>
+                        <div class="item-desc">Live scores, statistics and analysis tools</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="menu-item" onclick="window.location.href='/stalker'">
+                <div class="menu-item-content">
+                    <div class="item-icon"><i class="fas fa-user-secret"></i></div>
+                    <div>
+                        <div class="item-name">STALKER</div>
+                        <div class="item-desc">Advanced tracking and monitoring systems</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- New Fun Category -->
+            <div class="menu-item fun-command" onclick="window.location.href='/fun'">
+                <div class="menu-item-content">
+                    <div class="item-icon"><i class="fas fa-gamepad"></i></div>
+                    <div>
+                        <div class="item-name">FUN</div>
+                        <div class="item-desc">Games, entertainment and leisure activities</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- New Editing Category -->
+            <div class="menu-item editing-command" onclick="window.location.href='/editing'">
+                <div class="menu-item-content">
+                    <div class="item-icon"><i class="fas fa-edit"></i></div>
+                    <div>
+                        <div class="item-name">EDITING</div>
+                        <div class="item-desc">Photo, video and content editing tools</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- New Logo Category -->
+            <div class="menu-item logo-command" onclick="window.location.href='/logo'">
+                <div class="menu-item-content">
+                    <div class="item-icon"><i class="fas fa-palette"></i></div>
+                    <div>
+                        <div class="item-name">LOGO</div>
+                        <div class="item-desc">Logo design and branding tools</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="premium-footer">
+            <div class="footer-content">
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span>PREMIUM SYSTEM ACTIVE</span>
+                </div>
+                
+                <div class="social-links">
+                    <a href="#" class="social-link facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-link tiktok"><i class="fab fa-tiktok"></i></a>
+                    <a href="#" class="social-link whatsapp"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#" class="social-link twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-link linkedin"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-link youtube"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="social-link github"><i class="fab fa-github"></i></a>
+                </div>
+                
+                <button class="theme-toggle" id="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                    <span>Dark Mode</span>
+                </button>
+            </div>
+            
+            <div class="copyright">
+                &copy; <span id="current-year"></span> Fredi Ai Site Center. | All rights reserved.
+            </div>
+        </div>
+    </div>
+
+    <!-- New Message Button -->
+    <button class="message-button" id="messageButton" aria-label="Open message modal">
+        <i class="fas fa-paper-plane"></i>
+        <span class="notification-badge">1</span>
+    </button>
+
+    <!-- Message Modal -->
+    <div class="message-modal" id="messageModal" aria-modal="true" role="dialog">
+        <div class="message-header">
+            <h3>Message Me</h3>
+            <button class="close-message" id="closeMessage" aria-label="Close message modal">&times;</button>
+        </div>
+        <div class="message-content">
+            <p>Have questions or want to get in touch? I'd love to hear from you!</p>
+            <p>Click the button below to send me a message through your preferred contact method.</p>
+            <a href="/contact" class="message-contact" id="contactLink">
+                <i class="fas fa-envelope"></i> Contact Now
+            </a>
+        </div>
+    </div>
+
+    <!-- Keith API Bar - Now at the bottom -->
+    <div class="fredi-bar">
+        <div class="fredi-title">
+            <i class="fas fa-rocket"></i>
+            <span>FREDI PROJECTS</span>
+        </div>
+        <div class="fredi-links">
+            <a href="/fredi-about" class="fredi-link" aria-label="About Documentation">
+                <i class="fas fa-info-about"></i> About Fredi
+            </a>
+            <a href="/fredi-projects" class="fredi-link" aria-label="Projects">
+                <i class="fas fa-project-diagram"></i> Projects
+            </a>
+            <a href="/support-fredi" class="fredi-link support" aria-label="Support Fredi">
+                <i class="fas fa-heart"></i> Support Fredi
+            </a>
+            <a href="/donate" class="fredi-link" aria-label="Donate">
+                <i class="fas fa-dollar-sign"></i> Donate
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Update greeting based on time of day
+        function updateGreeting() {
+            const hour = new Date().getHours();
+            let greeting;
+            
+            if (hour < 12) {
+                greeting = "Good morning 🌅";
+            } else if (hour < 18) {
+                greeting = "Good Afternoon 🤍";
+            } else {
+                greeting = "Good Evening⚪";
+            }
+            
+            document.getElementById('greeting').textContent = greeting;
+        }
+        
+        // Update date and time
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            };
+            document.getElementById('datetime').textContent = now.toLocaleDateString('en-US', options);
+        }
+        
+        // Theme toggle with localStorage support
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            
+            const icon = document.querySelector('#theme-toggle i');
+            const text = document.querySelector('#theme-toggle span');
+            
+            if (document.body.classList.contains('light-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                text.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                text.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+        
+        // Check for saved theme preference
+        function checkTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                document.querySelector('#theme-toggle i').classList.remove('fa-moon');
+                document.querySelector('#theme-toggle i').classList.add('fa-sun');
+                document.querySelector('#theme-toggle span').textContent = 'Light Mode';
+            }
+        }
+        
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = window.innerWidth < 768 ? 30 : 50;
+            
+            // Clear existing particles
+            particlesContainer.innerHTML = '';
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random properties
+                const size = Math.random() * 5 + 1;
+                const posX = Math.random() * window.innerWidth;
+                const posY = Math.random() * window.innerHeight;
+                const opacity = Math.random() * 0.5 + 0.1;
+                const duration = Math.random() * 20 + 10;
+                const delay = Math.random() * -20;
+                
+                // Apply styles
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${posX}px`;
+                particle.style.top = `${posY}px`;
+                particle.style.opacity = opacity;
+                particle.style.animation = `float ${duration}s linear ${delay}s infinite`;
+                
+                // Add to container
+                particlesContainer.appendChild(particle);
+            }
+            
+            // Add animation keyframes if not already present
+            if (!document.getElementById('particle-animation')) {
+                const style = document.createElement('style');
+                style.id = 'particle-animation';
+                style.textContent = `
+                    @keyframes float {
+                        0% { transform: translateY(0) translateX(0); opacity: 1; }
+                        50% { transform: translateY(-100px) translateX(20px); opacity: 0.5; }
+                        100% { transform: translateY(0) translateX(0); opacity: 1; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
+        // Ripple effect for menu items
+        function createRipple(event) {
+            const button = event.currentTarget;
+            const circle = document.createElement("span");
+            const diameter = Math.max(button.clientWidth, button.clientHeight);
+            const radius = diameter / 2;
+
+            circle.style.width = circle.style.height = `${diameter}px`;
+            circle.style.left = `${event.clientX - button.getBoundingClientRect().left - radius}px`;
+            circle.style.top = `${event.clientY - button.getBoundingClientRect().top - radius}px`;
+            circle.classList.add("ripple");
+
+            const ripple = button.getElementsByClassName("ripple")[0];
+            if (ripple) {
+                ripple.remove();
+            }
+
+            button.appendChild(circle);
+        }
+
+        // Message button functionality
+        function setupMessageButton() {
+            const messageButton = document.getElementById('messageButton');
+            const messageModal = document.getElementById('messageModal');
+            const closeMessage = document.getElementById('closeMessage');
+            const contactLink = document.getElementById('contactLink');
+
+            // Toggle modal visibility
+            const toggleModal = () => {
+                messageModal.classList.toggle('active');
+                messageButton.setAttribute('aria-expanded', messageModal.classList.contains('active'));
+            };
+
+            messageButton.addEventListener('click', toggleModal);
+            closeMessage.addEventListener('click', toggleModal);
+
+            contactLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                // Replace with your actual contact link
+                window.location.href = '/contact';
+            });
+
+            // Close modal when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!messageModal.contains(e.target) && e.target !== messageButton) {
+                    messageModal.classList.remove('active');
+                    messageButton.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && messageModal.classList.contains('active')) {
+                    toggleModal();
+                }
+            });
+        }
+
+        // Initialize everything
+        function init() {
+            updateGreeting();
+            updateDateTime();
+            checkTheme();
+            createParticles();
+            setupMessageButton();
+
+            // Update copyright year
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+
+            // Set up theme toggle
+            document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+
+            // Add ripple effect to all menu items
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                item.addEventListener('click', createRipple);
+            });
+
+            // Update time every minute
+            setInterval(updateDateTime, 60000);
+
+            // Handle window resize with debounce
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    createParticles();
+                }, 200);
+            });
+
+            // Add focus styles for keyboard navigation
+            document.addEventListener('keyup', (e) => {
+                if (e.key === 'Tab') {
+                    document.documentElement.classList.add('keyboard-focus');
+                }
+            });
+
+            document.addEventListener('mousedown', () => {
+                document.documentElement.classList.remove('keyboard-focus');
+            });
+        }
+
+        // Wait for DOM to load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
