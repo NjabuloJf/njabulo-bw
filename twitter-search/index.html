@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitter/X Search</title>
+    <meta name="description" content="Search Twitter/X posts with beautiful premium interface">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1da1f2;
+            --secondary: #14171a;
+            --dark: #14171a;
+            --light: #ffffff;
+            --gray: #f5f8fa;
+            --dark-gray: #657786;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--gray);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            background-color: var(--light);
+            padding: 1.5rem 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--primary);
+        }
+        
+        .logo i {
+            color: var(--primary);
+        }
+        
+        .logo span {
+            font-size: 0.8rem;
+            font-weight: 300;
+            font-style: italic;
+            opacity: 0.8;
+        }
+        
+        .search-container {
+            display: flex;
+            gap: 1rem;
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 0.8rem 1.5rem;
+            border: 1px solid var(--gray);
+            border-radius: 30px;
+            font-size: 1rem;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(29, 161, 242, 0.2);
+        }
+        
+        .search-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0 1.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .search-btn:hover {
+            background-color: #1991da;
+            transform: translateY(-2px);
+        }
+        
+        .search-btn:active {
+            transform: translateY(0);
+        }
+        
+        main {
+            padding: 2rem 0;
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .results-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .results-count {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+        
+        .tweets-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .tweet-card {
+            background-color: var(--light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        .tweet-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tweet-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .tweet-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        
+        .tweet-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .tweet-user {
+            flex: 1;
+        }
+        
+        .tweet-username {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .tweet-username a {
+            color: var(--dark);
+            text-decoration: none;
+        }
+        
+        .tweet-username a:hover {
+            text-decoration: underline;
+        }
+        
+        .verified-badge {
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+        
+        .tweet-handle {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+        
+        .tweet-time {
+            color: var(--dark-gray);
+            font-size: 0.8rem;
+        }
+        
+        .tweet-content {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        
+        .tweet-text {
+            margin-bottom: 1rem;
+            white-space: pre-line;
+        }
+        
+        .tweet-mentions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .mention-tag {
+            background-color: rgba(29, 161, 242, 0.1);
+            color: var(--primary);
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            text-decoration: none;
+        }
+        
+        .mention-tag:hover {
+            background-color: rgba(29, 161, 242, 0.2);
+        }
+        
+        .tweet-actions {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid var(--gray);
+            padding-top: 1rem;
+        }
+        
+        .tweet-action {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--dark-gray);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .tweet-action:hover {
+            color: var(--primary);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            display: none;
+        }
+        
+        .loading-spinner {
+            border: 4px solid rgba(29, 161, 242, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error {
+            color: #d32f2f;
+            padding: 1.5rem;
+            background-color: #ffebee;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            display: none;
+            text-align: center;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--dark-gray);
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+        
+        .social-links a {
+            color: white;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+        
+        .social-links a:hover {
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .search-container {
+                width: 100%;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .tweet-card {
+                padding: 1rem;
+            }
+            
+            .tweet-avatar {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fab fa-twitter"></i>
+                <div>
+                    Twitter/X Search
+                    <span>Search any Twitter/X posts</span>
+                </div>
+            </div>
+            <div class="search-container">
+                <input type="text" class="search-input" id="search-input" placeholder="Search Twitter posts...">
+                <button class="search-btn" id="search-btn">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        <div class="container">
+            <div class="results-header">
+                <div>
+                    <h2 class="results-title">Search Results</h2>
+                    <div class="results-count" id="results-count">Enter a search term</div>
+                </div>
+            </div>
+            
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>Searching Twitter...</p>
+            </div>
+            
+            <div class="error" id="error"></div>
+            
+            <div class="tweets-container" id="tweets-container">
+                <!-- Tweets will be inserted here dynamically -->
+            </div>
+            
+            <div class="empty-state" id="empty-state" style="display: none;">
+                <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                <h3>No tweets found</h3>
+                <p>Try a different search term</p>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">API</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+                <a href="#">Contact</a>
+            </div>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+            </div>
+            <div class="copyright">
+                &copy; 2025 Fredi Twitter/X Search. | All rights reserved.
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const searchBtn = document.getElementById('search-btn');
+            const searchInput = document.getElementById('search-input');
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const tweetsContainer = document.getElementById('tweets-container');
+            const resultsCount = document.getElementById('results-count');
+            const emptyState = document.getElementById('empty-state');
+            
+            // Event Listeners
+            searchBtn.addEventListener('click', function() {
+                const query = searchInput.value.trim();
+                
+                if (!query) {
+                    showError('Please enter a search term');
+                    return;
+                }
+                
+                searchTwitter(query);
+            });
+            
+            // Press Enter to search
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchBtn.click();
+                }
+            });
+            
+            // Functions
+            async function searchTwitter(query) {
+                loading.style.display = 'block';
+                error.style.display = 'none';
+                emptyState.style.display = 'none';
+                tweetsContainer.innerHTML = '';
+                resultsCount.textContent = 'Searching...';
+                
+                try {
+                    const apiUrl = `https://apis-keith.vercel.app/search/tweet-posts?q=${encodeURIComponent(query)}`;
+                    const response = await fetch(apiUrl);
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch tweets');
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (!data.status || !data.result || data.result.length === 0) {
+                        showEmptyState();
+                    } else {
+                        displayResults(data);
+                    }
+                } catch (err) {
+                    showError(err.message || 'Failed to fetch tweets. Please try again.');
+                } finally {
+                    loading.style.display = 'none';
+                }
+            }
+            
+            function displayResults(data) {
+                resultsCount.textContent = `${data.result.length} tweets found`;
+                tweetsContainer.innerHTML = '';
+                
+                data.result.forEach(tweet => {
+                    const tweetCard = document.createElement('div');
+                    tweetCard.className = 'tweet-card';
+                    
+                    // Format mentions in the text
+                    let tweetText = tweet.content.text;
+                    tweet.mentions.forEach(mention => {
+                        tweetText = tweetText.replace(`@${mention}`, `<a href="https://x.com/${mention}" class="mention-tag">@${mention}</a>`);
+                    });
+                    
+                    tweetCard.innerHTML = `
+                        <div class="tweet-header">
+                            <div class="tweet-avatar">
+                                <img src="${tweet.profileImage}" alt="${tweet.username}" onerror="this.src='https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png'">
+                            </div>
+                            <div class="tweet-user">
+                                <div class="tweet-username">
+                                    <a href="${tweet.userProfileUrl}">${tweet.username}</a>
+                                    <i class="fas fa-check-circle verified-badge"></i>
+                                </div>
+                                <div class="tweet-handle">@${tweet.username}</div>
+                            </div>
+                            <div class="tweet-time">${formatDate(tweet.createdAt)}</div>
+                        </div>
+                        <div class="tweet-content">
+                            <div class="tweet-text">${tweetText}</div>
+                            ${tweet.mentions.length > 0 ? `
+                            <div class="tweet-mentions">
+                                ${tweet.mentions.map(mention => 
+                                    `<a href="https://x.com/${mention}" class="mention-tag">@${mention}</a>`
+                                ).join('')}
+                            </div>
+                            ` : ''}
+                        </div>
+                        <div class="tweet-actions">
+                            <a href="${tweet.content.url}" class="tweet-action" target="_blank">
+                                <i class="far fa-comment"></i> Reply
+                            </a>
+                            <a href="${tweet.content.url}" class="tweet-action" target="_blank">
+                                <i class="fas fa-retweet"></i> Retweet
+                            </a>
+                            <a href="${tweet.content.url}" class="tweet-action" target="_blank">
+                                <i class="far fa-heart"></i> Like
+                            </a>
+                            <a href="${tweet.content.url}" class="tweet-action" target="_blank">
+                                <i class="fas fa-share"></i> Share
+                            </a>
+                        </div>
+                    `;
+                    tweetsContainer.appendChild(tweetCard);
+                });
+            }
+            
+            function showEmptyState() {
+                tweetsContainer.innerHTML = '';
+                resultsCount.textContent = '0 tweets found';
+                emptyState.style.display = 'block';
+            }
+            
+            function showError(message) {
+                error.textContent = message;
+                error.style.display = 'block';
+                tweetsContainer.innerHTML = '';
+                resultsCount.textContent = 'Error occurred';
+                emptyState.style.display = 'none';
+            }
+            
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+        });
+    </script>
+</body>
+</html>
