@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Repo Viewer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --github-dark: #0d1117;
+            --github-darker: #010409;
+            --github-light: #f0f6fc;
+            --github-gray: #8b949e;
+            --github-blue: #58a6ff;
+            --card-bg: #161b22;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        
+        body {
+            background-color: var(--github-dark);
+            color: var(--github-light);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: var(--github-darker);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #30363d;
+        }
+        
+        .logo {
+            color: var(--github-light);
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo i {
+            color: var(--github-gray);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: var(--github-light);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .search-container {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 6px;
+            border: 1px solid #30363d;
+            margin-bottom: 1.5rem;
+        }
+        
+        .input-group {
+            display: flex;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #30363d;
+        }
+        
+        #repo-url {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            background: var(--github-dark);
+            color: var(--github-light);
+            border: none;
+            outline: none;
+            font-size: 0.9rem;
+        }
+        
+        #search-btn {
+            background: #238636;
+            color: white;
+            border: none;
+            padding: 0 1.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        
+        #search-btn:hover {
+            background: #2ea043;
+        }
+        
+        .repo-container {
+            display: none;
+            background: var(--card-bg);
+            border-radius: 6px;
+            border: 1px solid #30363d;
+            overflow: hidden;
+        }
+        
+        .repo-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .owner-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+        
+        .repo-info {
+            flex: 1;
+        }
+        
+        .repo-name {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .repo-name a {
+            color: var(--github-blue);
+            text-decoration: none;
+        }
+        
+        .repo-name a:hover {
+            text-decoration: underline;
+        }
+        
+        .repo-description {
+            color: var(--github-gray);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        
+        .repo-meta {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: var(--github-gray);
+            font-size: 0.85rem;
+        }
+        
+        .repo-stats {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #30363d;
+            background: rgba(1, 4, 9, 0.3);
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.9rem;
+        }
+        
+        .repo-details {
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .detail-card {
+            background: var(--github-darker);
+            border-radius: 6px;
+            padding: 1rem;
+            border: 1px solid #30363d;
+        }
+        
+        .detail-card h3 {
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+            color: var(--github-gray);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .detail-item {
+            margin-bottom: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .detail-label {
+            color: var(--github-gray);
+            font-size: 0.85rem;
+        }
+        
+        .detail-value {
+            font-size: 0.85rem;
+            text-align: right;
+        }
+        
+        .detail-value a {
+            color: var(--github-blue);
+            text-decoration: none;
+        }
+        
+        .detail-value a:hover {
+            text-decoration: underline;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .spinner {
+            border: 3px solid rgba(88, 166, 255, 0.1);
+            border-top: 3px solid var(--github-blue);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem 0;
+            color: var(--github-gray);
+        }
+        
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #3fb950;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 2em;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .public-badge {
+            background: rgba(56, 139, 253, 0.1);
+            color: var(--github-blue);
+            border: 1px solid rgba(56, 139, 253, 0.4);
+        }
+        
+        .private-badge {
+            background: rgba(248, 81, 73, 0.1);
+            color: #f85149;
+            border: 1px solid rgba(248, 81, 73, 0.4);
+        }
+        
+        .feature-badge {
+            background: rgba(56, 139, 253, 0.1);
+            color: var(--github-blue);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+        
+        @media (max-width: 768px) {
+            .repo-header {
+                flex-direction: column;
+            }
+            
+            .owner-avatar {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .navbar {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="logo"><i class="fab fa-github"></i> Repo Viewer</a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="search-container">
+            <div class="input-group">
+                <input type="text" id="repo-url" placeholder="Enter GitHub repository URL (e.g. https://github.com/username/repo)">
+                <button id="search-btn">Search</button>
+            </div>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Fetching repository data...</p>
+        </div>
+        
+        <div class="repo-container" id="repo-container">
+            <div class="repo-header">
+                <img id="owner-avatar" class="owner-avatar" src="">
+                <div class="repo-info">
+                    <h1 class="repo-name">
+                        <a id="repo-link" href="" target="_blank"></a>
+                        <span id="visibility-badge" class="badge public-badge">Public</span>
+                    </h1>
+                    <p class="repo-description" id="repo-description"></p>
+                    <div class="repo-meta">
+                        <span class="meta-item">
+                            <i class="fas fa-code"></i>
+                            <span id="repo-language"></span>
+                        </span>
+                        <span class="meta-item">
+                            <i class="fas fa-balance-scale"></i>
+                            <span id="repo-license"></span>
+                        </span>
+                        <span class="meta-item">
+                            <i class="fas fa-code-branch"></i>
+                            <span id="repo-branch"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="repo-stats">
+                <div class="stat-item">
+                    <i class="fas fa-star"></i>
+                    <span id="stars-count">0</span> stars
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-eye"></i>
+                    <span id="watchers-count">0</span> watchers
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-code-branch"></i>
+                    <span id="forks-count">0</span> forks
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="issues-count">0</span> open issues
+                </div>
+            </div>
+            
+            <div class="repo-details">
+                <div class="detail-card">
+                    <h3><i class="fas fa-info-circle"></i> Repository Info</h3>
+                    <div class="detail-item">
+                        <span class="detail-label">Created:</span>
+                        <span class="detail-value" id="created-at"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Last updated:</span>
+                        <span class="detail-value" id="updated-at"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Last pushed:</span>
+                        <span class="detail-value" id="pushed-at"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Size:</span>
+                        <span class="detail-value" id="repo-size"></span>
+                    </div>
+                </div>
+                
+                <div class="detail-card">
+                    <h3><i class="fas fa-user"></i> Owner</h3>
+                    <div class="detail-item">
+                        <span class="detail-label">Username:</span>
+                        <span class="detail-value">
+                            <a id="owner-link" href="" target="_blank"></a>
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Type:</span>
+                        <span class="detail-value" id="owner-type"></span>
+                    </div>
+                </div>
+                
+                <div class="detail-card">
+                    <h3><i class="fas fa-clone"></i> Clone URLs</h3>
+                    <div class="detail-item">
+                        <span class="detail-label">HTTPS:</span>
+                        <span class="detail-value">
+                            <a id="clone-https" href="" target="_blank">Copy</a>
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">SSH:</span>
+                        <span class="detail-value">
+                            <a id="clone-ssh" href="" target="_blank">Copy</a>
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Git:</span>
+                        <span class="detail-value">
+                            <a id="clone-git" href="" target="_blank">Copy</a>
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="detail-card">
+                    <h3><i class="fas fa-cog"></i> Features</h3>
+                    <div class="detail-item">
+                        <span class="detail-label">Issues:</span>
+                        <span class="detail-value" id="has-issues"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Wiki:</span>
+                        <span class="detail-value" id="has-wiki"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Downloads:</span>
+                        <span class="detail-value" id="has-downloads"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Template:</span>
+                        <span class="detail-value" id="is-template"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="empty-state" id="empty-state">
+            <i class="fas fa-code-branch"></i>
+            <h3>No Repository Data</h3>
+            <p>Enter a GitHub repository URL to view information</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const repoUrlInput = document.getElementById('repo-url');
+            const searchBtn = document.getElementById('search-btn');
+            const repoContainer = document.getElementById('repo-container');
+            const loading = document.getElementById('loading');
+            const emptyState = document.getElementById('empty-state');
+            
+            // Show empty state initially
+            emptyState.style.display = 'block';
+            
+            function fetchRepo(url) {
+                if (!url) return;
+                
+                loading.style.display = 'block';
+                repoContainer.style.display = 'none';
+                emptyState.style.display = 'none';
+                
+                fetch(`https://apis-keith.vercel.app/stalker/repostalk?url=${encodeURIComponent(url)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status) {
+                            displayRepo(data.result);
+                        } else {
+                            throw new Error(data.message || 'Failed to load repository');
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        alert('Error: ' + error.message);
+                        emptyState.style.display = 'block';
+                    })
+                    .finally(() => {
+                        loading.style.display = 'none';
+                    });
+            }
+            
+            function displayRepo(repoData) {
+                // Owner info
+                document.getElementById('owner-avatar').src = repoData.owner.avatar;
+                document.getElementById('owner-link').textContent = repoData.owner.username;
+                document.getElementById('owner-link').href = repoData.owner.profileUrl;
+                document.getElementById('owner-type').textContent = repoData.owner.type;
+                
+                // Repo info
+                document.getElementById('repo-link').textContent = repoData.repo.fullName;
+                document.getElementById('repo-link').href = repoData.repo.url;
+                document.getElementById('repo-description').textContent = repoData.repo.description || 'No description';
+                document.getElementById('repo-language').textContent = repoData.repo.language || 'Unknown';
+                document.getElementById('repo-license').textContent = repoData.repo.license?.name || 'None';
+                document.getElementById('repo-branch').textContent = repoData.repo.defaultBranch;
+                
+                // Visibility badge
+                const visibilityBadge = document.getElementById('visibility-badge');
+                if (repoData.repo.isPrivate) {
+                    visibilityBadge.textContent = 'Private';
+                    visibilityBadge.className = 'badge private-badge';
+                } else {
+                    visibilityBadge.textContent = 'Public';
+                    visibilityBadge.className = 'badge public-badge';
+                }
+                
+                // Stats
+                document.getElementById('stars-count').textContent = repoData.repo.stars.toLocaleString();
+                document.getElementById('watchers-count').textContent = repoData.repo.watchers.toLocaleString();
+                document.getElementById('forks-count').textContent = repoData.repo.forks.toLocaleString();
+                document.getElementById('issues-count').textContent = repoData.repo.openIssues.toLocaleString();
+                
+                // Dates
+                document.getElementById('created-at').textContent = formatDate(repoData.repo.createdAt);
+                document.getElementById('updated-at').textContent = formatDate(repoData.repo.updatedAt);
+                document.getElementById('pushed-at').textContent = formatDate(repoData.repo.pushedAt);
+                
+                // Size
+                document.getElementById('repo-size').textContent = formatSize(repoData.repo.size);
+                
+                // Clone URLs
+                document.getElementById('clone-https').href = repoData.repo.cloneUrls.https;
+                document.getElementById('clone-ssh').href = repoData.repo.cloneUrls.ssh;
+                document.getElementById('clone-git').href = repoData.repo.cloneUrls.git;
+                
+                // Features
+                document.getElementById('has-issues').textContent = repoData.features.hasIssues ? 'Enabled' : 'Disabled';
+                document.getElementById('has-wiki').textContent = repoData.features.hasWiki ? 'Enabled' : 'Disabled';
+                document.getElementById('has-downloads').textContent = repoData.features.hasDownloads ? 'Enabled' : 'Disabled';
+                document.getElementById('is-template').textContent = repoData.features.isTemplate ? 'Yes' : 'No';
+                
+                // Show repo
+                repoContainer.style.display = 'block';
+                emptyState.style.display = 'none';
+            }
+            
+            function formatDate(dateString) {
+                if (!dateString) return 'Unknown';
+                const date = new Date(dateString);
+                return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+            }
+            
+            function formatSize(kb) {
+                if (kb < 1024) return `${kb} KB`;
+                const mb = (kb / 1024).toFixed(1);
+                return `${mb} MB`;
+            }
+            
+            searchBtn.addEventListener('click', () => {
+                fetchRepo(repoUrlInput.value.trim());
+            });
+            
+            repoUrlInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    fetchRepo(repoUrlInput.value.trim());
+                }
+            });
+        });
+    </script>
+</body>
+</html>
