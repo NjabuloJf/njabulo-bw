@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Channel Viewer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --youtube-red: #FF0000;
+            --youtube-dark: #0F0F0F;
+            --youtube-light: #F1F1F1;
+            --youtube-gray: #606060;
+            --card-bg: #212121;
+            --card-border: #303030;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: var(--youtube-dark);
+            color: var(--youtube-light);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: var(--youtube-dark);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--card-border);
+        }
+        
+        .logo {
+            color: var(--youtube-light);
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo i {
+            color: var(--youtube-red);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: var(--youtube-light);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .search-container {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            margin-bottom: 1.5rem;
+        }
+        
+        .input-group {
+            display: flex;
+            border-radius: 40px;
+            overflow: hidden;
+            border: 1px solid var(--card-border);
+        }
+        
+        #username-input {
+            flex: 1;
+            padding: 0.8rem 1.2rem;
+            background: var(--youtube-dark);
+            color: var(--youtube-light);
+            border: none;
+            outline: none;
+            font-size: 0.9rem;
+        }
+        
+        #search-btn {
+            background: var(--youtube-red);
+            color: white;
+            border: none;
+            padding: 0 1.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+        
+        #search-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .channel-container {
+            display: none;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            overflow: hidden;
+        }
+        
+        .channel-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+        
+        .channel-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--youtube-gray);
+        }
+        
+        .channel-info {
+            flex: 1;
+        }
+        
+        .channel-name {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .channel-url {
+            color: var(--youtube-gray);
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+        }
+        
+        .channel-url a {
+            color: var(--youtube-red);
+            text-decoration: none;
+        }
+        
+        .channel-url a:hover {
+            text-decoration: underline;
+        }
+        
+        .channel-description {
+            color: var(--youtube-light);
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+        
+        .channel-stats {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .stat-number {
+            font-weight: 500;
+        }
+        
+        .stat-label {
+            color: var(--youtube-gray);
+            font-size: 0.9rem;
+        }
+        
+        .videos-container {
+            padding: 1.5rem;
+        }
+        
+        .videos-title {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .video-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--card-border);
+            transition: transform 0.2s;
+        }
+        
+        .video-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .video-thumbnail {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 aspect ratio */
+            overflow: hidden;
+        }
+        
+        .video-thumbnail img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .video-duration {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        .video-info {
+            padding: 1rem;
+        }
+        
+        .video-title {
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.4;
+        }
+        
+        .video-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--youtube-gray);
+            font-size: 0.8rem;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .spinner {
+            border: 3px solid rgba(255, 0, 0, 0.1);
+            border-top: 3px solid var(--youtube-red);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem 0;
+            color: var(--youtube-gray);
+        }
+        
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--youtube-red);
+        }
+        
+        @media (max-width: 768px) {
+            .channel-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .channel-stats {
+                justify-content: center;
+            }
+            
+            .navbar {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="logo"><i class="fab fa-youtube"></i> YouTube Viewer</a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="search-container">
+            <div class="input-group">
+                <input type="text" id="username-input" placeholder="Enter YouTube username (e.g. @freeonlinetvT1)">
+                <button id="search-btn">Search</button>
+            </div>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Fetching channel data...</p>
+        </div>
+        
+        <div class="channel-container" id="channel-container">
+            <div class="channel-header">
+                <img id="channel-avatar" class="channel-avatar" src="">
+                <div class="channel-info">
+                    <h1 class="channel-name" id="channel-name"></h1>
+                    <div class="channel-url">
+                        Channel: <a id="channel-url" href="" target="_blank"></a>
+                    </div>
+                    <div class="channel-description" id="channel-description"></div>
+                    <div class="channel-stats">
+                        <div class="stat-item">
+                            <span class="stat-number" id="subscribers-count">0</span>
+                            <span class="stat-label">Subscribers</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="videos-count">0</span>
+                            <span class="stat-label">Videos</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="videos-container" id="videos-container">
+                <h2 class="videos-title">
+                    <i class="fas fa-play-circle"></i> Latest Videos
+                </h2>
+                <div class="videos-grid" id="videos-grid">
+                    <!-- Videos will be inserted here -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="empty-state" id="empty-state">
+            <i class="fab fa-youtube"></i>
+            <h3>No Channel Data</h3>
+            <p>Enter a YouTube username to view channel information</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const usernameInput = document.getElementById('username-input');
+            const searchBtn = document.getElementById('search-btn');
+            const channelContainer = document.getElementById('channel-container');
+            const loading = document.getElementById('loading');
+            const emptyState = document.getElementById('empty-state');
+            const videosGrid = document.getElementById('videos-grid');
+            
+            // Show empty state initially
+            emptyState.style.display = 'block';
+            
+            function fetchChannel(username) {
+                if (!username) return;
+                
+                loading.style.display = 'block';
+                channelContainer.style.display = 'none';
+                emptyState.style.display = 'none';
+                videosGrid.innerHTML = '';
+                
+                fetch(`https://apis-keith.vercel.app/stalker/ytchannel?user=${encodeURIComponent(username)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status) {
+                            displayChannel(data.result);
+                        } else {
+                            throw new Error(data.message || 'Failed to load channel');
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        alert('Error: ' + error.message);
+                        emptyState.style.display = 'block';
+                    })
+                    .finally(() => {
+                        loading.style.display = 'none';
+                    });
+            }
+            
+            function displayChannel(channelData) {
+                // Channel info
+                document.getElementById('channel-avatar').src = channelData.channel.avatar;
+                document.getElementById('channel-name').textContent = channelData.channel.username;
+                document.getElementById('channel-url').textContent = channelData.channel.url;
+                document.getElementById('channel-url').href = channelData.channel.url;
+                document.getElementById('channel-description').textContent = channelData.channel.description || 'No description available';
+                document.getElementById('subscribers-count').textContent = channelData.channel.stats.subscribers.toLocaleString();
+                document.getElementById('videos-count').textContent = channelData.channel.stats.videos.toLocaleString();
+                
+                // Videos
+                if (channelData.videos && channelData.videos.length > 0) {
+                    channelData.videos.forEach(video => {
+                        const videoCard = document.createElement('div');
+                        videoCard.className = 'video-card';
+                        videoCard.innerHTML = `
+                            <a href="${video.url}" target="_blank">
+                                <div class="video-thumbnail">
+                                    <img src="${video.thumbnail}" alt="${video.title}">
+                                    <span class="video-duration">${video.duration}</span>
+                                </div>
+                                <div class="video-info">
+                                    <h3 class="video-title">${video.title}</h3>
+                                    <div class="video-meta">
+                                        <span>${video.views.toLocaleString()} views</span>
+                                        <span>${video.published}</span>
+                                    </div>
+                                </div>
+                            </a>
+                        `;
+                        videosGrid.appendChild(videoCard);
+                    });
+                } else {
+                    document.getElementById('videos-container').innerHTML = `
+                        <h2 class="videos-title">
+                            <i class="fas fa-play-circle"></i> No Videos Found
+                        </h2>
+                    `;
+                }
+                
+                // Show channel
+                channelContainer.style.display = 'block';
+                emptyState.style.display = 'none';
+            }
+            
+            searchBtn.addEventListener('click', () => {
+                fetchChannel(usernameInput.value.trim());
+            });
+            
+            usernameInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    fetchChannel(usernameInput.value.trim());
+                }
+            });
+        });
+    </script>
+</body>
+</html>

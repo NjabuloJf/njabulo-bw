@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NPM Package Viewer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --npm-red: #CB3837;
+            --npm-dark: #333333;
+            --npm-light: #FFFFFF;
+            --npm-gray: #868686;
+            --card-bg: #F5F5F5;
+            --card-border: #E1E1E1;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--npm-light);
+            color: var(--npm-dark);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: var(--npm-red);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            color: var(--npm-light);
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo i {
+            color: var(--npm-light);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: var(--npm-light);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .search-container {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+            margin-bottom: 1.5rem;
+        }
+        
+        .input-group {
+            display: flex;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid var(--card-border);
+        }
+        
+        #package-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            background: var(--npm-light);
+            color: var(--npm-dark);
+            border: none;
+            outline: none;
+            font-size: 1rem;
+        }
+        
+        #search-btn {
+            background: var(--npm-red);
+            color: white;
+            border: none;
+            padding: 0 1.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        #search-btn:hover {
+            background: #B33130;
+        }
+        
+        .package-container {
+            display: none;
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+            overflow: hidden;
+        }
+        
+        .package-header {
+            background: var(--npm-red);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .package-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .package-version {
+            background: rgba(255,255,255,0.2);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .package-content {
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .info-card {
+            background: white;
+            border-radius: 6px;
+            padding: 1.5rem;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .info-card h2 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--npm-red);
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .info-item {
+            margin-bottom: 1rem;
+        }
+        
+        .info-label {
+            color: var(--npm-gray);
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .info-value {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .keywords-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .keyword {
+            background: #E1E1E1;
+            color: var(--npm-dark);
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 6px;
+            padding: 1rem;
+            border: 1px solid var(--card-border);
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--npm-red);
+            margin-bottom: 0.3rem;
+        }
+        
+        .stat-label {
+            color: var(--npm-gray);
+            font-size: 0.8rem;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .spinner {
+            border: 3px solid rgba(203, 56, 55, 0.1);
+            border-top: 3px solid var(--npm-red);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem 0;
+            color: var(--npm-gray);
+        }
+        
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--npm-red);
+        }
+        
+        @media (max-width: 768px) {
+            .package-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="logo"><i class="fab fa-node-js"></i> NPM Viewer</a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="search-container">
+            <div class="input-group">
+                <input type="text" id="package-input" placeholder="Enter NPM package name (e.g. baileys)">
+                <button id="search-btn">Search</button>
+            </div>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Fetching package data...</p>
+        </div>
+        
+        <div class="package-container" id="package-container">
+            <div class="package-header">
+                <div class="package-name" id="package-name"></div>
+                <div class="package-version" id="package-version"></div>
+            </div>
+            
+            <div class="package-content">
+                <div class="info-card">
+                    <h2><i class="fas fa-info-circle"></i> Package Information</h2>
+                    <div class="info-item">
+                        <div class="info-label">Description</div>
+                        <div class="info-value" id="package-description"></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">License</div>
+                        <div class="info-value" id="package-license"></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Published</div>
+                        <div class="info-value" id="package-published"></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Last Updated</div>
+                        <div class="info-value" id="package-updated"></div>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h2><i class="fas fa-tags"></i> Keywords</h2>
+                    <div class="keywords-container" id="keywords-container">
+                        <!-- Keywords will be inserted here -->
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h2><i class="fas fa-chart-line"></i> Statistics</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="weekly-downloads">0</div>
+                            <div class="stat-label">Weekly Downloads</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="weekly-dependents">0</div>
+                            <div class="stat-label">Weekly Dependents</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="empty-state" id="empty-state">
+            <i class="fas fa-box-open"></i>
+            <h3>No Package Data</h3>
+            <p>Enter an NPM package name to view information</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const packageInput = document.getElementById('package-input');
+            const searchBtn = document.getElementById('search-btn');
+            const packageContainer = document.getElementById('package-container');
+            const loading = document.getElementById('loading');
+            const emptyState = document.getElementById('empty-state');
+            const keywordsContainer = document.getElementById('keywords-container');
+            
+            // Show empty state initially
+            emptyState.style.display = 'block';
+            
+            function fetchPackage(packageName) {
+                if (!packageName) return;
+                
+                loading.style.display = 'block';
+                packageContainer.style.display = 'none';
+                emptyState.style.display = 'none';
+                keywordsContainer.innerHTML = '';
+                
+                fetch(`https://apis-keith.vercel.app/stalker/npm?q=${encodeURIComponent(packageName)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status) {
+                            displayPackage(data.result);
+                        } else {
+                            throw new Error(data.message || 'Failed to load package data');
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        alert('Error: ' + error.message);
+                        emptyState.style.display = 'block';
+                    })
+                    .finally(() => {
+                        loading.style.display = 'none';
+                    });
+            }
+            
+            function displayPackage(packageData) {
+                // Package info
+                document.getElementById('package-name').textContent = packageData.metadata.package;
+                document.getElementById('package-version').textContent = packageData.packageInfo.version;
+                document.getElementById('package-description').textContent = 
+                    packageData.packageInfo.description || 'No description available';
+                document.getElementById('package-license').textContent = 
+                    packageData.packageInfo.license || 'Not specified';
+                document.getElementById('package-published').textContent = 
+                    packageData.packageInfo.published.relative || 'Unknown';
+                document.getElementById('package-updated').textContent = 
+                    formatDate(packageData.metadata.lastUpdated);
+                
+                // Keywords
+                if (packageData.packageInfo.keywords && packageData.packageInfo.keywords.length > 0) {
+                    packageData.packageInfo.keywords.forEach(keyword => {
+                        const keywordElement = document.createElement('div');
+                        keywordElement.className = 'keyword';
+                        keywordElement.textContent = keyword;
+                        keywordsContainer.appendChild(keywordElement);
+                    });
+                } else {
+                    keywordsContainer.innerHTML = '<div class="info-value">No keywords</div>';
+                }
+                
+                // Stats
+                document.getElementById('weekly-downloads').textContent = 
+                    packageData.stats.weeklyDownloads.toLocaleString();
+                document.getElementById('weekly-dependents').textContent = 
+                    packageData.stats.weeklyDependents.toLocaleString();
+                
+                // Show package
+                packageContainer.style.display = 'block';
+                emptyState.style.display = 'none';
+            }
+            
+            function formatDate(dateString) {
+                if (!dateString) return 'Unknown';
+                const date = new Date(dateString);
+                return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+            }
+            
+            searchBtn.addEventListener('click', () => {
+                fetchPackage(packageInput.value.trim());
+            });
+            
+            packageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    fetchPackage(packageInput.value.trim());
+                }
+            });
+        });
+    </script>
+</body>
+</html>

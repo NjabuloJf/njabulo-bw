@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Profile Viewer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --github-dark: #0d1117;
+            --github-darker: #010409;
+            --github-light: #f0f6fc;
+            --github-gray: #8b949e;
+            --github-blue: #58a6ff;
+            --card-bg: #161b22;
+            --card-border: #30363d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        
+        body {
+            background-color: var(--github-dark);
+            color: var(--github-light);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: var(--github-darker);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--card-border);
+        }
+        
+        .logo {
+            color: var(--github-light);
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo i {
+            color: var(--github-gray);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: var(--github-light);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .search-container {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 6px;
+            border: 1px solid var(--card-border);
+            margin-bottom: 1.5rem;
+        }
+        
+        .input-group {
+            display: flex;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid var(--card-border);
+        }
+        
+        #username-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            background: var(--github-dark);
+            color: var(--github-light);
+            border: none;
+            outline: none;
+            font-size: 0.9rem;
+        }
+        
+        #search-btn {
+            background: #238636;
+            color: white;
+            border: none;
+            padding: 0 1.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        
+        #search-btn:hover {
+            background: #2ea043;
+        }
+        
+        .profile-container {
+            display: none;
+            background: var(--card-bg);
+            border-radius: 6px;
+            border: 1px solid var(--card-border);
+            overflow: hidden;
+        }
+        
+        .profile-header {
+            padding: 1.5rem;
+            display: flex;
+            gap: 1.5rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 6px;
+            object-fit: cover;
+            border: 1px solid var(--card-border);
+        }
+        
+        .profile-info {
+            flex: 1;
+        }
+        
+        .profile-name {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .profile-username {
+            color: var(--github-gray);
+            margin-bottom: 0.8rem;
+        }
+        
+        .profile-bio {
+            color: var(--github-light);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        
+        .profile-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            color: var(--github-gray);
+            font-size: 0.9rem;
+        }
+        
+        .profile-meta i {
+            margin-right: 0.3rem;
+        }
+        
+        .profile-stats {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--card-border);
+            background: rgba(1, 4, 9, 0.3);
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .stat-number {
+            font-weight: 600;
+        }
+        
+        .stat-label {
+            color: var(--github-gray);
+            font-size: 0.9rem;
+        }
+        
+        .profile-details {
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .detail-card {
+            background: var(--github-darker);
+            border-radius: 6px;
+            padding: 1rem;
+            border: 1px solid var(--card-border);
+        }
+        
+        .detail-card h3 {
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+            color: var(--github-gray);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .detail-item {
+            margin-bottom: 0.8rem;
+        }
+        
+        .detail-label {
+            color: var(--github-gray);
+            font-size: 0.85rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .detail-value {
+            font-size: 0.9rem;
+            word-break: break-word;
+        }
+        
+        .detail-value a {
+            color: var(--github-blue);
+            text-decoration: none;
+        }
+        
+        .detail-value a:hover {
+            text-decoration: underline;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .spinner {
+            border: 3px solid rgba(88, 166, 255, 0.1);
+            border-top: 3px solid var(--github-blue);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem 0;
+            color: var(--github-gray);
+        }
+        
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--github-blue);
+        }
+        
+        .not-available {
+            color: var(--github-gray);
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-avatar {
+                margin: 0 auto;
+            }
+            
+            .profile-meta {
+                justify-content: center;
+            }
+            
+            .profile-stats {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .navbar {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="logo"><i class="fab fa-github"></i> GitHub Viewer</a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="search-container">
+            <div class="input-group">
+                <input type="text" id="username-input" placeholder="Enter GitHub username (e.g. Fred1e)">
+                <button id="search-btn">Search</button>
+            </div>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Fetching profile data...</p>
+        </div>
+        
+        <div class="profile-container" id="profile-container">
+            <div class="profile-header">
+                <img id="profile-avatar" class="profile-avatar" src="">
+                <div class="profile-info">
+                    <h1 class="profile-name" id="profile-name">
+                        <span id="name"></span>
+                        <span id="username"></span>
+                    </h1>
+                    <div class="profile-bio" id="profile-bio"></div>
+                    <div class="profile-meta">
+                        <span id="location"><i class="fas fa-map-marker-alt"></i> <span id="location-text"></span></span>
+                        <span id="twitter"><i class="fab fa-twitter"></i> <span id="twitter-text"></span></span>
+                        <span id="website"><i class="fas fa-link"></i> <span id="website-text"></span></span>
+                        <span id="joined"><i class="far fa-calendar-alt"></i> Joined <span id="joined-date"></span></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <span class="stat-number" id="repos-count">0</span>
+                    <span class="stat-label">Repositories</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="followers-count">0</span>
+                    <span class="stat-label">Followers</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="following-count">0</span>
+                    <span class="stat-label">Following</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="gists-count">0</span>
+                    <span class="stat-label">Gists</span>
+                </div>
+            </div>
+            
+            <div class="profile-details">
+                <div class="detail-card">
+                    <h3><i class="fas fa-user"></i> Profile</h3>
+                    <div class="detail-item">
+                        <div class="detail-label">GitHub Profile</div>
+                        <div class="detail-value"><a id="profile-url" href="" target="_blank"></a></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Account Type</div>
+                        <div class="detail-value" id="account-type"></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Last Updated</div>
+                        <div class="detail-value" id="updated-date"></div>
+                    </div>
+                </div>
+                
+                <div class="detail-card">
+                    <h3><i class="fas fa-building"></i> Organization</h3>
+                    <div class="detail-item">
+                        <div class="detail-label">Company</div>
+                        <div class="detail-value" id="company"></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Hireable</div>
+                        <div class="detail-value" id="hireable"></div>
+                    </div>
+                </div>
+                
+                <div class="detail-card">
+                    <h3><i class="fas fa-code"></i> Development</h3>
+                    <div class="detail-item">
+                        <div class="detail-label">Public Repos</div>
+                        <div class="detail-value" id="public-repos"></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Public Gists</div>
+                        <div class="detail-value" id="public-gists"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="empty-state" id="empty-state">
+            <i class="fab fa-github"></i>
+            <h3>No Profile Data</h3>
+            <p>Enter a GitHub username to view profile information</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const usernameInput = document.getElementById('username-input');
+            const searchBtn = document.getElementById('search-btn');
+            const profileContainer = document.getElementById('profile-container');
+            const loading = document.getElementById('loading');
+            const emptyState = document.getElementById('empty-state');
+            
+            // Show empty state initially
+            emptyState.style.display = 'block';
+            
+            function fetchProfile(username) {
+                if (!username) return;
+                
+                loading.style.display = 'block';
+                profileContainer.style.display = 'none';
+                emptyState.style.display = 'none';
+                
+                fetch(`https://api.github.com/users/${encodeURIComponent(username)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('User not found');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        displayProfile(data);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        alert('Error: ' + error.message);
+                        emptyState.style.display = 'block';
+                    })
+                    .finally(() => {
+                        loading.style.display = 'none';
+                    });
+            }
+            
+            function displayProfile(profileData) {
+                // Profile info
+                document.getElementById('profile-avatar').src = profileData.avatar_url;
+                
+                // Name and username
+                if (profileData.name) {
+                    document.getElementById('name').textContent = profileData.name;
+                    document.getElementById('username').textContent = `(@${profileData.login})`;
+                } else {
+                    document.getElementById('name').textContent = `@${profileData.login}`;
+                    document.getElementById('username').textContent = '';
+                }
+                
+                // Bio
+                if (profileData.bio) {
+                    document.getElementById('profile-bio').textContent = profileData.bio;
+                } else {
+                    document.getElementById('profile-bio').className = 'profile-bio not-available';
+                    document.getElementById('profile-bio').textContent = 'No bio available';
+                }
+                
+                // Meta info
+                setMetaInfo('location-text', profileData.location, 'No location');
+                setMetaInfo('twitter-text', profileData.twitter_username, 'No Twitter', `https://twitter.com/${profileData.twitter_username}`);
+                setMetaInfo('website-text', profileData.blog, 'No website', profileData.blog);
+                
+                // Dates
+                document.getElementById('joined-date').textContent = formatDate(profileData.created_at);
+                document.getElementById('updated-date').textContent = formatDate(profileData.updated_at);
+                
+                // Stats
+                document.getElementById('repos-count').textContent = profileData.public_repos.toLocaleString();
+                document.getElementById('followers-count').textContent = profileData.followers.toLocaleString();
+                document.getElementById('following-count').textContent = profileData.following.toLocaleString();
+                document.getElementById('gists-count').textContent = profileData.public_gists.toLocaleString();
+                
+                // Details
+                document.getElementById('profile-url').textContent = profileData.html_url;
+                document.getElementById('profile-url').href = profileData.html_url;
+                document.getElementById('account-type').textContent = 
+                    profileData.type.charAt(0).toUpperCase() + profileData.type.slice(1);
+                setDetailInfo('company', profileData.company, 'Not specified');
+                setDetailInfo('hireable', profileData.hireable ? 'Yes' : 'No', 'Not specified');
+                document.getElementById('public-repos').textContent = profileData.public_repos.toLocaleString();
+                document.getElementById('public-gists').textContent = profileData.public_gists.toLocaleString();
+                
+                // Show profile
+                profileContainer.style.display = 'block';
+                emptyState.style.display = 'none';
+            }
+            
+            function setMetaInfo(elementId, value, placeholder, link = null) {
+                const element = document.getElementById(elementId);
+                const parent = document.getElementById(elementId.split('-')[0]);
+                
+                if (value) {
+                    if (link) {
+                        element.innerHTML = `<a href="${link}" target="_blank">${value}</a>`;
+                    } else {
+                        element.textContent = value;
+                    }
+                } else {
+                    element.textContent = placeholder;
+                    parent.style.opacity = '0.7';
+                }
+            }
+            
+            function setDetailInfo(elementId, value, placeholder) {
+                const element = document.getElementById(elementId);
+                if (value) {
+                    element.textContent = value;
+                } else {
+                    element.className = 'detail-value not-available';
+                    element.textContent = placeholder;
+                }
+            }
+            
+            function formatDate(dateString) {
+                if (!dateString) return 'Unknown';
+                const date = new Date(dateString);
+                return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+            }
+            
+            searchBtn.addEventListener('click', () => {
+                fetchProfile(usernameInput.value.trim());
+            });
+            
+            usernameInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    fetchProfile(usernameInput.value.trim());
+                }
+            });
+        });
+    </script>
+</body>
+</html>
