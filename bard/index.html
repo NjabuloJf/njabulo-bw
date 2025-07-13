@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fredi Bard AI Chatroom</title>
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --primary-light: #e8f0fe;
+            --text-color: #202124;
+            --text-light: #5f6368;
+            --bg-color: #ffffff;
+            --user-bubble: #1a73e8;
+            --ai-bubble: #f1f3f4;
+            --shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+        }
+        
+        body {
+            font-family: 'Google Sans', Roboto, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: var(--text-color);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 900px;
+            height: 90vh;
+            background-color: var(--bg-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            padding: 16px 24px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            border-bottom: 1px solid #dadce0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo {
+            width: 32px;
+            height: 32px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+        
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            scroll-behavior: smooth;
+            background-color: var(--bg-color);
+        }
+        
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            max-width: 85%;
+        }
+        
+        .user-message {
+            margin-left: auto;
+            justify-content: flex-end;
+        }
+        
+        .ai-message {
+            margin-right: auto;
+            justify-content: flex-start;
+        }
+        
+        .message-content {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message-bubble {
+            padding: 12px 16px;
+            border-radius: 18px;
+            line-height: 1.4;
+            word-wrap: break-word;
+            max-width: 100%;
+            box-shadow: var(--shadow);
+        }
+        
+        .user-message .message-bubble {
+            background-color: var(--user-bubble);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .ai-message .message-bubble {
+            background-color: var(--ai-bubble);
+            color: var(--text-color);
+            border-bottom-left-radius: 4px;
+        }
+        
+        .message-time {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 4px;
+            margin-left: 8px;
+            margin-right: 8px;
+        }
+        
+        .input-area {
+            padding: 16px;
+            background-color: var(--bg-color);
+            border-top: 1px solid #dadce0;
+            display: flex;
+            gap: 12px;
+        }
+        
+        #user-input {
+            flex: 1;
+            padding: 12px 16px;
+            background-color: var(--bg-color);
+            border: 1px solid #dadce0;
+            border-radius: 24px;
+            color: var(--text-color);
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+        
+        #user-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px #e8f0fe;
+        }
+        
+        #send-button {
+            padding: 12px 24px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 24px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        
+        #send-button:hover {
+            background-color: #1765cc;
+            box-shadow: 0 1px 2px 0 rgba(26,115,232,0.3), 0 1px 3px 1px rgba(26,115,232,0.15);
+        }
+        
+        #send-button:active {
+            background-color: #185abc;
+        }
+        
+        .typing-indicator {
+            display: none;
+            padding: 12px 16px;
+            background-color: var(--ai-bubble);
+            color: var(--text-color);
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+            margin-bottom: 16px;
+            width: fit-content;
+            align-items: center;
+            box-shadow: var(--shadow);
+        }
+        
+        .typing-dots {
+            display: flex;
+            margin-left: 8px;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--text-light);
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typingAnimation {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.6;
+            }
+            30% {
+                transform: translateY(-5px);
+                opacity: 1;
+            }
+        }
+        
+        /* Scrollbar styling */
+        .chat-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .chat-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .chat-container::-webkit-scrollbar-thumb {
+            background-color: rgba(0,0,0,0.2);
+            border-radius: 4px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                height: 100vh;
+                border-radius: 0;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+            
+            .header {
+                padding: 12px 16px;
+            }
+            
+            .input-area {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">B</div>
+            <h1>Bard AI Chat</h1>
+        </div>
+        
+        <div class="chat-container" id="chat-container">
+            <div class="typing-indicator" id="typing-indicator">
+                <span>Bard is typing</span>
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+            <!-- Messages will appear here -->
+        </div>
+        
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="Ask Bard anything..." autocomplete="off">
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatContainer = document.getElementById('chat-container');
+            const userInput = document.getElementById('user-input');
+            const sendButton = document.getElementById('send-button');
+            const typingIndicator = document.getElementById('typing-indicator');
+            
+            // Add initial greeting from AI
+            addMessage('Bard', 'Hello! How can I help you today?', 'ai');
+            
+            // Send message when button is clicked
+            sendButton.addEventListener('click', sendMessage);
+            
+            // Send message when Enter key is pressed
+            userInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // Auto-focus input on page load
+            userInput.focus();
+            
+            function sendMessage() {
+                const message = userInput.value.trim();
+                if (message === '') return;
+                
+                // Add user message to chat
+                addMessage('You', message, 'user');
+                userInput.value = '';
+                
+                // Show typing indicator
+                typingIndicator.style.display = 'flex';
+                scrollToBottom();
+                
+                // Call Bard AI API
+                fetch(`https://apis-keith.vercel.app/ai/bard?q=${encodeURIComponent(message)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Hide typing indicator
+                        typingIndicator.style.display = 'none';
+                        
+                        if (data.status && data.result) {
+                            addMessage('Bard', data.result, 'ai');
+                        } else {
+                            addMessage('Bard', "I couldn't process your request. Please try again.", 'ai');
+                        }
+                    })
+                    .catch(error => {
+                        typingIndicator.style.display = 'none';
+                        addMessage('Bard', "Sorry, I'm having trouble connecting right now.", 'ai');
+                        console.error('Error:', error);
+                    });
+            }
+            
+            function addMessage(sender, text, type) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                messageDiv.classList.add(`${type}-message`);
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.classList.add('message-content');
+                
+                const bubbleDiv = document.createElement('div');
+                bubbleDiv.classList.add('message-bubble');
+                bubbleDiv.textContent = text;
+                
+                const timeDiv = document.createElement('div');
+                timeDiv.classList.add('message-time');
+                timeDiv.textContent = getCurrentTime();
+                
+                contentDiv.appendChild(bubbleDiv);
+                contentDiv.appendChild(timeDiv);
+                messageDiv.appendChild(contentDiv);
+                chatContainer.insertBefore(messageDiv, typingIndicator);
+                
+                scrollToBottom();
+            }
+            
+            function getCurrentTime() {
+                const now = new Date();
+                return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+            
+            function scrollToBottom() {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        });
+    </script>
+</body>
+</html>
