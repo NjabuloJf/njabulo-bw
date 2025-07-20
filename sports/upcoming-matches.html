@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Upcoming Matches</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        :root {
+            --primary: #4a6baf;
+            --secondary: #3a5a9c;
+            --dark: #1a1a2e;
+            --light: #f0f0f0;
+            --success: #4CAF50;
+            --error: #f44336;
+            --table-row: rgba(255,255,255,0.05);
+            --match-highlight: rgba(74, 107, 175, 0.2);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: var(--dark);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        select, button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            border: none;
+        }
+        
+        select {
+            background: var(--dark);
+            color: var(--light);
+            border: 1px solid var(--primary);
+            min-width: 250px;
+        }
+        
+        button {
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .status {
+            text-align: center;
+            margin: 1rem 0;
+            min-height: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .success {
+            color: var(--success);
+        }
+        
+        .error {
+            color: var(--error);
+        }
+        
+        .matches-container {
+            background: rgba(0,0,0,0.2);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .competition-name {
+            background: var(--primary);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        th {
+            background: rgba(0,0,0,0.3);
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background: var(--table-row);
+        }
+        
+        tr:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .match-cell {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .team {
+            flex: 1;
+            text-align: right;
+        }
+        
+        .team.home {
+            text-align: right;
+        }
+        
+        .team.away {
+            text-align: left;
+        }
+        
+        .vs {
+            font-weight: bold;
+            color: var(--primary);
+            min-width: 50px;
+        }
+        
+        .matchday {
+            font-weight: bold;
+            color: var(--primary);
+            background: rgba(0,0,0,0.2);
+        }
+        
+        .date {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: var(--light);
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 0.5rem;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            th, td {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.9rem;
+            }
+            
+            .match-cell {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .team {
+                text-align: center !important;
+                width: 100%;
+            }
+            
+            .vs {
+                margin: 0.5rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Football Upcoming Matches</h1>
+            <p>View upcoming matches from top football competitions</p>
+        </header>
+        
+        <div class="controls">
+            <select id="competition-select">
+                <option value="" disabled selected>Select Competition</option>
+                <option value="ucl">UEFA Champions League</option>
+                <option value="epl">English Premier League</option>
+                <option value="seriea">Serie A</option>
+                <option value="laliga">La Liga</option>
+                <option value="bundesliga">Bundesliga</option>
+                <option value="ligue1">Ligue 1</option>
+                <option value="euros">European Championship</option>
+                <option value="fifa">FIFA World Cup</option>
+            </select>
+            <button id="fetch-btn">Get Matches</button>
+        </div>
+        
+        <div id="status" class="status"></div>
+        
+        <div class="matches-container" id="matches-container"></div>
+    </div>
+
+    <script>
+        // API Endpoints
+        const API_BASE = 'https://apis-keith.vercel.app/';
+        const endpoints = {
+            ucl: 'ucl/upcomingmatches',
+            epl: 'epl/upcomingmatches',
+            seriea: 'seriea/upcomingmatches',
+            laliga: 'laliga/upcomingmatches',
+            bundesliga: 'bundesliga/upcomingmatches',
+            ligue1: 'ligue1/upcomingmatches',
+            euros: 'euros/upcomingmatches',
+            fifa: 'fifa/upcomingmatches'
+        };
+
+        // DOM Elements
+        const competitionSelect = document.getElementById('competition-select');
+        const fetchBtn = document.getElementById('fetch-btn');
+        const statusDiv = document.getElementById('status');
+        const matchesContainer = document.getElementById('matches-container');
+
+        // Event Listeners
+        fetchBtn.addEventListener('click', fetchMatches);
+
+        // Fetch matches data
+        async function fetchMatches() {
+            const competition = competitionSelect.value;
+            
+            if (!competition) {
+                showStatus('Please select a competition first!', true);
+                return;
+            }
+            
+            try {
+                // Show loading state
+                fetchBtn.disabled = true;
+                fetchBtn.innerHTML = '<span class="loading"></span> Loading...';
+                matchesContainer.innerHTML = '';
+                showStatus('Fetching upcoming matches...');
+                
+                const response = await axios.get(`${API_BASE}${endpoints[competition]}`);
+                const data = response.data;
+                
+                if (!data.status || !data.result) {
+                    throw new Error('Invalid data received from API');
+                }
+                
+                displayMatches(data.result);
+                showStatus('Matches loaded successfully!');
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showStatus(`Error: ${error.message}`, true);
+                matchesContainer.innerHTML = '';
+            } finally {
+                fetchBtn.disabled = false;
+                fetchBtn.textContent = 'Get Matches';
+            }
+        }
+
+        // Display matches in table
+        function displayMatches(data) {
+            const { competition, upcomingMatches } = data;
+            
+            if (!upcomingMatches || upcomingMatches.length === 0) {
+                matchesContainer.innerHTML = `
+                    <div class="competition-name">${competition}</div>
+                    <div style="padding: 2rem; text-align: center;">
+                        No upcoming matches scheduled at this time.
+                    </div>
+                `;
+                return;
+            }
+            
+            let tableHTML = `
+                <div class="competition-name">${competition}</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Matchday</th>
+                            <th>Date & Time</th>
+                            <th>Match</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            let currentMatchday = null;
+            
+            upcomingMatches.forEach(match => {
+                // Add matchday row if it's different from the previous one
+                if (match.matchday !== currentMatchday) {
+                    currentMatchday = match.matchday;
+                    tableHTML += `
+                        <tr class="matchday">
+                            <td colspan="3">Matchday ${currentMatchday}</td>
+                        </tr>
+                    `;
+                }
+                
+                tableHTML += `
+                    <tr>
+                        <td>${match.matchday}</td>
+                        <td class="date">${match.date}</td>
+                        <td>
+                            <div class="match-cell">
+                                <div class="team home">${match.homeTeam}</div>
+                                <div class="vs">vs</div>
+                                <div class="team away">${match.awayTeam}</div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableHTML += `
+                    </tbody>
+                </table>
+            `;
+            
+            matchesContainer.innerHTML = tableHTML;
+        }
+
+        // Show status message
+        function showStatus(message, isError = false) {
+            statusDiv.textContent = message;
+            statusDiv.className = isError ? 'status error' : 'status';
+        }
+    </script>
+</body>
+</html>

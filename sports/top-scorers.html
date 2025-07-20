@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Top Scorers</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        :root {
+            --primary: #4a6baf;
+            --primary-light: #5d7bc1;
+            --secondary: #3a5a9c;
+            --dark: #1a1a2e;
+            --darker: #121220;
+            --light: #f0f0f0;
+            --light-gray: #e0e0e0;
+            --success: #4CAF50;
+            --error: #f44336;
+            --gold: #FFD700;
+            --silver: #C0C0C0;
+            --bronze: #CD7F32;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: var(--dark);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            color: var(--light-gray);
+            margin-bottom: 1rem;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        select, button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            border: none;
+            outline: none;
+        }
+        
+        select {
+            background: var(--darker);
+            color: var(--light);
+            border: 1px solid var(--primary);
+            min-width: 250px;
+            cursor: pointer;
+        }
+        
+        button {
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        button:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .status {
+            text-align: center;
+            margin: 1rem 0;
+            min-height: 1.5rem;
+            font-weight: bold;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+        }
+        
+        .success {
+            color: var(--success);
+            background: rgba(76, 175, 80, 0.1);
+        }
+        
+        .error {
+            color: var(--error);
+            background: rgba(244, 67, 54, 0.1);
+        }
+        
+        .scorers-container {
+            background: var(--darker);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            margin-top: 1rem;
+        }
+        
+        .competition-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.25rem;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .scorers-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .scorers-table th {
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            text-align: center;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+        
+        .scorers-table td {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .scorers-table tr:hover {
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .rank {
+            font-weight: bold;
+            width: 50px;
+        }
+        
+        .rank-1 { color: var(--gold); }
+        .rank-2 { color: var(--silver); }
+        .rank-3 { color: var(--bronze); }
+        
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-align: left;
+        }
+        
+        .player-name {
+            font-weight: bold;
+        }
+        
+        .team-name {
+            color: var(--light-gray);
+            font-size: 0.9rem;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+        
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--light-gray);
+            margin-top: 0.25rem;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: var(--light);
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .scorers-table th, 
+            .scorers-table td {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.9rem;
+            }
+            
+            .player-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.25rem;
+            }
+            
+            .stats {
+                gap: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Football Top Scorers</h1>
+            <p class="subtitle">Current season's leading goal scorers across top competitions</p>
+        </header>
+        
+        <div class="controls">
+            <select id="competition-select">
+                <option value="" disabled selected>Select Competition</option>
+                <option value="ucl">UEFA Champions League</option>
+                <option value="epl">English Premier League</option>
+                <option value="seriea">Serie A</option>
+                <option value="laliga">La Liga</option>
+                <option value="bundesliga">Bundesliga</option>
+                <option value="ligue1">Ligue 1</option>
+                <option value="euros">European Championship</option>
+                <option value="fifa">FIFA World Cup</option>
+            </select>
+            <button id="fetch-btn">Get Top Scorers</button>
+        </div>
+        
+        <div id="status" class="status"></div>
+        
+        <div class="scorers-container" id="scorers-container"></div>
+    </div>
+
+    <script>
+        // API Endpoints
+        const API_BASE = 'https://apis-keith.vercel.app/';
+        const endpoints = {
+            ucl: 'ucl/scorers',
+            epl: 'epl/scorers',
+            seriea: 'seriea/scorers',
+            laliga: 'laliga/scorers',
+            bundesliga: 'bundesliga/scorers',
+            ligue1: 'ligue1/scorers',
+            euros: 'euros/scorers',
+            fifa: 'fifa/scorers'
+        };
+
+        // DOM Elements
+        const competitionSelect = document.getElementById('competition-select');
+        const fetchBtn = document.getElementById('fetch-btn');
+        const statusDiv = document.getElementById('status');
+        const scorersContainer = document.getElementById('scorers-container');
+
+        // Event Listeners
+        fetchBtn.addEventListener('click', fetchTopScorers);
+
+        // Fetch top scorers data
+        async function fetchTopScorers() {
+            const competition = competitionSelect.value;
+            
+            if (!competition) {
+                showStatus('Please select a competition first!', true);
+                return;
+            }
+            
+            try {
+                // Show loading state
+                fetchBtn.disabled = true;
+                fetchBtn.innerHTML = '<span class="loading"></span> Loading...';
+                scorersContainer.innerHTML = '';
+                showStatus('Fetching top scorers data...');
+                
+                const response = await axios.get(`${API_BASE}${endpoints[competition]}`);
+                const data = response.data;
+                
+                if (!data.status || !data.result) {
+                    throw new Error('Invalid data received from API');
+                }
+                
+                displayTopScorers(data.result);
+                showStatus('Top scorers loaded successfully!');
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showStatus(`Error: ${error.message}`, true);
+                scorersContainer.innerHTML = '';
+            } finally {
+                fetchBtn.disabled = false;
+                fetchBtn.textContent = 'Get Top Scorers';
+            }
+        }
+
+        // Display top scorers in table
+        function displayTopScorers(data) {
+            const { competition, topScorers } = data;
+            
+            let tableHTML = `
+                <div class="competition-header">${competition} - Top Scorers</div>
+                <table class="scorers-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Player</th>
+                            <th>Stats</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            topScorers.forEach(player => {
+                // Format N/A values
+                const assists = player.assists === "N/A" ? "-" : player.assists;
+                const penalties = player.penalties === "N/A" ? "-" : player.penalties;
+                
+                tableHTML += `
+                    <tr>
+                        <td class="rank rank-${player.rank}">${player.rank}</td>
+                        <td>
+                            <div class="player-info">
+                                <div>
+                                    <div class="player-name">${player.player}</div>
+                                    <div class="team-name">${player.team}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="stats">
+                                <div class="stat">
+                                    <div class="stat-value">${player.goals}</div>
+                                    <div class="stat-label">Goals</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">${assists}</div>
+                                    <div class="stat-label">Assists</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">${penalties}</div>
+                                    <div class="stat-label">Penalties</div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableHTML += `
+                    </tbody>
+                </table>
+            `;
+            
+            scorersContainer.innerHTML = tableHTML;
+        }
+
+        // Show status message
+        function showStatus(message, isError = false) {
+            statusDiv.textContent = message;
+            statusDiv.className = isError ? 'status error' : 'status success';
+        }
+    </script>
+</body>
+</html>

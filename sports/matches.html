@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Matches</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        :root {
+            --primary: #4a6baf;
+            --secondary: #3a5a9c;
+            --dark: #1a1a2e;
+            --light: #f0f0f0;
+            --success: #4CAF50;
+            --error: #f44336;
+            --warning: #FFC107;
+            --table-row: rgba(255,255,255,0.05);
+            --live: #e53935;
+            --finished: #4CAF50;
+            --scheduled: #FFC107;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: var(--dark);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        select, button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            border: none;
+        }
+        
+        select {
+            background: var(--dark);
+            color: var(--light);
+            border: 1px solid var(--primary);
+            min-width: 250px;
+        }
+        
+        button {
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .status {
+            text-align: center;
+            margin: 1rem 0;
+            min-height: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .success {
+            color: var(--success);
+        }
+        
+        .error {
+            color: var(--error);
+        }
+        
+        .matches-container {
+            background: rgba(0,0,0,0.2);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .competition-name {
+            background: var(--primary);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        th {
+            background: rgba(0,0,0,0.3);
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background: var(--table-row);
+        }
+        
+        tr:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .match-cell {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .team {
+            flex: 1;
+            text-align: right;
+            font-weight: 500;
+        }
+        
+        .team.home {
+            text-align: right;
+        }
+        
+        .team.away {
+            text-align: left;
+        }
+        
+        .score {
+            font-weight: bold;
+            min-width: 60px;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+        }
+        
+        .matchday {
+            font-weight: bold;
+            color: var(--primary);
+            background: rgba(0,0,0,0.2);
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .status-LIVE {
+            background-color: var(--live);
+            color: white;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .status-FINISHED {
+            background-color: var(--finished);
+            color: white;
+        }
+        
+        .status-IN_PLAY {
+            background-color: var(--live);
+            color: white;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .status-SCHEDULED {
+            background-color: var(--scheduled);
+            color: var(--dark);
+        }
+        
+        .winner {
+            font-weight: bold;
+            color: var(--success);
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: var(--light);
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 0.5rem;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            th, td {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.9rem;
+            }
+            
+            .match-cell {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .team {
+                text-align: center !important;
+                width: 100%;
+            }
+            
+            .score {
+                margin: 0.5rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Football Matches</h1>
+            <p>Live and finished matches from top competitions</p>
+        </header>
+        
+        <div class="controls">
+            <select id="competition-select">
+                <option value="" disabled selected>Select Competition</option>
+                <option value="ucl">UEFA Champions League</option>
+                <option value="epl">English Premier League</option>
+                <option value="seriea">Serie A</option>
+                <option value="laliga">La Liga</option>
+                <option value="bundesliga">Bundesliga</option>
+                <option value="ligue1">Ligue 1</option>
+                <option value="euros">European Championship</option>
+                <option value="fifa">FIFA World Cup</option>
+            </select>
+            <button id="fetch-btn">Get Matches</button>
+        </div>
+        
+        <div id="status" class="status"></div>
+        
+        <div class="matches-container" id="matches-container"></div>
+    </div>
+
+    <script>
+        // API Endpoints
+        const API_BASE = 'https://apis-keith.vercel.app/';
+        const endpoints = {
+            ucl: 'ucl/matches',
+            epl: 'epl/matches',
+            seriea: 'seriea/matches',
+            laliga: 'laliga/matches',
+            bundesliga: 'bundesliga/matches',
+            ligue1: 'ligue1/matches',
+            euros: 'euros/matches',
+            fifa: 'fifa/matches'
+        };
+
+        // DOM Elements
+        const competitionSelect = document.getElementById('competition-select');
+        const fetchBtn = document.getElementById('fetch-btn');
+        const statusDiv = document.getElementById('status');
+        const matchesContainer = document.getElementById('matches-container');
+
+        // Event Listeners
+        fetchBtn.addEventListener('click', fetchMatches);
+
+        // Fetch matches data
+        async function fetchMatches() {
+            const competition = competitionSelect.value;
+            
+            if (!competition) {
+                showStatus('Please select a competition first!', true);
+                return;
+            }
+            
+            try {
+                // Show loading state
+                fetchBtn.disabled = true;
+                fetchBtn.innerHTML = '<span class="loading"></span> Loading...';
+                matchesContainer.innerHTML = '';
+                showStatus('Fetching matches data...');
+                
+                const response = await axios.get(`${API_BASE}${endpoints[competition]}`);
+                const data = response.data;
+                
+                if (!data.status || !data.result) {
+                    throw new Error('Invalid data received from API');
+                }
+                
+                displayMatches(data.result);
+                showStatus('Matches loaded successfully!');
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showStatus(`Error: ${error.message}`, true);
+                matchesContainer.innerHTML = '';
+            } finally {
+                fetchBtn.disabled = false;
+                fetchBtn.textContent = 'Get Matches';
+            }
+        }
+
+        // Display matches in table
+        function displayMatches(data) {
+            const { competition, matches } = data;
+            
+            if (!matches || matches.length === 0) {
+                matchesContainer.innerHTML = `
+                    <div class="competition-name">${competition}</div>
+                    <div style="padding: 2rem; text-align: center;">
+                        No matches available at this time.
+                    </div>
+                `;
+                return;
+            }
+            
+            let tableHTML = `
+                <div class="competition-name">${competition}</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Matchday</th>
+                            <th>Status</th>
+                            <th>Match</th>
+                            <th>Score</th>
+                            <th>Winner</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            let currentMatchday = null;
+            
+            matches.forEach(match => {
+                // Add matchday row if it's different from the previous one
+                if (match.matchday !== currentMatchday) {
+                    currentMatchday = match.matchday;
+                    tableHTML += `
+                        <tr class="matchday">
+                            <td colspan="5">Matchday ${currentMatchday}</td>
+                        </tr>
+                    `;
+                }
+                
+                // Determine status class and display text
+                const statusClass = `status-${match.status || 'SCHEDULED'}`;
+                const statusText = match.status === 'FINISHED' ? 'FT' : 
+                                 match.status === 'IN_PLAY' ? 'LIVE' : 
+                                 match.status || 'SCHEDULED';
+                
+                // Highlight winner if available
+                const winnerDisplay = match.winner ? 
+                    (match.winner === 'Draw' ? 'Draw' : `<span class="winner">${match.winner}</span>`) : 
+                    '-';
+                
+                tableHTML += `
+                    <tr>
+                        <td>${match.matchday}</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                        <td>
+                            <div class="match-cell">
+                                <div class="team home">${match.homeTeam}</div>
+                                <div class="score">${match.score || 'vs'}</div>
+                                <div class="team away">${match.awayTeam}</div>
+                            </div>
+                        </td>
+                        <td>${match.score || '-'}</td>
+                        <td>${winnerDisplay}</td>
+                    </tr>
+                `;
+            });
+            
+            tableHTML += `
+                    </tbody>
+                </table>
+            `;
+            
+            matchesContainer.innerHTML = tableHTML;
+        }
+
+        // Show status message
+        function showStatus(message, isError = false) {
+            statusDiv.textContent = message;
+            statusDiv.className = isError ? 'status error' : 'status';
+        }
+    </script>
+</body>
+</html>

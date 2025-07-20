@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Player Search</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-weight: 300;
+            opacity: 0.9;
+        }
+        
+        .search-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+        
+        .search-form {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .search-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 0 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .search-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .results-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .results-count {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .player-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .player-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 1px solid #eee;
+        }
+        
+        .player-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .player-image {
+            height: 200px;
+            background-color: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .player-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .player-card:hover .player-image img {
+            transform: scale(1.05);
+        }
+        
+        .default-avatar {
+            font-size: 4rem;
+            color: #ccc;
+        }
+        
+        .player-details {
+            padding: 1.5rem;
+        }
+        
+        .player-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+        
+        .player-team {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--secondary-color);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .player-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+        
+        .meta-item {
+            background-color: #f5f7fa;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .status-active {
+            color: var(--success-color);
+        }
+        
+        .status-retired {
+            color: var(--accent-color);
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--secondary-color);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: #777;
+        }
+        
+        .error-message {
+            color: var(--accent-color);
+            text-align: center;
+            padding: 1rem;
+            background-color: #fdecea;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 1rem;
+            color: #777;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .search-form {
+                flex-direction: column;
+            }
+            
+            .player-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Fredi Premium Player Search</h1>
+            <p class="subtitle">Find detailed information about sports players worldwide</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="search-container">
+            <form id="searchForm" class="search-form">
+                <input type="text" id="playerQuery" class="search-input" placeholder="Enter player name (e.g. Mohamed Salah)" required>
+                <button type="submit" class="search-btn">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </form>
+        </div>
+        
+        <div id="loading" class="loading">
+            <div class="loading-spinner"></div>
+            <p>Searching for players...</p>
+        </div>
+        
+        <div id="errorContainer" class="error-message" style="display: none;"></div>
+        
+        <div id="resultsContainer" class="results-container" style="display: none;">
+            <div class="results-header">
+                <h2>Search Results</h2>
+                <div id="resultsCount" class="results-count">0 players found</div>
+            </div>
+            
+            <div id="playerGrid" class="player-grid">
+                <!-- Player cards will be inserted here -->
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>© 2025 Fredi Premium Player Search | All Right Reserved</p>
+        </div>
+    </footer>
+    
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const query = document.getElementById('playerQuery').value.trim();
+            
+            if (query) {
+                searchPlayers(query);
+            }
+        });
+        
+        function searchPlayers(query) {
+            // Show loading state
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('resultsContainer').style.display = 'none';
+            document.getElementById('errorContainer').style.display = 'none';
+            
+            // Clear previous results
+            document.getElementById('playerGrid').innerHTML = '';
+            
+            // Encode the query for URL
+            const encodedQuery = encodeURIComponent(query);
+            const apiUrl = `https://www.thesportsdb.com/api/v1/json/3/searchplayers.php?p=${encodedQuery}`;
+            
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('loading').style.display = 'none';
+                    
+                    if (data.player) {
+                        displayResults(data.player);
+                    } else {
+                        showError('No players found matching your search.');
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('loading').style.display = 'none';
+                    showError('Failed to fetch player data. Please try again later.');
+                    console.error('Error:', error);
+                });
+        }
+        
+        function displayResults(players) {
+            const playerGrid = document.getElementById('playerGrid');
+            const resultsCount = document.getElementById('resultsCount');
+            
+            // Update results count
+            resultsCount.textContent = `${players.length} ${players.length === 1 ? 'player' : 'players'} found`;
+            
+            // Create player cards
+            players.forEach(player => {
+                const playerCard = document.createElement('div');
+                playerCard.className = 'player-card';
+                
+                // Determine image to use (cutout if available, otherwise thumb, otherwise default)
+                let playerImage = '';
+                if (player.strCutout) {
+                    playerImage = player.strCutout;
+                } else if (player.strThumb) {
+                    playerImage = player.strThumb;
+                }
+                
+                // Format date of birth if available
+                let dobFormatted = 'N/A';
+                if (player.dateBorn) {
+                    const dob = new Date(player.dateBorn);
+                    dobFormatted = dob.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                }
+                
+                playerCard.innerHTML = `
+                    <div class="player-image">
+                        ${playerImage ? 
+                            `<img src="${playerImage}" alt="${player.strPlayer}">` : 
+                            `<div class="default-avatar"><i class="fas fa-user"></i></div>`}
+                    </div>
+                    <div class="player-details">
+                        <h3 class="player-name">${player.strPlayer || 'Unknown'}</h3>
+                        <div class="player-team">
+                            <i class="fas fa-users"></i>
+                            ${player.strTeam || 'No team'}
+                        </div>
+                        <div class="player-meta">
+                            <span class="meta-item">
+                                <i class="fas fa-flag"></i>
+                                ${player.strNationality || 'N/A'}
+                            </span>
+                            <span class="meta-item ${player.strStatus === 'Active' ? 'status-active' : 'status-retired'}">
+                                <i class="fas ${player.strStatus === 'Active' ? 'fa-check-circle' : 'fa-times-circle'}"></i>
+                                ${player.strStatus || 'N/A'}
+                            </span>
+                            <span class="meta-item">
+                                <i class="fas fa-birthday-cake"></i>
+                                ${dobFormatted}
+                            </span>
+                            ${player.strPosition ? `
+                            <span class="meta-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                ${player.strPosition}
+                            </span>` : ''}
+                        </div>
+                    </div>
+                `;
+                
+                playerGrid.appendChild(playerCard);
+            });
+            
+            // Show results container
+            document.getElementById('resultsContainer').style.display = 'block';
+        }
+        
+        function showError(message) {
+            const errorContainer = document.getElementById('errorContainer');
+            errorContainer.textContent = message;
+            errorContainer.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VenueTracker Pro | Discover Sports Venues Worldwide</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --text-color: #333;
+            --text-light: #7f8c8d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1517649763962-0c623066013b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') center/cover;
+            opacity: 0.2;
+            z-index: 0;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .search-container {
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        #searchInput {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        #searchInput:focus {
+            outline: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        #searchButton {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        #searchButton:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+        
+        main {
+            padding: 3rem 0;
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .results-count {
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+        
+        .sort-options {
+            display: flex;
+            align-items: center;
+        }
+        
+        .sort-options label {
+            margin-right: 10px;
+            color: var(--text-light);
+        }
+        
+        .sort-options select {
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            background-color: white;
+        }
+        
+        .venues-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .venue-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .venue-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .venue-image {
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .venue-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .venue-card:hover .venue-image img {
+            transform: scale(1.05);
+        }
+        
+        .venue-sport {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .venue-details {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .venue-name {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+        
+        .venue-location {
+            display: flex;
+            align-items: center;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .venue-location i {
+            margin-right: 5px;
+        }
+        
+        .venue-capacity {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .venue-capacity i {
+            margin-right: 5px;
+        }
+        
+        .venue-description {
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            color: var(--text-color);
+            flex-grow: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .venue-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+        
+        .venue-year {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+        
+        .view-details {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .view-details:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+        
+        .no-results i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #ddd;
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .footer-logo {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-links a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .social-icons {
+            display: flex;
+            margin-bottom: 1.5rem;
+        }
+        
+        .social-icons a {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icons a:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        @media (max-width: 768px) {
+            .venues-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .sort-options {
+                margin-top: 1rem;
+            }
+        }
+        
+        /* Loading spinner */
+        .loader {
+            display: none;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--secondary-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Modal for venue details */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            width: 80%;
+            max-width: 900px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+            animation: modalopen 0.5s;
+        }
+        
+        @keyframes modalopen {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            position: relative;
+        }
+        
+        .modal-title {
+            font-size: 1.8rem;
+            margin: 0;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 1.8rem;
+            color: white;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            color: var(--accent-color);
+        }
+        
+        .modal-body {
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        .modal-image {
+            height: 300px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .modal-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .modal-info h3 {
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+            font-size: 1.3rem;
+        }
+        
+        .modal-info p {
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .info-item i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .modal-footer {
+            padding: 1.5rem;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .modal-footer button {
+            padding: 10px 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-footer button:hover {
+            background-color: #2980b9;
+        }
+        
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 95%;
+                margin: 2% auto;
+            }
+            
+            .modal-body {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-image {
+                height: 200px;
+            }
+        }
+
+        /* Error message */
+        .error-message {
+            display: none;
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Fredi Venue Tracker 
+                </div>
+                <p class="tagline">Discover sports venues and stadiums around the world</p>
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="Search for venues (e.g. Anfield, Wembley, Alianz Stadium)">
+                    <button id="searchButton">Search</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        <div class="container">
+            <div class="error-message" id="errorMessage"></div>
+            
+            <div class="results-header">
+                <h2 id="resultsTitle">Venue Search Results</h2>
+                <div class="results-count" id="resultsCount">0 venues found</div>
+                <div class="sort-options">
+                    <label for="sortBy">Sort by:</label>
+                    <select id="sortBy">
+                        <option value="name-asc">Name (A-Z)</option>
+                        <option value="name-desc">Name (Z-A)</option>
+                        <option value="capacity-asc">Capacity (Low-High)</option>
+                        <option value="capacity-desc">Capacity (High-Low)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="loader" id="loader"></div>
+            
+            <div class="venues-grid" id="venuesGrid">
+                <!-- Venue cards will be inserted here by JavaScript -->
+                <div class="no-results" id="noResults">
+                    <i class="fas fa-search"></i>
+                    <h3>No venues found</h3>
+                    <p>Try searching for a venue name or location</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">VenueFinder Pro</div>
+                <div class="footer-links">
+                    <a href="#">Home</a>
+                    <a href="#">About</a>
+                    <a href="#">API</a>
+                    <a href="#">Contact</a>
+                    <a href="#">Privacy Policy</a>
+                </div>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+                <div class="copyright">
+                    &copy; <span id="currentYear"></span> Fredi VenueTracker Pro. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Venue Details Modal -->
+    <div class="modal" id="venueModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalVenueName">Venue Name</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="modal-image">
+                    <img id="modalVenueImage" src="" alt="Venue Image">
+                </div>
+                <div class="modal-info">
+                    <h3>Details</h3>
+                    <p id="modalVenueDescription">Loading description...</p>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span id="modalVenueLocation">Location not specified</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-users"></i>
+                            <span id="modalVenueCapacity">Capacity not specified</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-flag"></i>
+                            <span id="modalVenueCountry">Country not specified</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span id="modalVenueYear">Year not specified</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-running"></i>
+                            <span id="modalVenueSport">Sport not specified</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-archway"></i>
+                            <span id="modalVenueArchitect">Architect not specified</span>
+                        </div>
+                    </div>
+                    
+                    <h3>Additional Information</h3>
+                    <div id="modalVenueWebsite"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="closeModalBtn">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const searchButton = document.getElementById('searchButton');
+            const venuesGrid = document.getElementById('venuesGrid');
+            const noResults = document.getElementById('noResults');
+            const loader = document.getElementById('loader');
+            const resultsCount = document.getElementById('resultsCount');
+            const resultsTitle = document.getElementById('resultsTitle');
+            const sortBy = document.getElementById('sortBy');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Modal elements
+            const venueModal = document.getElementById('venueModal');
+            const modalVenueName = document.getElementById('modalVenueName');
+            const modalVenueImage = document.getElementById('modalVenueImage');
+            const modalVenueDescription = document.getElementById('modalVenueDescription');
+            const modalVenueLocation = document.getElementById('modalVenueLocation');
+            const modalVenueCapacity = document.getElementById('modalVenueCapacity');
+            const modalVenueCountry = document.getElementById('modalVenueCountry');
+            const modalVenueYear = document.getElementById('modalVenueYear');
+            const modalVenueSport = document.getElementById('modalVenueSport');
+            const modalVenueArchitect = document.getElementById('modalVenueArchitect');
+            const modalVenueWebsite = document.getElementById('modalVenueWebsite');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const closeModal = document.querySelector('.close-modal');
+            
+            // Set current year in footer
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+            
+            // Search when button is clicked or Enter is pressed
+            searchButton.addEventListener('click', performSearch);
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+            
+            // Sort venues when sort option changes
+            sortBy.addEventListener('change', function() {
+                const currentVenues = JSON.parse(sessionStorage.getItem('currentVenues') || '[]');
+                if (currentVenues.length > 0) {
+                    displayVenues(sortVenues(currentVenues));
+                }
+            });
+            
+            // Modal close handlers
+            closeModalBtn.addEventListener('click', function() {
+                venueModal.style.display = 'none';
+            });
+            
+            closeModal.addEventListener('click', function() {
+                venueModal.style.display = 'none';
+            });
+            
+            window.addEventListener('click', function(event) {
+                if (event.target === venueModal) {
+                    venueModal.style.display = 'none';
+                }
+            });
+            
+            function performSearch() {
+                const searchTerm = searchInput.value.trim();
+                
+                if (searchTerm === '') {
+                    showError('Please enter a search term');
+                    return;
+                }
+                
+                // Hide any previous error
+                hideError();
+                
+                // Show loader
+                loader.style.display = 'block';
+                venuesGrid.innerHTML = '';
+                noResults.style.display = 'none';
+                
+                // Update results title
+                resultsTitle.textContent = `Results for "${searchTerm}"`;
+                
+                // Fetch data from API
+                const apiKey = '3'; // Free tier API key for TheSportsDB
+                fetch(`https://www.thesportsdb.com/api/v1/json/${apiKey}/searchvenues.php?t=${encodeURIComponent(searchTerm)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        loader.style.display = 'none';
+                        
+                        if (data.venues && data.venues.length > 0) {
+                            // Store current venues in session storage
+                            sessionStorage.setItem('currentVenues', JSON.stringify(data.venues));
+                            
+                            // Display sorted venues
+                            displayVenues(sortVenues(data.venues));
+                        } else {
+                            showNoResults();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                        loader.style.display = 'none';
+                        showError('Failed to fetch venues. Please try again later.');
+                        showNoResults();
+                    });
+            }
+            
+            function sortVenues(venues) {
+                const sortValue = sortBy.value;
+                
+                return [...venues].sort((a, b) => {
+                    switch (sortValue) {
+                        case 'name-asc':
+                            return (a.strVenue || '').localeCompare(b.strVenue || '');
+                        case 'name-desc':
+                            return (b.strVenue || '').localeCompare(a.strVenue || '');
+                        case 'capacity-asc':
+                            return (parseInt(a.intCapacity) || 0) - (parseInt(b.intCapacity) || 0);
+                        case 'capacity-desc':
+                            return (parseInt(b.intCapacity) || 0) - (parseInt(a.intCapacity) || 0);
+                        default:
+                            return 0;
+                    }
+                });
+            }
+            
+            function displayVenues(venues) {
+                venuesGrid.innerHTML = '';
+                
+                if (venues.length === 0) {
+                    showNoResults();
+                    return;
+                }
+                
+                // Update results count
+                resultsCount.textContent = `${venues.length} ${venues.length === 1 ? 'venue' : 'venues'} found`;
+                
+                venues.forEach(venue => {
+                    const venueCard = document.createElement('div');
+                    venueCard.className = 'venue-card';
+                    
+                    // Default image if none is provided
+                    const venueImage = venue.strThumb || 'https://www.thesportsdb.com/images/media/venue/thumb/default.jpg';
+                    
+                    // Truncate description if too long
+                    let description = venue.strDescriptionEN || 'No description available.';
+                    if (description.length > 200) {
+                        description = description.substring(0, 200) + '...';
+                    }
+                    
+                    venueCard.innerHTML = `
+                        <div class="venue-image">
+                            <img src="${venueImage}" alt="${venue.strVenue}" onerror="this.src='https://www.thesportsdb.com/images/media/venue/thumb/default.jpg'">
+                            ${venue.strSport ? `<div class="venue-sport">${venue.strSport}</div>` : ''}
+                        </div>
+                        <div class="venue-details">
+                            <h3 class="venue-name">${venue.strVenue}</h3>
+                            <div class="venue-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                ${venue.strLocation || 'Location not specified'}
+                            </div>
+                            ${venue.intCapacity ? `
+                            <div class="venue-capacity">
+                                <i class="fas fa-users"></i>
+                                Capacity: ${parseInt(venue.intCapacity).toLocaleString()}
+                            </div>
+                            ` : ''}
+                            <p class="venue-description">${description}</p>
+                            <div class="venue-meta">
+                                ${venue.intFormedYear && venue.intFormedYear !== '0' ? `
+                                <div class="venue-year">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    ${venue.intFormedYear}
+                                </div>
+                                ` : '<div></div>'}
+                                <button class="view-details" data-id="${venue.idVenue}">View Details</button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    venuesGrid.appendChild(venueCard);
+                });
+                
+                // Add event listeners to all view details buttons
+                document.querySelectorAll('.view-details').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const venueId = this.getAttribute('data-id');
+                        showVenueDetails(venueId);
+                    });
+                });
+            }
+            
+            function showVenueDetails(venueId) {
+                const venues = JSON.parse(sessionStorage.getItem('currentVenues')) || [];
+                const venue = venues.find(v => v.idVenue === venueId);
+                
+                if (!venue) return;
+                
+                // Populate modal with venue data
+                modalVenueName.textContent = venue.strVenue;
+                modalVenueImage.src = venue.strThumb || 'https://www.thesportsdb.com/images/media/venue/thumb/default.jpg';
+                modalVenueImage.alt = venue.strVenue;
+                modalVenueDescription.textContent = venue.strDescriptionEN || 'No description available.';
+                modalVenueLocation.textContent = venue.strLocation || 'Location not specified';
+                modalVenueCapacity.textContent = venue.intCapacity ? `Capacity: ${parseInt(venue.intCapacity).toLocaleString()}` : 'Capacity not specified';
+                modalVenueCountry.textContent = venue.strCountry || 'Country not specified';
+                modalVenueYear.textContent = venue.intFormedYear && venue.intFormedYear !== '0' ? `Opened in ${venue.intFormedYear}` : 'Year not specified';
+                modalVenueSport.textContent = venue.strSport || 'Sport not specified';
+                modalVenueArchitect.textContent = venue.strArchitect || 'Architect not specified';
+                
+                // Add website link if available
+                if (venue.strWebsite) {
+                    modalVenueWebsite.innerHTML = `
+                        <h3>Website</h3>
+                        <p><a href="${venue.strWebsite}" target="_blank">${venue.strWebsite}</a></p>
+                    `;
+                } else {
+                    modalVenueWebsite.innerHTML = '';
+                }
+                
+                // Show the modal
+                venueModal.style.display = 'block';
+            }
+            
+            function showNoResults() {
+                venuesGrid.innerHTML = '';
+                noResults.style.display = 'block';
+                resultsCount.textContent = '0 venues found';
+            }
+            
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+            }
+            
+            function hideError() {
+                errorMessage.style.display = 'none';
+            }
+            
+            // Perform a default search on page load
+            searchInput.value = 'Emirates';
+            performSearch();
+        });
+    </script>
+</body>
+</html>

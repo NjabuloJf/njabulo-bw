@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Team Search</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-weight: 300;
+            opacity: 0.9;
+        }
+        
+        .search-container {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+        
+        .search-form {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .search-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .search-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .results-container {
+            display: none;
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+        
+        .team-card {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .team-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .team-badge {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+        }
+        
+        .team-info {
+            flex: 1;
+        }
+        
+        .team-name {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+        
+        .team-meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--light-color);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .team-stadium {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+        
+        .team-description {
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+        
+        .team-media {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .media-item {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .media-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .media-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--light-color);
+            border-radius: 50%;
+            color: var(--dark-color);
+            transition: all 0.3s ease;
+        }
+        
+        .social-link:hover {
+            background: var(--secondary-color);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .error-message {
+            color: var(--accent-color);
+            text-align: center;
+            padding: 2rem;
+            font-weight: 600;
+            display: none;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--secondary-color);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .search-form {
+                flex-direction: column;
+            }
+            
+            .team-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .team-meta {
+                justify-content: center;
+            }
+            
+            .social-links {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Premium Team Search</h1>
+            <p class="subtitle">Find detailed information about football teams worldwide</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="search-container">
+            <form id="teamSearchForm" class="search-form">
+                <input type="text" id="teamQuery" class="search-input" placeholder="Enter team name (e.g. Liverpool, Real Madrid)" required>
+                <button type="submit" class="search-btn">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </form>
+        </div>
+        
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Searching for teams...</p>
+        </div>
+        
+        <div id="errorMessage" class="error-message">
+            <i class="fas fa-exclamation-circle"></i>
+            <p>No teams found matching your search. Please try a different name.</p>
+        </div>
+        
+        <div id="resultsContainer" class="results-container">
+            <div id="teamCard" class="team-card">
+                <!-- Team data will be inserted here -->
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>© 2025 Fredi's Team Search | All right reserved</p>
+        </div>
+    </footer>
+    
+    <script>
+        document.getElementById('teamSearchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const query = document.getElementById('teamQuery').value.trim();
+            
+            if (query) {
+                searchTeam(query);
+            }
+        });
+        
+        function searchTeam(teamName) {
+            // Show loading, hide results and error
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('resultsContainer').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+            
+            // Make API request
+            fetch(`https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t=${encodeURIComponent(teamName)}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('loading').style.display = 'none';
+                    
+                    if (data.teams && data.teams.length > 0) {
+                        displayTeam(data.teams[0]);
+                    } else {
+                        document.getElementById('errorMessage').style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('errorMessage').style.display = 'block';
+                });
+        }
+        
+        function displayTeam(team) {
+            const teamCard = document.getElementById('teamCard');
+            
+            // Format description with paragraphs
+            let description = team.strDescriptionEN || 'No description available';
+            description = description.replace(/\r\n\r\n/g, '</p><p>');
+            
+            // Create social links if available
+            let socialLinks = '';
+            if (team.strWebsite) {
+                socialLinks += `<a href="${team.strWebsite}" target="_blank" class="social-link" title="Website"><i class="fas fa-globe"></i></a>`;
+            }
+            if (team.strFacebook) {
+                socialLinks += `<a href="${team.strFacebook}" target="_blank" class="social-link" title="Facebook"><i class="fab fa-facebook-f"></i></a>`;
+            }
+            if (team.strTwitter) {
+                socialLinks += `<a href="https://${team.strTwitter}" target="_blank" class="social-link" title="Twitter"><i class="fab fa-twitter"></i></a>`;
+            }
+            if (team.strInstagram) {
+                socialLinks += `<a href="https://${team.strInstagram}" target="_blank" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>`;
+            }
+            if (team.strYoutube) {
+                socialLinks += `<a href="https://${team.strYoutube}" target="_blank" class="social-link" title="YouTube"><i class="fab fa-youtube"></i></a>`;
+            }
+            
+            // Create media gallery if available
+            let mediaGallery = '';
+            if (team.strFanart1) {
+                mediaGallery += `<div class="media-item"><img src="${team.strFanart1}" alt="${team.strTeam} fan art"></div>`;
+            }
+            if (team.strFanart2) {
+                mediaGallery += `<div class="media-item"><img src="${team.strFanart2}" alt="${team.strTeam} fan art"></div>`;
+            }
+            if (team.strFanart3) {
+                mediaGallery += `<div class="media-item"><img src="${team.strFanart3}" alt="${team.strTeam} fan art"></div>`;
+            }
+            if (team.strFanart4) {
+                mediaGallery += `<div class="media-item"><img src="${team.strFanart4}" alt="${team.strTeam} fan art"></div>`;
+            }
+            
+            // Set team colors as CSS variables
+            document.documentElement.style.setProperty('--primary-color', team.strColour1 || '#2c3e50');
+            document.documentElement.style.setProperty('--secondary-color', team.strColour3 || '#3498db');
+            
+            teamCard.innerHTML = `
+                <div class="team-header">
+                    <img src="${team.strBadge}" alt="${team.strTeam} badge" class="team-badge">
+                    <div class="team-info">
+                        <h2 class="team-name">${team.strTeam}</h2>
+                        <div class="team-meta">
+                            <span class="meta-item"><i class="fas fa-trophy"></i> ${team.strLeague}</span>
+                            <span class="meta-item"><i class="fas fa-map-marker-alt"></i> ${team.strCountry}</span>
+                            <span class="meta-item"><i class="fas fa-calendar-alt"></i> Founded ${team.intFormedYear}</span>
+                            <span class="meta-item"><i class="fas fa-users"></i> ${team.intStadiumCapacity} seats</span>
+                        </div>
+                        <div class="team-stadium"><i class="fas fa-stadium"></i> ${team.strStadium}, ${team.strLocation}</div>
+                        ${socialLinks ? `<div class="social-links">${socialLinks}</div>` : ''}
+                    </div>
+                </div>
+                
+                <div class="team-description">
+                    <p>${description}</p>
+                </div>
+                
+                ${mediaGallery ? `<div class="team-media">${mediaGallery}</div>` : ''}
+            `;
+            
+            document.getElementById('resultsContainer').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

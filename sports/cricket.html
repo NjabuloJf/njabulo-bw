@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cricket Live Matches Update</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #3b82f6;
+            --accent-color: #10b981;
+            --dark-color: #1f2937;
+            --light-color: #f9fafb;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --success-color: #10b981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: var(--primary-color);
+            font-size: 28px;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .refresh-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            background-color: #1a3a8a;
+            transform: translateY(-2px);
+        }
+
+        .matches-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .match-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .match-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .match-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .match-type {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .match-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 15px;
+            color: var(--dark-color);
+        }
+
+        .teams-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 0 15px 15px;
+        }
+
+        .team {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .team-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: contain;
+            background-color: #f3f4f6;
+            padding: 5px;
+        }
+
+        .team-name {
+            font-weight: 600;
+            flex-grow: 1;
+        }
+
+        .vs {
+            text-align: center;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 5px 0;
+        }
+
+        .match-details {
+            padding: 0 15px 15px;
+            font-size: 14px;
+            color: #6b7280;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .venue {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .date {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status {
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #f3f4f6;
+            border-radius: 6px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status.live {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+        }
+
+        .status.completed {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .status.upcoming {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--secondary-color);
+        }
+
+        .score-container {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .score {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            padding: 8px 10px;
+            background-color: #f9fafb;
+            border-radius: 6px;
+        }
+
+        .score-team {
+            font-weight: 600;
+        }
+
+        .score-runs {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .no-matches {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .matches-container {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-cricket"></i>
+                <h1>Cricket Live</h1>
+            </div>
+            <button class="refresh-btn" id="refreshBtn">
+                <i class="fas fa-sync-alt"></i>
+                Refresh
+            </button>
+        </header>
+
+        <div class="filter-container">
+            <button class="filter-btn active" data-filter="all">All Matches</button>
+            <button class="filter-btn" data-filter="live">Live</button>
+            <button class="filter-btn" data-filter="completed">Completed</button>
+            <button class="filter-btn" data-filter="upcoming">Upcoming</button>
+            <button class="filter-btn" data-filter="t20">T20</button>
+            <button class="filter-btn" data-filter="odi">ODI</button>
+        </div>
+
+        <div class="matches-container" id="matchesContainer">
+            <!-- Matches will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        // Sample data - in a real app, you would fetch this from the API
+        const apiData = {
+            "apikey": "f68d1cb5-a9c9-47c5-8fcd-fbfe52bace78",
+            "data": [
+                {
+                    "id": "8c3e9e9c-2744-40a6-8f0b-7adaf7941fd2",
+                    "name": "Thailand Women vs United Arab Emirates Women, 6th Match",
+                    "matchType": "t20",
+                    "status": "Thailand Women won by 16 runs",
+                    "venue": "Terdthai Cricket Ground, Bangkok",
+                    "date": "2025-05-06",
+                    "dateTimeGMT": "2025-05-06T06:00:00",
+                    "teams": ["Thailand Women", "United Arab Emirates Women"],
+                    "teamInfo": [
+                        {
+                            "name": "Thailand Women",
+                            "shortname": "THW",
+                            "img": "https://g.cricapi.com/iapi/2351-637985730472466346.webp?w=48"
+                        },
+                        {
+                            "name": "United Arab Emirates Women",
+                            "shortname": "UAEW",
+                            "img": "https://g.cricapi.com/iapi/1136-637877081374906304.webp?w=48"
+                        }
+                    ],
+                    "score": [
+                        {
+                            "r": 117,
+                            "w": 5,
+                            "o": 20,
+                            "inning": "Thailand Women Inning 1"
+                        },
+                        {
+                            "r": 101,
+                            "w": 10,
+                            "o": 19.1,
+                            "inning": "United Arab Emirates Women Inning 1"
+                        }
+                    ],
+                    "series_id": "8a5172a9-28af-4c51-99bc-fc1ccebda96d",
+                    "fantasyEnabled": true,
+                    "bbbEnabled": true,
+                    "hasSquad": true,
+                    "matchStarted": true,
+                    "matchEnded": true
+                },
+                {
+                    "id": "3f4a0b64-14c1-4cd2-ba51-457b184292d3",
+                    "name": "Hong Kong Women vs Kuwait Women, 5th Match",
+                    "matchType": "t20",
+                    "status": "Hong Kong Women won by 25 runs",
+                    "venue": "Terdthai Cricket Ground, Bangkok",
+                    "date": "2025-05-06",
+                    "dateTimeGMT": "2025-05-06T02:00:00",
+                    "teams": ["Hong Kong Women", "Kuwait Women"],
+                    "teamInfo": [
+                        {
+                            "name": "Hong Kong Women",
+                            "shortname": "HKGW",
+                            "img": "https://g.cricapi.com/iapi/1123-637877089446450033.webp?w=48"
+                        },
+                        {
+                            "name": "Kuwait Women",
+                            "shortname": "KU-W",
+                            "img": "https://g.cricapi.com/iapi/1588-637926303022728393.webp?w=48"
+                        }
+                    ],
+                    "score": [
+                        {
+                            "r": 135,
+                            "w": 6,
+                            "o": 20,
+                            "inning": "Hong Kong Women Inning 1"
+                        },
+                        {
+                            "r": 110,
+                            "w": 8,
+                            "o": 20,
+                            "inning": "Kuwait Women Inning 1"
+                        }
+                    ],
+                    "series_id": "8a5172a9-28af-4c51-99bc-fc1ccebda96d",
+                    "fantasyEnabled": true,
+                    "bbbEnabled": true,
+                    "hasSquad": true,
+                    "matchStarted": true,
+                    "matchEnded": true
+                },
+                {
+                    "id": "c47541e6-1cdd-465c-a09c-9b81fecc8a18",
+                    "name": "Netherlands vs United Arab Emirates, 62nd Match",
+                    "matchType": "odi",
+                    "status": "United Arab Emirates opt to bowl",
+                    "venue": "VRA Cricket Ground, Amstelveen",
+                    "date": "2025-05-06",
+                    "dateTimeGMT": "2025-05-06T09:00:00",
+                    "teams": ["Netherlands", "United Arab Emirates"],
+                    "teamInfo": [
+                        {
+                            "name": "Netherlands",
+                            "shortname": "NED",
+                            "img": "https://g.cricapi.com/iapi/55-637877084465746618.webp?w=48"
+                        },
+                        {
+                            "name": "United Arab Emirates",
+                            "shortname": "UAE",
+                            "img": "https://g.cricapi.com/iapi/92-637877081068315608.webp?w=48"
+                        }
+                    ],
+                    "score": [
+                        {
+                            "r": 78,
+                            "w": 0,
+                            "o": 17,
+                            "inning": "Netherlands Inning 1"
+                        }
+                    ],
+                    "series_id": "9b836620-68cb-4798-9647-d479aa871b76",
+                    "fantasyEnabled": true,
+                    "bbbEnabled": true,
+                    "hasSquad": true,
+                    "matchStarted": true,
+                    "matchEnded": false
+                },
+                {
+                    "id": "4e4b259f-19b6-4405-9df7-b94ce3b0a2c9",
+                    "name": "Sunrisers Hyderabad vs Delhi Capitals, 55th Match",
+                    "matchType": "t20",
+                    "status": "No Result - due to rain",
+                    "venue": "Rajiv Gandhi International Stadium, Hyderabad",
+                    "date": "2025-05-05",
+                    "dateTimeGMT": "2025-05-05T14:00:00",
+                    "teams": ["Sunrisers Hyderabad", "Delhi Capitals"],
+                    "teamInfo": [
+                        {
+                            "name": "Delhi Capitals",
+                            "shortname": "DC",
+                            "img": "https://g.cricapi.com/iapi/148-637874596301457910.png?w=48"
+                        },
+                        {
+                            "name": "Sunrisers Hyderabad",
+                            "shortname": "SRH",
+                            "img": "https://g.cricapi.com/iapi/279-637852957609490368.png?w=48"
+                        }
+                    ],
+                    "score": [
+                        {
+                            "r": 133,
+                            "w": 7,
+                            "o": 20,
+                            "inning": "Delhi Capitals Inning 1"
+                        }
+                    ],
+                    "series_id": "d5a498c8-7596-4b93-8ab0-e0efc3345312",
+                    "fantasyEnabled": true,
+                    "bbbEnabled": true,
+                    "hasSquad": true,
+                    "matchStarted": true,
+                    "matchEnded": false
+                }
+            ],
+            "status": "success"
+        };
+
+        // Function to render matches
+        function renderMatches(matches) {
+            const container = document.getElementById('matchesContainer');
+            
+            if (matches.length === 0) {
+                container.innerHTML = `
+                    <div class="no-matches">
+                        <i class="fas fa-tired" style="font-size: 40px; margin-bottom: 15px;"></i>
+                        <h3>No matches found</h3>
+                        <p>There are currently no matches that match your filters</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            matches.forEach(match => {
+                // Determine status class
+                let statusClass = '';
+                if (match.matchStarted && !match.matchEnded) {
+                    statusClass = 'live';
+                } else if (match.matchEnded) {
+                    statusClass = 'completed';
+                } else {
+                    statusClass = 'upcoming';
+                }
+                
+                // Format date
+                const matchDate = new Date(match.date);
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                const formattedDate = matchDate.toLocaleDateString('en-US', options);
+                
+                // Create match card
+                const card = document.createElement('div');
+                card.className = 'match-card';
+                card.dataset.matchType = match.matchType;
+                card.dataset.status = statusClass;
+                
+                card.innerHTML = `
+                    <div class="match-header">
+                        <span class="match-type">${match.matchType.toUpperCase()}</span>
+                        <span>${match.date}</span>
+                    </div>
+                    <h3 class="match-name">${match.name}</h3>
+                    <div class="teams-container">
+                        <div class="team">
+                            <img src="${match.teamInfo[0]?.img || 'https://h.cricapi.com/img/icon512.png'}" alt="${match.teams[0]}" class="team-logo">
+                            <span class="team-name">${match.teams[0]}</span>
+                        </div>
+                        <div class="vs">VS</div>
+                        <div class="team">
+                            <img src="${match.teamInfo[1]?.img || 'https://h.cricapi.com/img/icon512.png'}" alt="${match.teams[1]}" class="team-logo">
+                            <span class="team-name">${match.teams[1]}</span>
+                        </div>
+                    </div>
+                    <div class="match-details">
+                        <div class="venue">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>${match.venue}</span>
+                        </div>
+                        <div class="date">
+                            <i class="far fa-calendar-alt"></i>
+                            <span>${formattedDate}</span>
+                        </div>
+                        <div class="status ${statusClass}">
+                            <i class="fas ${statusClass === 'live' ? 'fa-play-circle' : statusClass === 'completed' ? 'fa-check-circle' : 'fa-clock'}"></i>
+                            <span>${match.status}</span>
+                        </div>
+                        ${match.score ? `
+                        <div class="score-container">
+                            ${match.score.map(innings => `
+                                <div class="score">
+                                    <span class="score-team">${innings.inning}</span>
+                                    <span class="score-runs">${innings.r}/${innings.w} (${innings.o} ov)</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        // Filter matches
+        function filterMatches() {
+            const filter = document.querySelector('.filter-btn.active').dataset.filter;
+            let filteredMatches = apiData.data;
+            
+            if (filter === 'live') {
+                filteredMatches = apiData.data.filter(match => match.matchStarted && !match.matchEnded);
+            } else if (filter === 'completed') {
+                filteredMatches = apiData.data.filter(match => match.matchEnded);
+            } else if (filter === 'upcoming') {
+                filteredMatches = apiData.data.filter(match => !match.matchStarted);
+            } else if (filter === 't20') {
+                filteredMatches = apiData.data.filter(match => match.matchType === 't20');
+            } else if (filter === 'odi') {
+                filteredMatches = apiData.data.filter(match => match.matchType === 'odi');
+            }
+            
+            renderMatches(filteredMatches);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderMatches(apiData.data);
+            
+            // Filter buttons event listeners
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    filterMatches();
+                });
+            });
+            
+            // Refresh button
+            document.getElementById('refreshBtn').addEventListener('click', () => {
+                // In a real app, you would fetch fresh data from the API here
+                // For now, we'll just re-render the existing data
+                filterMatches();
+                
+                // Show refresh animation
+                const icon = document.querySelector('#refreshBtn i');
+                icon.style.transform = 'rotate(360deg)';
+                setTimeout(() => {
+                    icon.style.transform = 'rotate(0deg)';
+                }, 500);
+            });
+        });
+    </script>
+</body>
+</html>

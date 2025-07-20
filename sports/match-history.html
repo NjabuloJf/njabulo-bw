@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Match History</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #0f3460;
+            --highlight: #e94560;
+            --text: #f1f1f1;
+            --text-secondary: #b8b8b8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--primary);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, var(--highlight), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+        }
+        
+        header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .search-container {
+            background-color: var(--secondary);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+        }
+        
+        .search-form {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 2px var(--highlight);
+        }
+        
+        .search-btn {
+            background-color: var(--highlight);
+            color: white;
+            border: none;
+            padding: 0 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .search-btn:hover {
+            background-color: #d13354;
+            transform: translateY(-2px);
+        }
+        
+        .results-container {
+            background-color: var(--secondary);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .results-header {
+            background-color: var(--accent);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .results-count {
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .sort-options {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .sort-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .sort-btn.active {
+            color: var(--highlight);
+            font-weight: 600;
+        }
+        
+        .sort-btn:hover {
+            color: var(--text);
+        }
+        
+        .match-list {
+            list-style: none;
+        }
+        
+        .match-item {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background-color 0.3s ease;
+        }
+        
+        .match-item:last-child {
+            border-bottom: none;
+        }
+        
+        .match-item:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+        
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .match-date {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .match-league {
+            background-color: rgba(15, 52, 96, 0.3);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .match-league img {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+        
+        .match-teams {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .team {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            width: 40%;
+        }
+        
+        .team-home {
+            justify-content: flex-end;
+        }
+        
+        .team-away {
+            justify-content: flex-start;
+        }
+        
+        .team-logo {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+        
+        .team-name {
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .team-home .team-name {
+            text-align: right;
+        }
+        
+        .team-away .team-name {
+            text-align: left;
+        }
+        
+        .match-score {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--accent);
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .match-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+        
+        .match-venue {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .match-status {
+            background-color: rgba(233, 69, 96, 0.2);
+            color: var(--highlight);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .match-status.finished {
+            background-color: rgba(46, 213, 115, 0.2);
+            color: #2ed573;
+        }
+        
+        .no-results {
+            padding: 3rem 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        
+        .loading {
+            padding: 3rem 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+            display: none;
+        }
+        
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--highlight);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            padding: 3rem 2rem;
+            text-align: center;
+            color: var(--highlight);
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .search-form {
+                flex-direction: column;
+            }
+            
+            .search-btn {
+                padding: 1rem;
+                justify-content: center;
+            }
+            
+            .match-teams {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .team, .team-home, .team-away {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .team-home .team-name, 
+            .team-away .team-name {
+                text-align: center;
+            }
+            
+            .match-score {
+                order: -1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Football Match History</h1>
+            <p>Search for historical football matches between any teams</p>
+        </header>
+        
+        <div class="search-container">
+            <form class="search-form" id="searchForm">
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    id="searchQuery" 
+                    placeholder="Search matches (e.g. 'Liverpool vs Everton', 'Barcelona vs Real Madrid')"
+                    required
+                >
+                <button type="submit" class="search-btn">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </form>
+        </div>
+        
+        <div class="results-container" id="resultsContainer" style="display: none;">
+            <div class="results-header">
+                <div class="results-count" id="resultsCount">0 matches found</div>
+                <div class="sort-options">
+                    <button class="sort-btn active" data-sort="date-desc">
+                        <i class="fas fa-calendar-alt"></i> Newest
+                    </button>
+                    <button class="sort-btn" data-sort="date-asc">
+                        <i class="fas fa-calendar-alt"></i> Oldest
+                    </button>
+                </div>
+            </div>
+            
+            <ul class="match-list" id="matchList">
+                <!-- Match items will be inserted here -->
+            </ul>
+        </div>
+        
+        <div class="loading" id="loadingIndicator">
+            <div class="loading-spinner"></div>
+            <p>Searching for matches...</p>
+        </div>
+        
+        <div class="no-results" id="noResults" style="display: none;">
+            <i class="fas fa-exclamation-circle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+            <p>No matches found for your search query.</p>
+            <p>Try a different team combination.</p>
+        </div>
+        
+        <div class="error-message" id="errorMessage" style="display: none;">
+            <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+            <p>An error occurred while fetching match data.</p>
+            <p>Please try again later.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchForm = document.getElementById('searchForm');
+            const searchQuery = document.getElementById('searchQuery');
+            const resultsContainer = document.getElementById('resultsContainer');
+            const matchList = document.getElementById('matchList');
+            const resultsCount = document.getElementById('resultsCount');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const noResults = document.getElementById('noResults');
+            const errorMessage = document.getElementById('errorMessage');
+            const sortButtons = document.querySelectorAll('.sort-btn');
+            
+            let currentMatches = [];
+            
+            // Handle form submission
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const query = searchQuery.value.trim();
+                
+                if (query) {
+                    searchMatches(query);
+                }
+            });
+            
+            // Handle sort buttons
+            sortButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    sortButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const sortType = this.dataset.sort;
+                    sortMatches(sortType);
+                });
+            });
+            
+            // Search matches using TheSportsDB API
+            function searchMatches(query) {
+                // Show loading indicator
+                loadingIndicator.style.display = 'block';
+                resultsContainer.style.display = 'none';
+                noResults.style.display = 'none';
+                errorMessage.style.display = 'none';
+                
+                // Encode the query for URL
+                const encodedQuery = encodeURIComponent(query);
+                const apiUrl = `https://www.thesportsdb.com/api/v1/json/3/searchevents.php?e=${encodedQuery}`;
+                
+                fetch(apiUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        currentMatches = data.event || [];
+                        
+                        if (currentMatches.length > 0) {
+                            displayMatches(currentMatches);
+                        } else {
+                            showNoResults();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching match data:', error);
+                        showErrorMessage();
+                    })
+                    .finally(() => {
+                        loadingIndicator.style.display = 'none';
+                    });
+            }
+            
+            // Display matches in the UI
+            function displayMatches(matches) {
+                matchList.innerHTML = '';
+                
+                matches.forEach(match => {
+                    const matchItem = document.createElement('li');
+                    matchItem.className = 'match-item';
+                    
+                    // Format date
+                    const matchDate = new Date(match.dateEvent);
+                    const formattedDate = matchDate.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                    
+                    // Determine status class
+                    const statusClass = match.strStatus === 'Match Finished' ? 'finished' : '';
+                    
+                    matchItem.innerHTML = `
+                        <div class="match-header">
+                            <div class="match-date">
+                                <i class="far fa-calendar-alt"></i> ${formattedDate}
+                            </div>
+                            <div class="match-league">
+                                ${match.strLeagueBadge ? `<img src="${match.strLeagueBadge}" alt="${match.strLeague}">` : ''}
+                                ${match.strLeague}
+                            </div>
+                        </div>
+                        
+                        <div class="match-teams">
+                            <div class="team team-home">
+                                <div class="team-name">${match.strHomeTeam}</div>
+                                ${match.strHomeTeamBadge ? `<img src="${match.strHomeTeamBadge}" alt="${match.strHomeTeam}" class="team-logo">` : ''}
+                            </div>
+                            
+                            <div class="match-score">
+                                ${match.intHomeScore !== null ? match.intHomeScore : '-'} 
+                                : 
+                                ${match.intAwayScore !== null ? match.intAwayScore : '-'}
+                            </div>
+                            
+                            <div class="team team-away">
+                                ${match.strAwayTeamBadge ? `<img src="${match.strAwayTeamBadge}" alt="${match.strAwayTeam}" class="team-logo">` : ''}
+                                <div class="team-name">${match.strAwayTeam}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="match-details">
+                            <div class="match-venue">
+                                <i class="fas fa-map-marker-alt"></i>
+                                ${match.strVenue || 'Venue not specified'}
+                            </div>
+                            <div class="match-status ${statusClass}">
+                                ${match.strStatus || 'Status unknown'}
+                            </div>
+                        </div>
+                    `;
+                    
+                    matchList.appendChild(matchItem);
+                });
+                
+                // Update results count
+                resultsCount.textContent = `${matches.length} ${matches.length === 1 ? 'match' : 'matches'} found`;
+                
+                // Show results container
+                resultsContainer.style.display = 'block';
+            }
+            
+            // Sort matches by date
+            function sortMatches(sortType) {
+                const sortedMatches = [...currentMatches];
+                
+                sortedMatches.sort((a, b) => {
+                    const dateA = new Date(a.dateEvent);
+                    const dateB = new Date(b.dateEvent);
+                    
+                    if (sortType === 'date-desc') {
+                        return dateB - dateA;
+                    } else {
+                        return dateA - dateB;
+                    }
+                });
+                
+                displayMatches(sortedMatches);
+            }
+            
+            // Show no results message
+            function showNoResults() {
+                noResults.style.display = 'block';
+                resultsContainer.style.display = 'none';
+            }
+            
+            // Show error message
+            function showErrorMessage() {
+                errorMessage.style.display = 'block';
+                resultsContainer.style.display = 'none';
+                noResults.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
