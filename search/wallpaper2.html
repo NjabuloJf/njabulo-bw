@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallpaper Search</title>
+    <style>
+        :root {
+            --primary: #4285F4;
+            --primary-dark: #3367D6;
+            --text-primary: #202124;
+            --text-secondary: #5F6368;
+            --bg-color: #FFFFFF;
+            --border: #DADCE0;
+            --shadow-sm: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+            --shadow-md: 0 4px 8px 0 rgba(0,0,0,0.2);
+            --error: #EA4335;
+            --error-bg: #FCE8E6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Google Sans', Roboto, Arial, sans-serif;
+            background-color: #F8F9FA;
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .search-form {
+            display: flex;
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        #search-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 24px 0 0 24px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        #search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(66,133,244,0.2);
+        }
+
+        #search-button {
+            padding: 0 24px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0 24px 24px 0;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        #search-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 30px 0;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            border: 4px solid rgba(0,0,0,0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .wallpaper-card {
+            background-color: var(--bg-color);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .wallpaper-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .wallpaper-image {
+            width: 100%;
+            height: 168px;
+            object-fit: cover;
+            cursor: pointer;
+            transition: opacity 0.3s;
+            background-color: #f0f0f0;
+            display: block;
+        }
+
+        .wallpaper-image:hover {
+            opacity: 0.9;
+        }
+
+        .wallpaper-actions {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+        }
+
+        .wallpaper-download {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background-color 0.3s;
+        }
+
+        .wallpaper-download:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .wallpaper-resolution {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            align-self: center;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            overflow: auto;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.show {
+            opacity: 1;
+        }
+
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            margin: 2% auto;
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+
+        .modal-image {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            margin-bottom: 10px;
+            background-color: #f0f0f0;
+        }
+
+        .modal-close {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 101;
+            transition: transform 0.2s;
+        }
+
+        .modal-close:hover {
+            transform: scale(1.2);
+        }
+
+        .modal-download {
+            align-self: center;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        .modal-download:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .error-message {
+            display: none;
+            text-align: center;
+            color: var(--error);
+            margin: 20px 0;
+            padding: 15px;
+            background-color: var(--error-bg);
+            border-radius: 4px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px 0;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            background-color: var(--bg-color);
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 40px 20px;
+            display: none;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--border);
+        }
+
+        @media (max-width: 768px) {
+            .results-container {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .search-form {
+                flex-direction: column;
+            }
+            
+            #search-input {
+                border-radius: 24px;
+                margin-bottom: 10px;
+            }
+            
+            #search-button {
+                border-radius: 24px;
+                padding: 12px;
+            }
+
+            .modal-content {
+                margin: 10% auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Wallpaper Search</h1>
+            <p class="subtitle">Find beautiful wallpapers for your device</p>
+        </header>
+
+        <div class="search-container">
+            <form class="search-form" id="search-form">
+                <input type="text" id="search-input" placeholder="Search for wallpapers (e.g., cars, nature, abstract)" required>
+                <button type="submit" id="search-button">Search</button>
+            </form>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Loading wallpapers...</p>
+        </div>
+
+        <div class="error-message" id="error-message"></div>
+
+        <div class="empty-state" id="empty-state">
+            <div class="empty-state-icon">🔍</div>
+            <h3>No wallpapers found</h3>
+            <p>Try searching for something different</p>
+        </div>
+
+        <div class="results-container" id="results-container"></div>
+
+        <div class="modal" id="modal">
+            <span class="modal-close" id="modal-close">&times;</span>
+            <div class="modal-content">
+                <img class="modal-image" id="modal-image" src="" alt="Full size wallpaper">
+                <button class="modal-download" id="modal-download">Download Wallpaper</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 Fredi Wallpapers | Powered by WallpapersCraft API | All right reserved</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchForm = document.getElementById('search-form');
+            const searchInput = document.getElementById('search-input');
+            const resultsContainer = document.getElementById('results-container');
+            const loading = document.getElementById('loading');
+            const errorMessage = document.getElementById('error-message');
+            const emptyState = document.getElementById('empty-state');
+            const modal = document.getElementById('modal');
+            const modalImage = document.getElementById('modal-image');
+            const modalClose = document.getElementById('modal-close');
+            const modalDownload = document.getElementById('modal-download');
+
+            let currentWallpapers = [];
+            let currentQuery = '';
+
+            // Focus search input on page load
+            searchInput.focus();
+
+            // Handle search form submission
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const query = searchInput.value.trim();
+                
+                if (query) {
+                    currentQuery = query;
+                    searchWallpapers(query);
+                }
+            });
+
+            // Function to search wallpapers
+            function searchWallpapers(query) {
+                // Show loading, hide error and empty state, clear results
+                loading.style.display = 'block';
+                errorMessage.style.display = 'none';
+                emptyState.style.display = 'none';
+                resultsContainer.innerHTML = '';
+                
+                // Call WallpapersCraft API
+                fetch(`https://apis-keith.vercel.app/search/wallpaperscraft?q=${encodeURIComponent(query)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        loading.style.display = 'none';
+                        
+                        if (data.status && data.result && data.result.length > 0) {
+                            currentWallpapers = data.result;
+                            displayWallpapers(data.result);
+                        } else {
+                            showEmptyState();
+                        }
+                    })
+                    .catch(error => {
+                        loading.style.display = 'none';
+                        showError('Failed to load wallpapers. Please try again later.');
+                        console.error('Error:', error);
+                    });
+            }
+
+            // Function to display wallpapers
+            function displayWallpapers(wallpapers) {
+                resultsContainer.innerHTML = '';
+                
+                if (wallpapers.length === 0) {
+                    showEmptyState();
+                    return;
+                }
+                
+                wallpapers.forEach((wallpaper, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'wallpaper-card';
+                    
+                    // Create higher resolution version of the image URL
+                    const highResUrl = wallpaper.replace('300x168', '1920x1080');
+                    
+                    card.innerHTML = `
+                        <img src="${wallpaper}" alt="Wallpaper ${index + 1}" class="wallpaper-image" data-highres="${highResUrl}" loading="lazy">
+                        <div class="wallpaper-actions">
+                            <span class="wallpaper-resolution">1920x1080</span>
+                            <button class="wallpaper-download" data-url="${highResUrl}">Download</button>
+                        </div>
+                    `;
+                    
+                    resultsContainer.appendChild(card);
+                });
+
+                // Add click event for image preview
+                document.querySelectorAll('.wallpaper-image').forEach(img => {
+                    img.addEventListener('click', function() {
+                        const highResUrl = this.getAttribute('data-highres');
+                        openModal(highResUrl);
+                    });
+                });
+
+                // Add click event for download buttons
+                document.querySelectorAll('.wallpaper-download').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const url = this.getAttribute('data-url');
+                        downloadWallpaper(url);
+                    });
+                });
+            }
+
+            // Function to show error message
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+            }
+
+            // Function to show empty state
+            function showEmptyState() {
+                emptyState.style.display = 'block';
+            }
+
+            // Function to open modal with full size image
+            function openModal(imageUrl) {
+                modalImage.src = '';
+                modalImage.src = imageUrl;
+                modalDownload.setAttribute('data-url', imageUrl);
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+                
+                // Add slight delay for smooth opacity transition
+                setTimeout(() => {
+                    modal.classList.add('show');
+                }, 10);
+            }
+
+            // Function to close modal
+            function closeModal() {
+                modal.classList.remove('show');
+                
+                // Wait for transition to complete before hiding
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }, 300);
+            }
+
+            // Function to download wallpaper
+            function downloadWallpaper(url) {
+                // Create a temporary anchor element
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `wallpaper-${currentQuery}-${Date.now()}.jpg`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+
+            // Event listeners for modal
+            modalClose.addEventListener('click', closeModal);
+            modalDownload.addEventListener('click', function() {
+                const url = this.getAttribute('data-url');
+                downloadWallpaper(url);
+            });
+
+            // Close modal when clicking outside the image
+            window.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal.style.display === 'block') {
+                    closeModal();
+                }
+            });
+
+            // Prevent form submission on Enter key in search input
+            searchInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    searchForm.dispatchEvent(new Event('submit'));
+                }
+            });
+        });
+    </script>
+</body>
+</html>
