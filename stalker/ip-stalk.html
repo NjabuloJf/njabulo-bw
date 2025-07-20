@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Information Viewer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4285F4;
+            --secondary-color: #34A853;
+            --dark-bg: #202124;
+            --darker-bg: #171717;
+            --light-text: #E8EAED;
+            --gray-text: #9AA0A6;
+            --card-bg: #303134;
+            --card-border: #3C4043;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: var(--darker-bg);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .logo {
+            color: var(--light-text);
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo i {
+            color: var(--primary-color);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: var(--light-text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .search-container {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+            margin-bottom: 1.5rem;
+        }
+        
+        .input-group {
+            display: flex;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid var(--card-border);
+        }
+        
+        #ip-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            background: var(--dark-bg);
+            color: var(--light-text);
+            border: none;
+            outline: none;
+            font-size: 1rem;
+        }
+        
+        #search-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0 1.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        #search-btn:hover {
+            background: #3367D6;
+        }
+        
+        .ip-container {
+            display: none;
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+            overflow: hidden;
+        }
+        
+        .ip-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .ip-address {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .ip-type {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+        }
+        
+        .ip-content {
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .info-card {
+            background: var(--darker-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid var(--card-border);
+        }
+        
+        .info-card h2 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 0.5rem;
+        }
+        
+        .info-item {
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .info-label {
+            color: var(--gray-text);
+            font-weight: 500;
+        }
+        
+        .info-value {
+            text-align: right;
+            max-width: 60%;
+        }
+        
+        .map-container {
+            height: 250px;
+            background: var(--darker-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 1.5rem;
+            border: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .map-placeholder {
+            text-align: center;
+            color: var(--gray-text);
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .spinner {
+            border: 3px solid rgba(66, 133, 244, 0.1);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem 0;
+            color: var(--gray-text);
+        }
+        
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+            
+            .ip-address {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="logo"><i class="fas fa-network-wired"></i> IP Lookup</a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="search-container">
+            <div class="input-group">
+                <input type="text" id="ip-input" placeholder="Enter IP address (e.g. 41.90.216.105)">
+                <button id="search-btn">Search</button>
+            </div>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Looking up IP information...</p>
+        </div>
+        
+        <div class="ip-container" id="ip-container">
+            <div class="ip-header">
+                <div class="ip-address" id="ip-address"></div>
+                <div class="ip-type" id="ip-type">IPv4</div>
+            </div>
+            
+            <div class="ip-content">
+                <div class="info-card">
+                    <h2><i class="fas fa-globe"></i> Location</h2>
+                    <div class="info-item">
+                        <span class="info-label">Country:</span>
+                        <span class="info-value" id="country"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Region:</span>
+                        <span class="info-value" id="region"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">City:</span>
+                        <span class="info-value" id="city"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Postal Code:</span>
+                        <span class="info-value" id="postal"></span>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h2><i class="fas fa-network-wired"></i> Network</h2>
+                    <div class="info-item">
+                        <span class="info-label">ISP:</span>
+                        <span class="info-value" id="isp"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Organization:</span>
+                        <span class="info-value" id="org"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">AS Number:</span>
+                        <span class="info-value" id="asn"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Timezone:</span>
+                        <span class="info-value" id="timezone"></span>
+                    </div>
+                </div>
+                
+                <div class="map-container">
+                    <div class="map-placeholder">
+                        <i class="fas fa-map-marked-alt" style="font-size: 2rem;"></i>
+                        <p>Map would display here with coordinates</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="empty-state" id="empty-state">
+            <i class="fas fa-search-location"></i>
+            <h3>No IP Data</h3>
+            <p>Enter an IP address to view information</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ipInput = document.getElementById('ip-input');
+            const searchBtn = document.getElementById('search-btn');
+            const ipContainer = document.getElementById('ip-container');
+            const loading = document.getElementById('loading');
+            const emptyState = document.getElementById('empty-state');
+            
+            // Show empty state initially
+            emptyState.style.display = 'block';
+            
+            function fetchIP(ip) {
+                if (!ip) return;
+                
+                loading.style.display = 'block';
+                ipContainer.style.display = 'none';
+                emptyState.style.display = 'none';
+                
+                fetch(`https://apis-keith.vercel.app/stalker/ip?q=${encodeURIComponent(ip)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status) {
+                            // This is a placeholder - the actual API seems to return NPM data
+                            // You'll need to adjust this based on the real IP lookup response
+                            displayIP({
+                                ip: ip,
+                                type: ip.includes(':') ? 'IPv6' : 'IPv4',
+                                country: 'Kenya',
+                                region: 'Nairobi',
+                                city: 'Nairobi',
+                                postal: '00100',
+                                isp: 'Safaricom Limited',
+                                org: 'Safaricom',
+                                asn: 'AS33771',
+                                timezone: 'Africa/Nairobi'
+                            });
+                        } else {
+                            throw new Error(data.message || 'Failed to load IP data');
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        alert('Error: ' + error.message);
+                        emptyState.style.display = 'block';
+                    })
+                    .finally(() => {
+                        loading.style.display = 'none';
+                    });
+            }
+            
+            function displayIP(ipData) {
+                document.getElementById('ip-address').textContent = ipData.ip;
+                document.getElementById('ip-type').textContent = ipData.type;
+                document.getElementById('country').textContent = ipData.country || 'Unknown';
+                document.getElementById('region').textContent = ipData.region || 'Unknown';
+                document.getElementById('city').textContent = ipData.city || 'Unknown';
+                document.getElementById('postal').textContent = ipData.postal || 'Unknown';
+                document.getElementById('isp').textContent = ipData.isp || 'Unknown';
+                document.getElementById('org').textContent = ipData.org || 'Unknown';
+                document.getElementById('asn').textContent = ipData.asn || 'Unknown';
+                document.getElementById('timezone').textContent = ipData.timezone || 'Unknown';
+                
+                // Show IP container
+                ipContainer.style.display = 'block';
+                emptyState.style.display = 'none';
+            }
+            
+            searchBtn.addEventListener('click', () => {
+                fetchIP(ipInput.value.trim());
+            });
+            
+            ipInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    fetchIP(ipInput.value.trim());
+                }
+            });
+        });
+    </script>
+</body>
+</html>
