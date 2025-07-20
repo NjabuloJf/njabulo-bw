@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fredi Likee Video Downloader</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #FF005C;
+            --secondary: #CC004A;
+            --dark: #1A1A1A;
+            --light: #FFFFFF;
+            --gray: #F5F5F5;
+            --dark-gray: #666666;
+            --success: #00C851;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #FAFAFA;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .tagline {
+            color: var(--dark-gray);
+            font-size: 1.1rem;
+        }
+
+        .downloader-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .download-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .url-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid var(--gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .url-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 0, 92, 0.2);
+        }
+
+        .download-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background-color: var(--secondary);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 0, 92, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            display: none;
+            background-color: #FFEBEE;
+            color: #D32F2F;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #D32F2F;
+        }
+
+        .results-container {
+            display: none;
+        }
+
+        .video-preview {
+            margin-bottom: 30px;
+        }
+
+        .video-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            display: block;
+        }
+
+        .download-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .download-option {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #EEE;
+        }
+
+        .option-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .option-title {
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .download-link {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .download-link:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .quality-info {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        .api-credit {
+            margin-top: 10px;
+        }
+
+        .api-credit a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .download-form {
+                flex-direction: column;
+            }
+            
+            .download-btn {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-film"></i>
+                <span>Fredi Likee Downloader</span>
+            </div>
+            <div class="tagline">Download Likee videos without watermark</div>
+        </header>
+
+        <div class="downloader-container">
+            <form class="download-form" id="downloadForm">
+                <input type="url" class="url-input" id="urlInput" placeholder="Paste Likee video URL here..." required>
+                <button type="submit" class="download-btn">Download</button>
+            </form>
+
+            <div class="error-message" id="errorMessage"></div>
+
+            <div class="loading" id="loadingIndicator">
+                <div class="spinner"></div>
+                <p>Fetching video information...</p>
+            </div>
+
+            <div class="results-container" id="resultsContainer">
+                <div class="video-preview">
+                    <h3 class="video-title" id="videoTitle"></h3>
+                    <div class="video-thumbnail">
+                        <img id="videoThumbnail" src="" alt="Video thumbnail">
+                    </div>
+                </div>
+
+                <div class="download-options">
+                    <div class="download-option">
+                        <div class="option-header">
+                            <h4 class="option-title">
+                                <i class="fas fa-tint-slash"></i>
+                                Without Watermark
+                            </h4>
+                        </div>
+                        <a href="#" class="download-link" id="downloadNoWatermark">
+                            <i class="fas fa-download"></i> Download
+                        </a>
+                        <div class="quality-info">Highest quality available</div>
+                    </div>
+
+                    <div class="download-option">
+                        <div class="option-header">
+                            <h4 class="option-title">
+                                <i class="fas fa-tint"></i>
+                                With Watermark
+                            </h4>
+                        </div>
+                        <a href="#" class="download-link" id="downloadWithWatermark">
+                            <i class="fas fa-download"></i> Download
+                        </a>
+                        <div class="quality-info">Original quality with watermark</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Likee Video Downloader & copy; Fredi 2025</p>
+            <p class="api-credit">Powered by <a href="/" target="_blank">Kei API</a></p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const downloadForm = document.getElementById('downloadForm');
+            const urlInput = document.getElementById('urlInput');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const errorMessage = document.getElementById('errorMessage');
+            const resultsContainer = document.getElementById('resultsContainer');
+            const videoTitle = document.getElementById('videoTitle');
+            const videoThumbnail = document.getElementById('videoThumbnail');
+            const downloadNoWatermark = document.getElementById('downloadNoWatermark');
+            const downloadWithWatermark = document.getElementById('downloadWithWatermark');
+
+            // Handle form submission
+            downloadForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const url = urlInput.value.trim();
+                
+                if (!url) {
+                    showError('Please enter a Likee video URL');
+                    return;
+                }
+                
+                // Validate URL
+                if (!isValidLikeeUrl(url)) {
+                    showError('Please enter a valid Likee video URL');
+                    return;
+                }
+                
+                // Clear previous results and errors
+                hideError();
+                resultsContainer.style.display = 'none';
+                
+                // Show loading indicator
+                loadingIndicator.style.display = 'block';
+                
+                // Make API request
+                fetch(`https://bk9.fun/download/likee?url=${encodeURIComponent(url)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('API request failed');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        loadingIndicator.style.display = 'none';
+                        
+                        if (!data.status) {
+                            throw new Error('Failed to fetch video information');
+                        }
+                        
+                        // Display video information
+                        videoTitle.textContent = data.BK9.title;
+                        videoThumbnail.src = data.BK9.thumbnail;
+                        
+                        // Set download links
+                        downloadNoWatermark.href = data.BK9.withoutwatermark;
+                        downloadWithWatermark.href = data.BK9.withWatermark;
+                        
+                        // Show results
+                        resultsContainer.style.display = 'block';
+                    })
+                    .catch(error => {
+                        loadingIndicator.style.display = 'none';
+                        showError(error.message);
+                        console.error('Error:', error);
+                    });
+            });
+            
+            // Validate Likee URL
+            function isValidLikeeUrl(url) {
+                return /^(https?:\/\/)?(l\.|www\.)?likee\.video\/v\/.+$/i.test(url);
+            }
+            
+            // Show error message
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+            }
+            
+            // Hide error message
+            function hideError() {
+                errorMessage.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

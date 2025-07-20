@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Twitter Downloader</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1DA1F2;
+            --primary-dark: #1991DB;
+            --text-primary: #0F1419;
+            --text-secondary: #536471;
+            --bg-color: #FFFFFF;
+            --border: #EFF3F4;
+            --card-bg: #F7F9F9;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --error: #F4212E;
+            --error-bg: #FEE8EA;
+            --success: #00BA7C;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'TwitterChirp', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #F5F8FA;
+            color: var(--text-primary);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .logo {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        h1 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+            font-size: 1.8rem;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .search-container {
+            background-color: var(--bg-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        #search-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        #search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(29, 161, 242, 0.2);
+        }
+
+        #search-button {
+            padding: 0 1.5rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        #search-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 2rem 0;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            border: 3px solid rgba(29, 161, 242, 0.1);
+            border-radius: 50%;
+            border-top: 3px solid var(--primary);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            display: none;
+            text-align: center;
+            color: var(--error);
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: var(--error-bg);
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .result-card {
+            background-color: var(--bg-color);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            margin-top: 1.5rem;
+            display: none;
+        }
+
+        .tweet-content {
+            padding: 1.5rem;
+        }
+
+        .tweet-text {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .tweet-media {
+            position: relative;
+            margin-bottom: 1rem;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        .tweet-thumbnail {
+            width: 100%;
+            display: block;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .tweet-thumbnail:hover {
+            opacity: 0.9;
+        }
+
+        .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 3rem;
+            opacity: 0.9;
+            pointer-events: none;
+        }
+
+        .download-options {
+            padding: 1rem 1.5rem;
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--border);
+        }
+
+        .download-title {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .download-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .download-btn {
+            padding: 0.75rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .download-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .download-btn.secondary {
+            background-color: var(--card-bg);
+            color: var(--primary);
+            border: 1px solid var(--border);
+        }
+
+        .download-btn.secondary:hover {
+            background-color: rgba(29, 161, 242, 0.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            overflow: auto;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .modal.show {
+            opacity: 1;
+        }
+
+        .modal-content {
+            position: relative;
+            margin: 2% auto;
+            max-width: 90%;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .modal-video {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 8px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 101;
+            transition: transform 0.2s;
+        }
+
+        .modal-close:hover {
+            transform: scale(1.1);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 1.5rem 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .creator {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem 1rem;
+            }
+            
+            .search-form {
+                flex-direction: column;
+            }
+            
+            #search-button {
+                padding: 0.8rem;
+                justify-content: center;
+            }
+
+            .download-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fab fa-twitter"></i>
+            </div>
+            <h1>Premium Twitter Downloader</h1>
+            <p class="subtitle">Download high-quality videos from Twitter with ease</p>
+        </header>
+
+        <div class="search-container">
+            <form class="search-form" id="search-form">
+                <input type="url" id="search-input" placeholder="Paste Twitter URL here (e.g., https://twitter.com/username/status/123)" required>
+                <button type="submit" id="search-button">
+                    <i class="fas fa-download"></i> Download
+                </button>
+            </form>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Fetching tweet information...</p>
+        </div>
+
+        <div class="error-message" id="error-message"></div>
+
+        <div class="result-card" id="result-card">
+            <div class="tweet-content">
+                <p class="tweet-text" id="tweet-text"></p>
+                <div class="tweet-media" id="tweet-media">
+                    <img class="tweet-thumbnail" id="tweet-thumbnail" src="" alt="Tweet thumbnail">
+                    <div class="play-icon">
+                        <i class="fas fa-play"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="download-options">
+                <h3 class="download-title">
+                    <i class="fas fa-download"></i> Download Options
+                </h3>
+                <div class="download-buttons">
+                    <button class="download-btn" id="download-hd">
+                        <i class="fas fa-hd"></i> HD Video
+                    </button>
+                    <button class="download-btn secondary" id="download-sd">
+                        <i class="fas fa-video"></i> SD Video
+                    </button>
+                    <button class="download-btn secondary" id="download-audio">
+                        <i class="fas fa-music"></i> Audio Only
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="modal">
+            <span class="modal-close" id="modal-close">&times;</span>
+            <div class="modal-content">
+                <video controls class="modal-video" id="modal-video">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Created by <span class="creator">FrediEzra</span> | Powered by Twitter API</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchForm = document.getElementById('search-form');
+            const searchInput = document.getElementById('search-input');
+            const searchButton = document.getElementById('search-button');
+            const loading = document.getElementById('loading');
+            const errorMessage = document.getElementById('error-message');
+            const resultCard = document.getElementById('result-card');
+            const tweetText = document.getElementById('tweet-text');
+            const tweetMedia = document.getElementById('tweet-media');
+            const tweetThumbnail = document.getElementById('tweet-thumbnail');
+            const downloadHd = document.getElementById('download-hd');
+            const downloadSd = document.getElementById('download-sd');
+            const downloadAudio = document.getElementById('download-audio');
+            const modal = document.getElementById('modal');
+            const modalVideo = document.getElementById('modal-video');
+            const modalClose = document.getElementById('modal-close');
+
+            let currentResult = null;
+
+            // Focus search input on page load
+            searchInput.focus();
+
+            // Handle search form submission
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const url = searchInput.value.trim();
+                
+                if (url) {
+                    if (!isValidTwitterUrl(url)) {
+                        showError('Please enter a valid Twitter URL');
+                        return;
+                    }
+                    fetchTweetData(url);
+                }
+            });
+
+            // Validate Twitter URL
+            function isValidTwitterUrl(url) {
+                return /https?:\/\/twitter\.com\/\w+\/status\/\d+/i.test(url) || 
+                       /https?:\/\/x\.com\/\w+\/status\/\d+/i.test(url);
+            }
+
+            // Function to fetch tweet data
+            function fetchTweetData(url) {
+                // Show loading, hide error and previous result
+                loading.style.display = 'block';
+                errorMessage.style.display = 'none';
+                resultCard.style.display = 'none';
+                searchButton.disabled = true;
+                searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing';
+                
+                // Call Twitter download API
+                fetch(`https://apis-keith.vercel.app/download/twitter?url=${encodeURIComponent(url)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        loading.style.display = 'none';
+                        searchButton.disabled = false;
+                        searchButton.innerHTML = '<i class="fas fa-download"></i> Download';
+                        
+                        if (data.status && data.result) {
+                            currentResult = data.result;
+                            displayTweetData(data.result);
+                        } else {
+                            showError('No video found in this tweet or the tweet is private.');
+                        }
+                    })
+                    .catch(error => {
+                        loading.style.display = 'none';
+                        searchButton.disabled = false;
+                        searchButton.innerHTML = '<i class="fas fa-download"></i> Download';
+                        showError('Failed to fetch tweet. Please try again later.');
+                        console.error('Error:', error);
+                    });
+            }
+
+            // Function to display tweet data
+            function displayTweetData(result) {
+                // Set tweet text
+                tweetText.textContent = result.desc || '';
+
+                // Set thumbnail
+                if (result.thumb) {
+                    tweetThumbnail.src = result.thumb;
+                    tweetMedia.style.display = 'block';
+                } else {
+                    tweetMedia.style.display = 'none';
+                }
+
+                // Show result card
+                resultCard.style.display = 'block';
+
+                // Scroll to result
+                resultCard.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // Function to show error message
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+            }
+
+            // Event listeners for download buttons
+            downloadHd.addEventListener('click', function() {
+                if (currentResult && currentResult.video_hd) {
+                    downloadFile(currentResult.video_hd, 'twitter-video-hd.mp4');
+                }
+            });
+
+            downloadSd.addEventListener('click', function() {
+                if (currentResult && currentResult.video_sd) {
+                    downloadFile(currentResult.video_sd, 'twitter-video-sd.mp4');
+                }
+            });
+
+            downloadAudio.addEventListener('click', function() {
+                if (currentResult && currentResult.audio) {
+                    downloadFile(currentResult.audio, 'twitter-audio.mp3');
+                }
+            });
+
+            // Function to download file
+            function downloadFile(url, filename) {
+                // Create a temporary anchor element
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename || `twitter-download-${Date.now()}.mp4`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+
+            // Event listener for thumbnail click
+            tweetMedia.addEventListener('click', function() {
+                if (currentResult && currentResult.video_hd) {
+                    openModal(currentResult.video_hd);
+                }
+            });
+
+            // Function to open modal with video
+            function openModal(videoUrl) {
+                modalVideo.src = videoUrl;
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+                
+                // Add slight delay for smooth opacity transition
+                setTimeout(() => {
+                    modal.classList.add('show');
+                }, 10);
+                
+                // Play video when modal opens
+                setTimeout(() => {
+                    modalVideo.play();
+                }, 300);
+            }
+
+            // Function to close modal
+            function closeModal() {
+                modalVideo.pause();
+                modal.classList.remove('show');
+                
+                // Wait for transition to complete before hiding
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }, 300);
+            }
+
+            // Event listeners for modal
+            modalClose.addEventListener('click', closeModal);
+
+            // Close modal when clicking outside the video
+            window.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal.style.display === 'block') {
+                    closeModal();
+                }
+            });
+
+            // Prevent form submission on Enter key in search input
+            searchInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    searchForm.dispatchEvent(new Event('submit'));
+                }
+            });
+        });
+    </script>
+</body>
+</html>

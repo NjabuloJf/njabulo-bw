@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fredi CapCut Video Downloader</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #00C4FF;
+            --secondary: #0088CC;
+            --dark: #121212;
+            --light: #FFFFFF;
+            --gray: #F5F5F5;
+            --dark-gray: #666666;
+            --success: #00C851;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #FAFAFA;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .tagline {
+            color: var(--dark-gray);
+            font-size: 1.1rem;
+        }
+
+        .downloader-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .download-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .url-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid var(--gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .url-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 196, 255, 0.2);
+        }
+
+        .download-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background-color: var(--secondary);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(0, 196, 255, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            display: none;
+            background-color: #FFEBEE;
+            color: #D32F2F;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #D32F2F;
+        }
+
+        .results-container {
+            display: none;
+        }
+
+        .video-preview {
+            margin-bottom: 30px;
+        }
+
+        .video-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+            text-align: center;
+        }
+
+        .video-player {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background: var(--gray);
+        }
+
+        .video-player video {
+            width: 100%;
+            display: block;
+            border-radius: 12px;
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            display: block;
+        }
+
+        .video-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--dark-gray);
+        }
+
+        .stat-item i {
+            color: var(--primary);
+        }
+
+        .author-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--gray);
+            border-radius: 8px;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .author-details {
+            flex: 1;
+        }
+
+        .author-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .author-desc {
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+        }
+
+        .download-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .download-option {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #EEE;
+        }
+
+        .option-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .option-title {
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .download-link {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-align: center;
+        }
+
+        .download-link:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .file-info {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        .api-credit {
+            margin-top: 10px;
+        }
+
+        .api-credit a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .download-form {
+                flex-direction: column;
+            }
+            
+            .download-btn {
+                padding: 15px;
+            }
+            
+            .video-stats {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-video"></i>
+                <span>CapCut Downloader</span>
+            </div>
+            <div class="tagline">Download CapCut videos in high quality</div>
+        </header>
+
+        <div class="downloader-container">
+            <form class="download-form" id="downloadForm">
+                <input type="url" class="url-input" id="urlInput" placeholder="Paste CapCut video URL here..." required>
+                <button type="submit" class="download-btn">Download</button>
+            </form>
+
+            <div class="error-message" id="errorMessage"></div>
+
+            <div class="loading" id="loadingIndicator">
+                <div class="spinner"></div>
+                <p>Fetching video information...</p>
+            </div>
+
+            <div class="results-container" id="resultsContainer">
+                <div class="video-preview">
+                    <h2 class="video-title" id="videoTitle"></h2>
+                    
+                    <div class="video-player" id="videoPlayer">
+                        <!-- Video will be displayed here -->
+                    </div>
+                    
+                    <div class="video-thumbnail" id="videoThumbnail">
+                        <!-- Thumbnail will be displayed here -->
+                    </div>
+                    
+                    <div class="video-stats" id="videoStats">
+                        <!-- Stats will be added here -->
+                    </div>
+                    
+                    <div class="author-info" id="authorInfo">
+                        <!-- Author info will be added here -->
+                    </div>
+                </div>
+
+                <div class="download-options">
+                    <div class="download-option">
+                        <div class="option-header">
+                            <h4 class="option-title">
+                                <i class="fas fa-download"></i>
+                                Download Video
+                            </h4>
+                        </div>
+                        <a href="#" class="download-link" id="downloadVideo">
+                            <i class="fas fa-cloud-download-alt"></i> Download HD Video
+                        </a>
+                        <div class="file-info" id="videoInfo">
+                            <!-- Video info will be added here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>CapCut Video Downloader & copy; Fredi 2025</p>
+            <p class="api-credit">Powered by <a href="/" target="_blank">kei APIs</a></p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const downloadForm = document.getElementById('downloadForm');
+            const urlInput = document.getElementById('urlInput');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const errorMessage = document.getElementById('errorMessage');
+            const resultsContainer = document.getElementById('resultsContainer');
+            const videoTitle = document.getElementById('videoTitle');
+            const videoPlayer = document.getElementById('videoPlayer');
+            const videoThumbnail = document.getElementById('videoThumbnail');
+            const videoStats = document.getElementById('videoStats');
+            const authorInfo = document.getElementById('authorInfo');
+            const downloadVideo = document.getElementById('downloadVideo');
+            const videoInfo = document.getElementById('videoInfo');
+
+            // Handle form submission
+            downloadForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const url = urlInput.value.trim();
+                
+                if (!url) {
+                    showError('Please enter a CapCut video URL');
+                    return;
+                }
+                
+                // Validate URL
+                if (!isValidCapCutUrl(url)) {
+                    showError('Please enter a valid CapCut video URL');
+                    return;
+                }
+                
+                // Clear previous results and errors
+                hideError();
+                resultsContainer.style.display = 'none';
+                videoPlayer.innerHTML = '';
+                videoThumbnail.innerHTML = '';
+                videoStats.innerHTML = '';
+                authorInfo.innerHTML = '';
+                
+                // Show loading indicator
+                loadingIndicator.style.display = 'block';
+                
+                // Make API request
+                fetch(`https://api.siputzx.my.id/api/d/capcut?url=${encodeURIComponent(url)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('API request failed');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        loadingIndicator.style.display = 'none';
+                        
+                        if (!data.status || !data.data) {
+                            throw new Error('No video found at this URL');
+                        }
+                        
+                        // Display video information
+                        displayVideoData(data.data);
+                        
+                        // Show results
+                        resultsContainer.style.display = 'block';
+                    })
+                    .catch(error => {
+                        loadingIndicator.style.display = 'none';
+                        showError(error.message);
+                        console.error('Error:', error);
+                    });
+            });
+            
+            // Display video data
+            function displayVideoData(videoData) {
+                // Set video title
+                videoTitle.textContent = videoData.name || 'CapCut Video';
+                
+                // Create video element
+                const videoElement = document.createElement('video');
+                videoElement.src = videoData.contentUrl;
+                videoElement.controls = true;
+                videoElement.autoplay = false;
+                videoElement.style.width = '100%';
+                videoPlayer.appendChild(videoElement);
+                
+                // Create thumbnail if video is not available
+                if (videoData.thumbnailUrl && videoData.thumbnailUrl.length > 0) {
+                    const thumbnailImg = document.createElement('img');
+                    thumbnailImg.src = videoData.thumbnailUrl[0];
+                    thumbnailImg.alt = 'Video thumbnail';
+                    videoThumbnail.appendChild(thumbnailImg);
+                }
+                
+                // Display video stats
+                if (videoData.meta) {
+                    const meta = videoData.meta;
+                    
+                    // Convert duration from milliseconds to seconds
+                    const durationInSeconds = Math.floor(meta.duration / 1000);
+                    const minutes = Math.floor(durationInSeconds / 60);
+                    const seconds = durationInSeconds % 60;
+                    const formattedDuration = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                    
+                    // Format numbers
+                    const formatNumber = num => {
+                        if (num >= 1000000) {
+                            return (num / 1000000).toFixed(1) + 'M';
+                        }
+                        if (num >= 1000) {
+                            return (num / 1000).toFixed(1) + 'K';
+                        }
+                        return num;
+                    };
+                    
+                    videoStats.innerHTML = `
+                        <div class="stat-item">
+                            <i class="fas fa-play"></i>
+                            <span>${formatNumber(meta.play)} plays</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-heart"></i>
+                            <span>${formatNumber(meta.like)} likes</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <span>${formattedDuration} duration</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-download"></i>
+                            <span>${formatNumber(meta.usage)} uses</span>
+                        </div>
+                    `;
+                    
+                    // Display author info
+                    if (meta.author) {
+                        authorInfo.innerHTML = `
+                            <img src="${meta.author.avatarUrl}" alt="${meta.author.name}" class="author-avatar">
+                            <div class="author-details">
+                                <div class="author-name">${meta.author.name}</div>
+                                <div class="author-desc">${meta.author.description || 'CapCut creator'}</div>
+                            </div>
+                        `;
+                    }
+                    
+                    // Set download link
+                    downloadVideo.href = videoData.contentUrl;
+                    downloadVideo.setAttribute('download', `${meta.title || 'capcut-video'}.mp4`);
+                    
+                    // Set video info
+                    videoInfo.innerHTML = `
+                        <span>Format: MP4</span>
+                        <span>Ratio: ${meta.videoRatio || '9:16'}</span>
+                    `;
+                }
+            }
+            
+            // Validate CapCut URL
+            function isValidCapCutUrl(url) {
+                return /^(https?:\/\/)?(www\.)?capcut\.com\/t\/[a-zA-Z0-9_-]+\/?$/i.test(url);
+            }
+            
+            // Show error message
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+            }
+            
+            // Hide error message
+            function hideError() {
+                errorMessage.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
