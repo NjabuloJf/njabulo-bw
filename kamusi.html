@@ -17,7 +17,7 @@
       color: #fff;
       overflow-x: hidden;
     }
-    
+
     #bg-video {
       position: fixed;
       right: 0;
@@ -28,9 +28,23 @@
       z-index: -1;
       filter: brightness(0.5);
     }
+
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 0.5em 1em;
+      font-size: 0.9em;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 999;
+    }
+
     .container {
       max-width: 800px;
-      margin: 6vh auto;
+      margin: 10vh auto 6vh;
       background: rgba(50, 0, 80, 0.7);
       padding: 2em;
       border-radius: 20px;
@@ -38,7 +52,7 @@
       box-shadow: 0 0 25px rgba(255, 0, 64, 0.3);
       text-align: center;
     }
-    
+
     h1 {
       font-size: 2.5em;
       color: #ff1744;
@@ -49,7 +63,7 @@
       margin: 1em 0;
       color: #ccc;
     }
-    
+
     input {
       padding: 0.8em;
       width: 90%;
@@ -61,7 +75,7 @@
       color: #fff;
       margin-top: 1em;
     }
-    
+
     .btn {
       margin-top: 1em;
       padding: 0.8em 1.5em;
@@ -73,7 +87,7 @@
       cursor: pointer;
       transition: background 0.3s ease, transform 0.2s ease;
     }
-    
+
     .btn:hover {
       background-color: #ff1744;
       transform: scale(1.05);
@@ -95,13 +109,13 @@
       background-color: #8e24aa;
       transform: scale(1.05);
     }
-    
+
     .result {
       margin-top: 2em;
       font-size: 1.2em;
       color: #fff;
     }
-    
+
     .footer {
       margin-top: 2em;
       font-size: 0.9em;
@@ -122,7 +136,7 @@
         margin: 3vh 1rem;
         padding: 1.5rem;
       }
-      
+
       input {
         width: 100%;
       }
@@ -135,63 +149,100 @@
 </head>
 <body>
 
-  <!-- Background Video -->
-  <video autoplay muted loop id="bg-video">
-    <source src="https://files.catbox.moe/wv5h3v.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
+<video autoplay muted loop id="bg-video">
+  <source src="https://files.catbox.moe/wv5h3v.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
-  <div class="container">
-    <a class="apk-download" href="https://www.mediafire.com/file/5n03od82j3owsmw/Maka_kamusi_%25282%2529.apk/file" target="_blank">
-      ⬇️ Download Apk
-    </a>
+<div class="status-bar" id="statusBar">
+  <span id="battery">🔋 Battery</span>
+  <span id="network">📶 Network</span>
+  <span id="clock">🕒 Time</span>
+  <span id="location">🌍 Detecting location...</span>
+</div>
 
-    <h1>📘 Fredi Dictionary</h1>
-    <p class="quote">"I know every word... even those that haven't been invented yet!" 😎</p>
+<div class="container">
+  <a class="apk-download" href="https://www.mediafire.com/file/5n03od82j3owsmw/Maka_kamusi_%25282%2529.apk/file" target="_blank">
+    ⬇️ Download Apk
+  </a>
+  <h1>📘 LUCKY GO Dictionary</h1>
+  <p class="quote">"I know every word... even those that haven't been invented yet!" 😎</p>
 
-    <!-- Search field -->
-    <input type="text" id="searchWord" placeholder="Search a Swahili word..." />
+  <input type="text" id="searchWord" placeholder="Search a word..." />
 
-    <!-- Action buttons -->
-    <div>
-      <button class="btn" onclick="goToSearch()">Search Online</button>
-      <button class="btn" onclick="goToPronounce()">Pronounce 🔊</button>
-      <button class="btn" onclick="goToTranslate()">🌐 Translate Word</button>
-    </div>
-
-    <div class="result" id="result"></div>
-
-    <div class="footer">
-      <p><a href="search.html">⚡ Open online search without a word</a></p>
-      &copy; 2025 Fredi Ai Libraries | all right reserved 
-    </div>
+  <div>
+    <button class="btn" onclick="goToSearch()">Search Online</button>
+    <button class="btn" onclick="goToPronounce()">Pronounce 🔊</button>
+    <button class="btn" onclick="goToTranslate()">🌐 Translate Word</button>
   </div>
 
-  <script>
-    function goToSearch() {
-      const word = document.getElementById("searchWord").value.trim().toLowerCase();
-      if (word) {
-        window.location.href = `./kamusi/search.html?word=${encodeURIComponent(word)}`;
-      } else {
-        alert("Please enter a word first.");
+  <div class="result" id="result"></div>
+
+  <div class="footer">
+    <p><a href="search.html">⚡ Open online search without a word</a></p>
+    &copy; 2025 Fredi Ai | All rights reserved
+  </div>
+</div>
+
+<script>
+  function goToSearch() {
+    const word = document.getElementById("searchWord").value.trim().toLowerCase();
+    if (word) {
+      window.location.href = `./kamusi/search.html?word=${encodeURIComponent(word)}`;
+    } else {
+      alert("Please enter a word first.");
+    }
+  }
+
+  function goToPronounce() {
+    window.location.href = "./kamusi/audio.html";
+  }
+
+  function goToTranslate() {
+    window.location.href = "./kamusi/translate.html";
+  }
+
+  document.getElementById("searchWord")
+    .addEventListener("keypress", function (event) {
+      if (event.key === "Enter") {
+        goToSearch();
       }
-    }
+    });
 
-    function goToPronounce() {
-      window.location.href = "./kamusi/audio.html";
-    }
+  // Time, Battery, Network, and Location
+  function updateClock() {
+    const now = new Date();
+    document.getElementById("clock").textContent = `🕒 ${now.toLocaleTimeString()}`;
+  }
 
-    function goToTranslate() {
-      window.location.href = "./kamusi/translate.html";
+  navigator.getBattery?.().then(battery => {
+    function updateBattery() {
+      document.getElementById("battery").textContent = `🔋 ${Math.round(battery.level * 100)}%`;
     }
+    updateBattery();
+    battery.addEventListener('levelchange', updateBattery);
+  });
 
-    document.getElementById("searchWord")
-      .addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-          goToSearch();
-        }
+  if (navigator.onLine) {
+    document.getElementById("network").textContent = "📶 Online";
+  } else {
+    document.getElementById("network").textContent = "📴 Offline";
+  }
+
+  function detectLocation() {
+    fetch("https://ipapi.co/json")
+      .then(res => res.json())
+      .then(loc => {
+        document.getElementById("location").textContent = `🌍 ${loc.city}, ${loc.region}, ${loc.country_name}`;
+      })
+      .catch(() => {
+        document.getElementById("location").textContent = "🌍 Location unavailable";
       });
-  </script>
+  }
+
+  setInterval(updateClock, 1000);
+  detectLocation();
+</script>
 
 </body>
 </html>
