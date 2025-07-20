@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hentai Video Downloader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #6a0dad;
+        }
+        .video-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        video {
+            width: 100%;
+            border-radius: 4px;
+        }
+        .video-info {
+            margin-top: 15px;
+        }
+        .video-info h3 {
+            margin-top: 0;
+            color: #6a0dad;
+        }
+        .stats {
+            display: flex;
+            gap: 15px;
+            margin: 10px 0;
+            font-size: 14px;
+            color: #666;
+        }
+        button {
+            background-color: #6a0dad;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #5a0c9d;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+        .error {
+            color: red;
+            text-align: center;
+        }
+        .category {
+            display: inline-block;
+            background-color: #e0d0f0;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fredi Hentai Video Downloader 🔞</h1>
+    <div id="app">
+        <div class="loading">Loading random hentai video...</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const apiUrl = 'https://apis-keith.vercel.app/dl/hentaivid';
+            const app = document.getElementById('app');
+            
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status && data.result.length > 0) {
+                        // Select a random video from the results
+                        const randomIndex = Math.floor(Math.random() * data.result.length);
+                        const videoData = data.result[randomIndex];
+                        
+                        // Create HTML for the video
+                        app.innerHTML = `
+                            <div class="video-container">
+                                <video controls>
+                                    <source src="${videoData.media.video_url}" type="${videoData.media.type}">
+                                    Your browser does not support the video tag.
+                                </video>
+                                <div class="video-info">
+                                    <h3>${videoData.title}</h3>
+                                    <div>
+                                        ${videoData.category.split(',').map(cat => `<span class="category">${cat.trim()}</span>`).join('')}
+                                    </div>
+                                    <div class="stats">
+                                        <span>👁️ ${videoData.views_count} views</span>
+                                        <span>↗️ ${videoData.share_count} shares</span>
+                                    </div>
+                                    <button onclick="downloadVideo('${videoData.media.video_url}', '${videoData.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.mp4')">
+                                        Download Video
+                                    </button>
+                                </div>
+                            </div>
+                            <div style="text-align: center; margin-top: 20px;">
+                                <button onclick="location.reload()">Load Another Random Video</button>
+                            </div>
+                        `;
+                    } else {
+                        app.innerHTML = '<div class="error">No videos found or API error</div>';
+                    }
+                })
+                .catch(error => {
+                    app.innerHTML = `<div class="error">Error fetching videos: ${error.message}</div>`;
+                    console.error('Error:', error);
+                });
+        });
+
+        function downloadVideo(url, filename) {
+            fetch(url)
+                .then(response => response.blob())
+                .then(blob => {
+                    const blobUrl = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = blobUrl;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(blobUrl);
+                    document.body.removeChild(a);
+                })
+                .catch(error => {
+                    console.error('Download error:', error);
+                    alert('Download failed. Please try again.');
+                });
+        }
+    </script>
+</body>
+</html>
