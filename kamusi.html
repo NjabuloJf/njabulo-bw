@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Fredi Ai Dictionary</title>
+  </title>Fredi Ai Dictionary</title>
   <style>
     * {
       box-sizing: border-box;
@@ -26,7 +26,7 @@
       min-height: 100%;
       object-fit: cover;
       z-index: -1;
-      filter: brightness(0.5);
+      filter: brightness(0.4);
     }
 
     .status-bar {
@@ -44,76 +44,71 @@
 
     .container {
       max-width: 800px;
-      margin: 10vh auto 6vh;
-      background: rgba(50, 0, 80, 0.7);
+      margin: 12vh auto 6vh;
+      background: rgba(255, 255, 255, 0.05);
       padding: 2em;
       border-radius: 20px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 25px rgba(255, 0, 64, 0.3);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
       text-align: center;
     }
 
     h1 {
       font-size: 2.5em;
-      color: #ff1744;
+      color: #ff4081;
+      margin-bottom: 0.3em;
     }
 
     .quote {
       font-style: italic;
-      margin: 1em 0;
       color: #ccc;
-    }
-
-    input {
-      padding: 0.8em;
-      width: 90%;
-      font-size: 1em;
-      border-radius: 10px;
-      border: none;
-      outline: none;
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
-      margin-top: 1em;
-    }
-
-    .btn {
-      margin-top: 1em;
-      padding: 0.8em 1.5em;
-      background-color: #d50000;
-      color: #fff;
-      border: none;
-      font-size: 1em;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.3s ease, transform 0.2s ease;
-    }
-
-    .btn:hover {
-      background-color: #ff1744;
-      transform: scale(1.05);
+      margin-bottom: 2em;
     }
 
     .apk-download {
       display: inline-block;
-      margin: 1.5em auto 0;
-      padding: 0.8em 1.5em;
-      background-color: #6a1b9a;
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
+      margin-bottom: 1.5em;
+      padding: 0.9em 2em;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      color: #fff;
       font-weight: bold;
-      transition: background-color 0.3s, transform 0.2s;
+      text-decoration: none;
+      backdrop-filter: blur(8px);
+      transition: all 0.3s ease;
     }
 
     .apk-download:hover {
-      background-color: #8e24aa;
+      background: rgba(255, 255, 255, 0.3);
       transform: scale(1.05);
+    }
+
+    .modern-btn {
+      display: block;
+      width: 100%;
+      margin: 1em auto;
+      padding: 1em;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border: none;
+      border-radius: 15px;
+      font-size: 1.1em;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .modern-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-3px);
     }
 
     .result {
       margin-top: 2em;
       font-size: 1.2em;
-      color: #fff;
     }
 
     .footer {
@@ -133,16 +128,13 @@
 
     @media screen and (max-width: 600px) {
       .container {
-        margin: 3vh 1rem;
+        margin: 5vh 1rem;
         padding: 1.5rem;
       }
 
-      input {
-        width: 100%;
-      }
-
-      .btn, .apk-download {
-        width: 100%;
+      .modern-btn {
+        font-size: 1em;
+        padding: 0.8em;
       }
     }
   </style>
@@ -158,40 +150,32 @@
   <span id="battery">🔋 Battery</span>
   <span id="network">📶 Network</span>
   <span id="clock">🕒 Time</span>
-  <span id="location">🌍 Detecting location...</span>
+  <span id="location">🌍 Detecting...</span>
 </div>
 
 <div class="container">
   <a class="apk-download" href="https://www.mediafire.com/file/5n03od82j3owsmw/Maka_kamusi_%25282%2529.apk/file" target="_blank">
     ⬇️ Download Apk
   </a>
+
   <h1>📘 LUCKY GO Dictionary</h1>
   <p class="quote">"I know every word... even those that haven't been invented yet!" 😎</p>
 
-  <input type="text" id="searchWord" placeholder="Search a word..." />
-
-  <div>
-    <button class="btn" onclick="goToSearch()">Search Online</button>
-    <button class="btn" onclick="goToPronounce()">Pronounce 🔊</button>
-    <button class="btn" onclick="goToTranslate()">🌐 Translate Word</button>
-  </div>
+  <button class="modern-btn" onclick="goToSearch()">🔎 Search Online</button>
+  <button class="modern-btn" onclick="goToPronounce()">🔊 Pronounce</button>
+  <button class="modern-btn" onclick="goToTranslate()">🌐 Translate</button>
 
   <div class="result" id="result"></div>
 
   <div class="footer">
-    <p><a href="search.html">⚡ Open online search without a word</a></p>
+    <p><a href="search.html">⚡ Open online search</a></p>
     &copy; 2025 Fredi Ai | All rights reserved
   </div>
 </div>
 
 <script>
   function goToSearch() {
-    const word = document.getElementById("searchWord").value.trim().toLowerCase();
-    if (word) {
-      window.location.href = `./kamusi/search.html?word=${encodeURIComponent(word)}`;
-    } else {
-      alert("Please enter a word first.");
-    }
+    window.location.href = "./kamusi/search.html";
   }
 
   function goToPronounce() {
@@ -201,13 +185,6 @@
   function goToTranslate() {
     window.location.href = "./kamusi/translate.html";
   }
-
-  document.getElementById("searchWord")
-    .addEventListener("keypress", function (event) {
-      if (event.key === "Enter") {
-        goToSearch();
-      }
-    });
 
   // Time, Battery, Network, and Location
   function updateClock() {
@@ -223,6 +200,14 @@
     battery.addEventListener('levelchange', updateBattery);
   });
 
+  window.addEventListener("online", () => {
+    document.getElementById("network").textContent = "📶 Online";
+  });
+
+  window.addEventListener("offline", () => {
+    document.getElementById("network").textContent = "📴 Offline";
+  });
+
   if (navigator.onLine) {
     document.getElementById("network").textContent = "📶 Online";
   } else {
@@ -233,7 +218,7 @@
     fetch("https://ipapi.co/json")
       .then(res => res.json())
       .then(loc => {
-        document.getElementById("location").textContent = `🌍 ${loc.city}, ${loc.region}, ${loc.country_name}`;
+        document.getElementById("location").textContent = `🌍 ${loc.city}, ${loc.country_name}`;
       })
       .catch(() => {
         document.getElementById("location").textContent = "🌍 Location unavailable";
