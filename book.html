@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fredi Library</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="https://www.gutenberg.org/cache/epub/2542/pg2542.cover.medium.jpg" type="image/jpeg">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4cc9f0;
+            --warning-color: #f72585;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: #f5f7ff;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(72, 149, 239, 0.2);
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e9ecef;
+        }
+
+        .btn-danger {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #d1145a;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #3aa8d8;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .book-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid #eee;
+        }
+
+        .book-details {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .book-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+
+        .book-author {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .book-meta {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background-color: #e9ecef;
+            color: #495057;
+        }
+
+        .badge-primary {
+            background-color: #e3f2fd;
+            color: var(--primary-color);
+        }
+
+        .book-actions {
+            margin-top: auto;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .content-view {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--box-shadow);
+            margin-top: 2rem;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .content-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+
+        .content-toolbar {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .content-body {
+            line-height: 1.8;
+            white-space: pre-wrap;
+            max-height: 60vh;
+            overflow-y: auto;
+            padding: 1rem;
+            border: 1px solid #eee;
+            border-radius: var(--border-radius);
+        }
+
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            gap: 1rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(67, 97, 238, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            color: #6c757d;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .book-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .content-toolbar {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <img src="https://www.gutenberg.org/cache/epub/2542/pg2542.cover.medium.jpg" alt="Keith Book Library Logo">
+                <h1>FrediLibrary</h1>
+            </div>
+        </header>
+
+        <main>
+            <!-- Search Section -->
+            <section id="search-section">
+                <div class="search-container">
+                    <input type="text" id="search-input" class="search-input" placeholder="Search for books by title, author, or keyword...">
+                    <button id="search-btn" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+
+                <div id="error-message" class="alert alert-danger hidden">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="error-text"></span>
+                </div>
+
+                <div id="loading" class="loading hidden">
+                    <div class="spinner"></div>
+                    <p>Searching our library...</p>
+                </div>
+
+                <div id="results-section">
+                    <div class="book-grid" id="book-grid"></div>
+                </div>
+            </section>
+
+            <!-- Content View Section -->
+            <section id="content-section" class="hidden">
+                <div class="content-view">
+                    <div class="content-header">
+                        <h2 class="content-title" id="content-title"></h2>
+                        <div class="content-toolbar">
+                            <button id="print-btn" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-print"></i> Print
+                            </button>
+                            <button id="share-btn" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-share-alt"></i> Share
+                            </button>
+                            <button id="copy-btn" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                            <button id="back-btn" class="btn btn-danger btn-sm">
+                                <i class="fas fa-arrow-left"></i> Back
+                            </button>
+                        </div>
+                    </div>
+                    <div class="content-body" id="book-content"></div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>© 2025 Fredi Library. All rights reserved.</p>
+            <p>Search All books</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const searchBtn = document.getElementById('search-btn');
+            const backBtn = document.getElementById('back-btn');
+            const searchInput = document.getElementById('search-input');
+            const bookGrid = document.getElementById('book-grid');
+            const contentSection = document.getElementById('content-section');
+            const bookContent = document.getElementById('book-content');
+            const contentTitle = document.getElementById('content-title');
+            const errorMessage = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+            const loading = document.getElementById('loading');
+            const searchSection = document.getElementById('search-section');
+            const printBtn = document.getElementById('print-btn');
+            const shareBtn = document.getElementById('share-btn');
+            const copyBtn = document.getElementById('copy-btn');
+
+            // Event Listeners
+            searchBtn.addEventListener('click', searchBooks);
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') searchBooks();
+            });
+            backBtn.addEventListener('click', showSearchSection);
+            printBtn.addEventListener('click', printContent);
+            shareBtn.addEventListener('click', shareContent);
+            copyBtn.addEventListener('click', copyContent);
+
+            // Functions
+            function searchBooks() {
+                const query = searchInput.value.trim();
+                
+                if (!query) {
+                    showError('Please enter a search term');
+                    return;
+                }
+                
+                clearResults();
+                showLoading();
+                
+                fetch(`https://apis-keith.vercel.app/education/booksearch?q=${encodeURIComponent(query)}`)
+                    .then(handleResponse)
+                    .then(data => {
+                        hideLoading();
+                        
+                        if (!data.status || !data.result || data.result.length === 0) {
+                            showError('No books found. Please try a different search term.');
+                            return;
+                        }
+                        
+                        displayBooks(data.result);
+                    })
+                    .catch(error => {
+                        hideLoading();
+                        showError('An error occurred while fetching books. Please try again later.');
+                        console.error('Error:', error);
+                    });
+            }
+
+            function displayBooks(books) {
+                bookGrid.innerHTML = '';
+                
+                books.forEach(book => {
+                    const bookCard = createBookCard(book);
+                    bookGrid.appendChild(bookCard);
+                });
+            }
+
+            function createBookCard(book) {
+                const bookCard = document.createElement('div');
+                bookCard.className = 'book-card';
+                
+                // Book cover image
+                const coverImage = book.formats?.coverImage 
+                    ? `<img src="${book.formats.coverImage}" alt="${book.title}" class="book-cover">`
+                    : `<div class="book-cover" style="background: #eee; display: flex; align-items: center; justify-content: center;">
+                          <i class="fas fa-book" style="font-size: 3rem; color: #aaa;"></i>
+                       </div>`;
+                
+                // Authors list
+                const authors = book.authors?.length > 0 
+                    ? book.authors.map(author => author.name).join(', ')
+                    : 'Unknown author';
+                
+                // Subjects badges
+                const subjects = book.subjects?.slice(0, 3).map(subject => 
+                    `<span class="badge">${subject}</span>`
+                ).join('') || '';
+                
+                // Languages badge
+                const languages = book.languages?.map(lang => 
+                    `<span class="badge badge-primary">${lang.toUpperCase()}</span>`
+                ).join('') || '';
+                
+                bookCard.innerHTML = `
+                    ${coverImage}
+                    <div class="book-details">
+                        <h3 class="book-title">${book.title}</h3>
+                        <p class="book-author">By ${authors}</p>
+                        <div class="book-meta">
+                            ${subjects}
+                            ${languages}
+                            <span class="badge"><i class="fas fa-download"></i> ${book.downloadCount || 0}</span>
+                        </div>
+                        <div class="book-actions">
+                            <button class="btn btn-primary btn-sm view-btn" data-id="${book.id}">
+                                <i class="fas fa-book-open"></i> Read
+                            </button>
+                            <button class="btn btn-success btn-sm view-btn" data-id="${book.id}">
+                                <i class="fas fa-info-circle"></i> Details
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                // Add event listeners to buttons
+                bookCard.querySelectorAll('.view-btn').forEach(btn => {
+                    btn.addEventListener('click', () => viewBookContent(btn.getAttribute('data-id')));
+                });
+                
+                return bookCard;
+            }
+
+            function viewBookContent(bookId) {
+                showLoading();
+                hideSearchSection();
+                
+                fetch(`https://apis-keith.vercel.app/education/bookid?q=${bookId}`)
+                    .then(handleResponse)
+                    .then(data => {
+                        hideLoading();
+                        
+                        if (!data.status || !data.result?.content) {
+                            showError('Could not load book content. Please try again later.');
+                            showSearchSection();
+                            return;
+                        }
+                        
+                        displayBookContent(data.result);
+                    })
+                    .catch(error => {
+                        hideLoading();
+                        showError('An error occurred while fetching book content. Please try again later.');
+                        showSearchSection();
+                        console.error('Error:', error);
+                    });
+            }
+
+            function displayBookContent(result) {
+                contentTitle.textContent = `Book ID: ${result.id}`;
+                bookContent.textContent = result.content;
+                contentSection.classList.remove('hidden');
+            }
+
+            function printContent() {
+                window.print();
+            }
+
+            function shareContent() {
+                if (navigator.share) {
+                    navigator.share({
+                        title: contentTitle.textContent,
+                        text: 'Check out this book from Keith Book Library',
+                        url: window.location.href
+                    }).catch(err => {
+                        console.error('Error sharing:', err);
+                        copyToClipboard(window.location.href, 'Link copied to clipboard!');
+                    });
+                } else {
+                    copyToClipboard(bookContent.textContent, 'Content copied to clipboard!');
+                }
+            }
+
+            function copyContent() {
+                copyToClipboard(bookContent.textContent, 'Content copied to clipboard!');
+            }
+
+            function copyToClipboard(text, successMessage) {
+                navigator.clipboard.writeText(text)
+                    .then(() => {
+                        const alert = document.createElement('div');
+                        alert.className = 'alert alert-success';
+                        alert.innerHTML = `<i class="fas fa-check-circle"></i> ${successMessage}`;
+                        document.querySelector('.container').prepend(alert);
+                        setTimeout(() => alert.remove(), 3000);
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy:', err);
+                        showError('Failed to copy content');
+                    });
+            }
+
+            function showSearchSection() {
+                contentSection.classList.add('hidden');
+                searchSection.classList.remove('hidden');
+            }
+
+            function hideSearchSection() {
+                searchSection.classList.add('hidden');
+            }
+
+            function clearResults() {
+                bookGrid.innerHTML = '';
+                hideError();
+            }
+
+            function showLoading() {
+                loading.classList.remove('hidden');
+            }
+
+            function hideLoading() {
+                loading.classList.add('hidden');
+            }
+
+            function showError(message) {
+                errorText.textContent = message;
+                errorMessage.classList.remove('hidden');
+            }
+
+            function hideError() {
+                errorMessage.classList.add('hidden');
+            }
+
+            function handleResponse(response) {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            }
+        });
+    </script>
+</body>
+</html>
