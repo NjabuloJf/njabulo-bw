@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Content Extractor</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #4a6baf;
+            --secondary-color: #3a5a9c;
+            --dark-bg: #1a1a2e;
+            --light-text: #f0f0f0;
+            --code-bg: #282c34;
+            --border-color: #444;
+            --success-color: #4CAF50;
+            --error-color: #f44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .input-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        input[type="url"] {
+            flex: 1;
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--light-text);
+            font-size: 16px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .status {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .success {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: var(--success-color);
+        }
+        
+        .error {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: var(--error-color);
+        }
+        
+        .results {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .result-section {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            padding: 15px;
+        }
+        
+        .result-section h2 {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .content {
+            margin-top: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        pre {
+            background-color: var(--code-bg);
+            padding: 15px;
+            border-radius: 5px;
+            color: #abb2bf;
+            font-family: monospace;
+            white-space: pre-wrap;
+            position: relative;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 3px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        .media-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .media-item {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 5px;
+            word-break: break-all;
+            position: relative;
+        }
+        
+        .media-copy {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 2px 5px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.7em;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: var(--light-text);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Website Content Extractor</h1>
+        
+        <div class="input-section">
+            <input type="url" id="url-input" placeholder="Enter website URL (e.g., https://example.com)" required>
+            <button id="extract-btn">Extract Content</button>
+        </div>
+        
+        <div id="status" class="status" style="display: none;"></div>
+        
+        <div id="results" class="results" style="display: none;">
+            <div class="result-section" id="html-section">
+                <h2>
+                    <span>HTML Content</span>
+                    <button onclick="copyElementContent('html-content')">Copy</button>
+                </h2>
+                <div class="content">
+                    <pre id="html-content"></pre>
+                </div>
+            </div>
+            
+            <div class="result-section" id="css-section">
+                <h2>
+                    <span>CSS Files</span>
+                    <button onclick="copyElementContent('css-content')">Copy All</button>
+                </h2>
+                <div class="content" id="css-content"></div>
+            </div>
+            
+            <div class="result-section" id="js-section">
+                <h2>
+                    <span>JavaScript Files</span>
+                    <button onclick="copyElementContent('js-content')">Copy All</button>
+                </h2>
+                <div class="content" id="js-content"></div>
+            </div>
+            
+            <div class="result-section" id="media-section">
+                <h2>
+                    <span>Media Files</span>
+                    <button onclick="copyElementContent('media-content')">Copy All</button>
+                </h2>
+                <div class="content">
+                    <div class="media-list" id="media-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple copy function that works without Clipboard API
+        function copyElementContent(elementId) {
+            const element = document.getElementById(elementId);
+            const range = document.createRange();
+            range.selectNode(element);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showStatus('Content copied to clipboard!');
+                } else {
+                    showStatus('Failed to copy content', true);
+                }
+            } catch (err) {
+                showStatus('Error copying content: ' + err, true);
+            }
+            
+            window.getSelection().removeAllRanges();
+        }
+
+        function showStatus(message, isError = false) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = isError ? 'status error' : 'status success';
+            status.style.display = 'block';
+        }
+        
+        function isValidUrl(url) {
+            try {
+                new URL(url);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+        
+        function makeAbsoluteUrl(url, baseUrl) {
+            try {
+                return new URL(url, baseUrl).href;
+            } catch (e) {
+                console.error('Error making URL absolute:', e);
+                return url;
+            }
+        }
+        
+        async function extractWebsiteContent() {
+            const urlInput = document.getElementById('url-input').value.trim();
+            const extractBtn = document.getElementById('extract-btn');
+            
+            if (!urlInput) {
+                showStatus('Please enter a website URL', true);
+                return;
+            }
+            
+            if (!isValidUrl(urlInput)) {
+                showStatus('Please enter a valid URL starting with http:// or https://', true);
+                return;
+            }
+            
+            try {
+                extractBtn.disabled = true;
+                extractBtn.innerHTML = '<span class="loading"></span> Extracting...';
+                showStatus('Fetching website content...');
+                
+                document.getElementById('results').style.display = 'none';
+                
+                const response = await axios.get(`https://api.allorigins.win/get?url=${encodeURIComponent(urlInput)}`);
+                const html = response.data.contents;
+                
+                if (!html) throw new Error('No content received from the website');
+                
+                document.getElementById('html-content').textContent = html;
+                
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                // Extract media files
+                const mediaElements = doc.querySelectorAll('img[src], video[src], audio[src], source[src]');
+                const mediaFiles = Array.from(mediaElements).map(el => {
+                    const src = el.getAttribute('src');
+                    return src ? makeAbsoluteUrl(src, urlInput) : null;
+                }).filter(Boolean);
+                
+                // Extract CSS files
+                const cssLinks = doc.querySelectorAll('link[rel="stylesheet"]');
+                const cssFiles = Array.from(cssLinks).map(link => {
+                    const href = link.getAttribute('href');
+                    return href ? makeAbsoluteUrl(href, urlInput) : null;
+                }).filter(Boolean);
+                
+                // Extract JS files
+                const jsScripts = doc.querySelectorAll('script[src]');
+                const jsFiles = Array.from(jsScripts).map(script => {
+                    const src = script.getAttribute('src');
+                    return src ? makeAbsoluteUrl(src, urlInput) : null;
+                }).filter(Boolean);
+                
+                // Process CSS files
+                const cssContentDiv = document.getElementById('css-content');
+                cssContentDiv.innerHTML = cssFiles.length > 0 ? '' : '<p>No external CSS files found.</p>';
+                
+                for (const cssFile of cssFiles) {
+                    const cssFileDiv = document.createElement('div');
+                    cssFileDiv.innerHTML = `<h3>${cssFile}</h3><pre>${cssFile}</pre>`;
+                    cssContentDiv.appendChild(cssFileDiv);
+                }
+                
+                // Process JS files
+                const jsContentDiv = document.getElementById('js-content');
+                jsContentDiv.innerHTML = jsFiles.length > 0 ? '' : '<p>No external JavaScript files found.</p>';
+                
+                for (const jsFile of jsFiles) {
+                    const jsFileDiv = document.createElement('div');
+                    jsFileDiv.innerHTML = `<h3>${jsFile}</h3><pre>${jsFile}</pre>`;
+                    jsContentDiv.appendChild(jsFileDiv);
+                }
+                
+                // Process media files
+                const mediaContentDiv = document.getElementById('media-content');
+                mediaContentDiv.innerHTML = '';
+                
+                if (mediaFiles.length > 0) {
+                    mediaFiles.forEach(mediaUrl => {
+                        const mediaItem = document.createElement('div');
+                        mediaItem.className = 'media-item';
+                        mediaItem.innerHTML = `
+                            ${mediaUrl}
+                            <button class="media-copy" onclick="copyText('${mediaUrl}')">Copy</button>
+                        `;
+                        mediaContentDiv.appendChild(mediaItem);
+                    });
+                } else {
+                    mediaContentDiv.innerHTML = '<p>No media files found.</p>';
+                }
+                
+                document.getElementById('results').style.display = 'grid';
+                showStatus('Website content extracted successfully!');
+                
+            } catch (error) {
+                console.error('Extraction error:', error);
+                showStatus(`Error: ${error.message}`, true);
+            } finally {
+                extractBtn.disabled = false;
+                extractBtn.textContent = 'Extract Content';
+            }
+        }
+        
+        // Simple text copy function
+        function copyText(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            showStatus('URL copied to clipboard!');
+        }
+        
+        // Event listeners
+        document.getElementById('extract-btn').addEventListener('click', extractWebsiteContent);
+        document.getElementById('url-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') extractWebsiteContent();
+        });
+    </script>
+</body>
+</html>

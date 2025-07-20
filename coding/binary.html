@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Binary Converter</title>
+    <style>
+        :root {
+            --primary-color: #4a6baf;
+            --secondary-color: #3a5a9c;
+            --dark-bg: #1a1a2e;
+            --light-text: #f0f0f0;
+            --code-bg: #282c34;
+            --border-color: #444;
+            --success-color: #4CAF50;
+            --error-color: #f44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            background-color: var(--code-bg);
+            color: var(--light-text);
+            font-family: monospace;
+            resize: vertical;
+            font-size: 16px;
+        }
+        
+        button {
+            padding: 12px 24px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .result-section {
+            margin-top: 20px;
+        }
+        
+        .result-label {
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .binary-output {
+            background-color: var(--code-bg);
+            padding: 15px;
+            border-radius: 5px;
+            min-height: 100px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+        }
+        
+        .success {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: var(--success-color);
+            display: block;
+        }
+        
+        .error {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: var(--error-color);
+            display: block;
+        }
+        
+        .copy-btn {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: rgba(0, 0, 0, 0.3);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Text to Binary Converter</h1>
+        
+        <div class="input-section">
+            <textarea id="input-text" placeholder="Enter text to convert to binary..."></textarea>
+            <button id="convert-btn">Convert to Binary</button>
+        </div>
+        
+        <div class="result-section">
+            <div class="result-label">Binary Output:</div>
+            <div class="binary-output" id="binary-output"></div>
+            <button class="copy-btn" id="copy-btn">Copy Binary</button>
+        </div>
+        
+        <div id="status" class="status"></div>
+    </div>
+
+    <script>
+        function convertToBinary() {
+            const inputText = document.getElementById('input-text').value;
+            const outputDiv = document.getElementById('binary-output');
+            const statusDiv = document.getElementById('status');
+            
+            if (!inputText.trim()) {
+                statusDiv.textContent = 'Please enter some text to convert';
+                statusDiv.className = 'status error';
+                return;
+            }
+            
+            try {
+                const binaryText = inputText.split('').map(char => {
+                    return char.charCodeAt(0).toString(2).padStart(8, '0');
+                }).join(' ');
+                
+                outputDiv.textContent = binaryText;
+                statusDiv.textContent = 'Text converted to binary successfully!';
+                statusDiv.className = 'status success';
+            } catch (error) {
+                console.error('Conversion error:', error);
+                statusDiv.textContent = 'Error converting text to binary';
+                statusDiv.className = 'status error';
+            }
+        }
+        
+        function copyBinary() {
+            const binaryOutput = document.getElementById('binary-output');
+            const range = document.createRange();
+            range.selectNode(binaryOutput);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            
+            try {
+                const successful = document.execCommand('copy');
+                const statusDiv = document.getElementById('status');
+                
+                if (successful) {
+                    statusDiv.textContent = 'Binary copied to clipboard!';
+                    statusDiv.className = 'status success';
+                } else {
+                    statusDiv.textContent = 'Failed to copy binary';
+                    statusDiv.className = 'status error';
+                }
+            } catch (err) {
+                console.error('Copy failed:', err);
+            }
+            
+            window.getSelection().removeAllRanges();
+        }
+        
+        // Event listeners
+        document.getElementById('convert-btn').addEventListener('click', convertToBinary);
+        document.getElementById('copy-btn').addEventListener('click', copyBinary);
+        
+        // Also convert when pressing Enter in the textarea
+        document.getElementById('input-text').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                e.preventDefault();
+                convertToBinary();
+            }
+        });
+    </script>
+</body>
+</html>

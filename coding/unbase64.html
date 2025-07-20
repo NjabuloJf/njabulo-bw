@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64 Encoder/Decoder</title>
+    <style>
+        :root {
+            --primary-color: #4a6baf;
+            --secondary-color: #3a5a9c;
+            --dark-bg: #1a1a2e;
+            --light-text: #f0f0f0;
+            --code-bg: #282c34;
+            --border-color: #444;
+            --success-color: #4CAF50;
+            --error-color: #f44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            background-color: var(--code-bg);
+            color: var(--light-text);
+            font-family: monospace;
+            resize: vertical;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            flex: 1;
+        }
+        
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .result-section {
+            margin-top: 20px;
+        }
+        
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+        }
+        
+        .success {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: var(--success-color);
+            display: block;
+        }
+        
+        .error {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: var(--error-color);
+            display: block;
+        }
+        
+        .copy-btn {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: rgba(0, 0, 0, 0.3);
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Base64 Encoder/Decoder</h1>
+        
+        <div class="input-section">
+            <textarea id="input-text" placeholder="Enter text to encode or Base64 to decode..."></textarea>
+        </div>
+        
+        <div class="button-group">
+            <button id="encode-btn">Encode to Base64</button>
+            <button id="decode-btn">Decode from Base64</button>
+        </div>
+        
+        <div class="result-section">
+            <h3>Result:</h3>
+            <textarea id="output-text" readonly></textarea>
+            <button class="copy-btn" id="copy-btn">Copy Result</button>
+        </div>
+        
+        <div id="status" class="status"></div>
+    </div>
+
+    <script>
+        function showStatus(message, isError = false) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = isError ? 'status error' : 'status success';
+        }
+
+        function copyToClipboard() {
+            const outputText = document.getElementById('output-text');
+            outputText.select();
+            document.execCommand('copy');
+            showStatus('Copied to clipboard!');
+        }
+
+        function encodeBase64() {
+            const inputText = document.getElementById('input-text').value.trim();
+            const outputText = document.getElementById('output-text');
+            
+            if (!inputText) {
+                showStatus('Please enter some text to encode', true);
+                return;
+            }
+            
+            try {
+                const encodedText = btoa(unescape(encodeURIComponent(inputText)));
+                outputText.value = encodedText;
+                showStatus('Text encoded to Base64 successfully!');
+            } catch (e) {
+                showStatus('Error encoding text: ' + e.message, true);
+                console.error('Encoding error:', e);
+            }
+        }
+
+        function decodeBase64() {
+            const inputText = document.getElementById('input-text').value.trim();
+            const outputText = document.getElementById('output-text');
+            
+            if (!inputText) {
+                showStatus('Please enter some Base64 to decode', true);
+                return;
+            }
+            
+            try {
+                const decodedText = decodeURIComponent(escape(atob(inputText)));
+                outputText.value = decodedText;
+                showStatus('Base64 decoded successfully!');
+            } catch (e) {
+                showStatus('Error decoding Base64: ' + e.message, true);
+                console.error('Decoding error:', e);
+            }
+        }
+
+        // Event listeners
+        document.getElementById('encode-btn').addEventListener('click', encodeBase64);
+        document.getElementById('decode-btn').addEventListener('click', decodeBase64);
+        document.getElementById('copy-btn').addEventListener('click', copyToClipboard);
+    </script>
+</body>
+</html>

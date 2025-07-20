@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced JavaScript Runner</title>
+    <style>
+        :root {
+            --primary-color: #f0db4f;
+            --dark-bg: #1a1a2e;
+            --light-text: #f0f0f0;
+            --editor-bg: #282c34;
+            --console-bg: #1e1e1e;
+            --error-color: #ff6b6b;
+            --warn-color: #f0db4f;
+            --log-color: #4dabf7;
+            --success-color: #51cf66;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Fira Code', 'Consolas', monospace;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            height: 100vh;
+            padding: 10px;
+            gap: 10px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            padding: 10px;
+            color: var(--primary-color);
+            font-size: 1.8rem;
+        }
+        
+        .editor-container {
+            background-color: var(--editor-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            display: grid;
+            grid-template-rows: auto 1fr;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .editor-header {
+            padding: 10px 15px;
+            background-color: rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        #js-editor {
+            width: 100%;
+            height: 100%;
+            padding: 15px;
+            border: none;
+            background-color: var(--editor-bg);
+            color: #abb2bf;
+            font-family: inherit;
+            font-size: 14px;
+            resize: none;
+            outline: none;
+            tab-size: 2;
+            line-height: 1.6;
+        }
+        
+        .run-btn {
+            background-color: var(--primary-color);
+            color: #333;
+            border: none;
+            padding: 6px 18px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        
+        .run-btn:hover {
+            background-color: #f8e249;
+            transform: translateY(-1px);
+        }
+        
+        .console-container {
+            background-color: var(--console-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            display: grid;
+            grid-template-rows: auto 1fr;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .console-header {
+            padding: 10px 15px;
+            background-color: rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .console-title {
+            font-weight: bold;
+        }
+        
+        .clear-btn {
+            background: none;
+            border: none;
+            color: #aaa;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+        }
+        
+        .clear-btn:hover {
+            color: #fff;
+        }
+        
+        #console-output {
+            padding: 15px;
+            overflow-y: auto;
+            font-family: inherit;
+            font-size: 14px;
+            white-space: pre-wrap;
+            min-height: 100px;
+            max-height: 250px;
+        }
+        
+        .console-log {
+            color: var(--log-color);
+        }
+        
+        .console-error {
+            color: var(--error-color);
+        }
+        
+        .console-warn {
+            color: var(--warn-color);
+        }
+        
+        .console-success {
+            color: var(--success-color);
+        }
+        
+        .error-line {
+            background-color: rgba(255, 107, 107, 0.1);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .error-stack {
+            color: #aaa;
+            font-size: 13px;
+            margin-top: 5px;
+            padding-left: 15px;
+            border-left: 2px solid var(--error-color);
+        }
+        
+        .line-number {
+            display: inline-block;
+            width: 40px;
+            color: #666;
+            text-align: right;
+            margin-right: 10px;
+            user-select: none;
+        }
+        
+        .timestamp {
+            color: #666;
+            font-size: 12px;
+            margin-right: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                grid-template-rows: auto 1fr auto;
+                padding: 8px;
+                gap: 8px;
+            }
+            
+            #console-output {
+                max-height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Advanced JavaScript Runner</h1>
+        
+        <div class="editor-container">
+            <div class="editor-header">
+                <span>editor.js</span>
+                <button class="run-btn" id="run-btn">Run (Ctrl+Enter)</button>
+            </div>
+            <textarea id="js-editor" spellcheck="false">// Try changing this code and run it
+// Errors will show with line numbers
+
+function calculateSum(a, b) {
+    return a + b;
+}
+
+// Example function call
+const result = calculateSum(5, 7);
+console.log('5 + 7 =', result);
+
+// Deliberate error on line 12
+const obj = undefined;
+console.log(obj.property); // This will cause an error</textarea>
+        </div>
+        
+        <div class="console-container">
+            <div class="console-header">
+                <span class="console-title">Console</span>
+                <button class="clear-btn" id="clear-btn">Clear</button>
+            </div>
+            <div id="console-output"></div>
+        </div>
+    </div>
+
+    <script>
+        const jsEditor = document.getElementById('js-editor');
+        const runBtn = document.getElementById('run-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const consoleOutput = document.getElementById('console-output');
+
+        // Store original console methods
+        const originalConsole = {
+            log: console.log,
+            error: console.error,
+            warn: console.warn,
+            clear: console.clear
+        };
+
+        // Override console methods to capture output
+        function captureConsole() {
+            console.log = function(...args) {
+                originalConsole.log.apply(console, args);
+                logToConsole('log', args);
+            };
+            
+            console.error = function(...args) {
+                originalConsole.error.apply(console, args);
+                logToConsole('error', args);
+            };
+            
+            console.warn = function(...args) {
+                originalConsole.warn.apply(console, args);
+                logToConsole('warn', args);
+            };
+            
+            console.clear = function() {
+                originalConsole.clear.apply(console);
+                clearConsole();
+            };
+        }
+
+        // Restore original console methods
+        function restoreConsole() {
+            console.log = originalConsole.log;
+            console.error = originalConsole.error;
+            console.warn = originalConsole.warn;
+            console.clear = originalConsole.clear;
+        }
+
+        // Format timestamp
+        function formatTimestamp() {
+            const now = new Date();
+            return now.toLocaleTimeString();
+        }
+
+        // Log messages to the custom console
+        function logToConsole(type, args) {
+            const timestamp = document.createElement('span');
+            timestamp.className = 'timestamp';
+            timestamp.textContent = formatTimestamp();
+            
+            const message = args.map(arg => {
+                if (typeof arg === 'object') {
+                    try {
+                        return JSON.stringify(arg, null, 2);
+                    } catch (e) {
+                        return String(arg);
+                    }
+                }
+                return arg;
+            }).join(' ');
+            
+            const logElement = document.createElement('div');
+            logElement.className = `console-${type}`;
+            
+            logElement.appendChild(timestamp);
+            logElement.appendChild(document.createTextNode(message));
+            
+            consoleOutput.appendChild(logElement);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+
+        // Display error with line number
+        function displayErrorWithLine(error) {
+            const timestamp = document.createElement('span');
+            timestamp.className = 'timestamp';
+            timestamp.textContent = formatTimestamp();
+            
+            const errorElement = document.createElement('div');
+            errorElement.className = 'console-error';
+            errorElement.appendChild(timestamp);
+            
+            // Add error message
+            errorElement.appendChild(document.createTextNode(error.message));
+            
+            // Add error stack trace with line numbers
+            if (error.stack) {
+                const stackLines = error.stack.split('\n');
+                const stackElement = document.createElement('div');
+                stackElement.className = 'error-stack';
+                
+                // Process stack trace to show line numbers
+                stackLines.forEach(line => {
+                    const lineElement = document.createElement('div');
+                    
+                    // Match line numbers in the stack trace
+                    const lineMatch = line.match(/<anonymous>:(\d+):(\d+)/);
+                    if (lineMatch) {
+                        const lineNumber = lineMatch[1];
+                        const colNumber = lineMatch[2];
+                        
+                        const lineNumSpan = document.createElement('span');
+                        lineNumSpan.className = 'line-number';
+                        lineNumSpan.textContent = lineNumber;
+                        
+                        const lineContent = document.createElement('span');
+                        lineContent.textContent = line.replace(/.*<anonymous>:\d+:\d+/, '');
+                        
+                        lineElement.appendChild(lineNumSpan);
+                        lineElement.appendChild(lineContent);
+                    } else {
+                        lineElement.textContent = line;
+                    }
+                    
+                    stackElement.appendChild(lineElement);
+                });
+                
+                errorElement.appendChild(stackElement);
+            }
+            
+            consoleOutput.appendChild(errorElement);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+
+        function clearConsole() {
+            consoleOutput.innerHTML = '';
+        }
+
+        function runCode() {
+            clearConsole();
+            captureConsole();
+            
+            try {
+                // Add line numbers to the code for better error reporting
+                const codeWithLines = jsEditor.value
+                    .split('\n')
+                    .map((line, i) => `//${i + 1}\n${line}`)
+                    .join('\n');
+                
+                // Using Function constructor to execute in strict mode
+                const fn = new Function(codeWithLines);
+                fn();
+                
+                // Show success message if no errors
+                const successElement = document.createElement('div');
+                successElement.className = 'console-success';
+                successElement.innerHTML = `<span class="timestamp">${formatTimestamp()}</span> Code executed successfully`;
+                consoleOutput.appendChild(successElement);
+            } catch (e) {
+                displayErrorWithLine(e);
+            } finally {
+                // Restore console after a short delay
+                setTimeout(restoreConsole, 100);
+            }
+        }
+
+        // Event listeners
+        runBtn.addEventListener('click', runCode);
+        clearBtn.addEventListener('click', clearConsole);
+        
+        // Keyboard shortcut (Ctrl+Enter to run)
+        jsEditor.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                runCode();
+            }
+        });
+
+        // Initialize with sample output
+        setTimeout(() => {
+            const welcomeElement = document.createElement('div');
+            welcomeElement.className = 'console-log';
+            welcomeElement.innerHTML = `<span class="timestamp">${formatTimestamp()}</span> Ready to execute JavaScript. Press "Run" or Ctrl+Enter`;
+            consoleOutput.appendChild(welcomeElement);
+        }, 100);
+    </script>
+</body>
+</html>

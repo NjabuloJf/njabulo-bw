@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Code Runner</title>
+    <style>
+        :root {
+            --primary-color: #4a6baf;
+            --secondary-color: #3a5a9c;
+            --dark-bg: #1a1a2e;
+            --light-text: #f0f0f0;
+            --code-bg: #282c34;
+            --border-color: #444;
+            --success-color: #4CAF50;
+            --error-color: #f44336;
+            --output-bg: #1e1e1e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .editor-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            background-color: var(--code-bg);
+            color: #abb2bf;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            flex: 1;
+        }
+        
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        button:disabled {
+            background-color: #666;
+            cursor: not-allowed;
+        }
+        
+        .output-container {
+            margin-top: 20px;
+        }
+        
+        .output-label {
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .output {
+            background-color: var(--output-bg);
+            padding: 15px;
+            border-radius: 5px;
+            min-height: 100px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            max-height: 300px;
+        }
+        
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .success {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: var(--success-color);
+        }
+        
+        .error {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: var(--error-color);
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: var(--light-text);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fredi Python Code Runner</h1>
+        
+        <div class="editor-container">
+            <textarea id="python-code" placeholder="Enter your Python code here...">print("Hello, World!")</textarea>
+        </div>
+        
+        <div class="button-group">
+            <button id="run-btn">Run Python Code</button>
+            <button id="clear-btn">Clear</button>
+        </div>
+        
+        <div class="output-container">
+            <div class="output-label">Output:</div>
+            <div class="output" id="output"></div>
+        </div>
+        
+        <div id="status" class="status" style="display: none;"></div>
+    </div>
+
+    <script>
+        // Simple Python code runner using a public API
+        async function runPythonCode() {
+            const pythonCode = document.getElementById('python-code').value.trim();
+            const outputDiv = document.getElementById('output');
+            const runBtn = document.getElementById('run-btn');
+            const statusDiv = document.getElementById('status');
+            
+            if (!pythonCode) {
+                statusDiv.textContent = 'Please enter some Python code to run';
+                statusDiv.className = 'status error';
+                statusDiv.style.display = 'block';
+                return;
+            }
+            
+            try {
+                // Show loading state
+                runBtn.disabled = true;
+                runBtn.innerHTML = '<span class="loading"></span> Running...';
+                outputDiv.textContent = '';
+                statusDiv.style.display = 'none';
+                
+                // Use a public Python execution API
+                const response = await fetch('https://execjs.emilfolino.se/code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        language: 'python',
+                        code: pythonCode
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.error) {
+                    outputDiv.textContent = result.error;
+                    statusDiv.textContent = 'Error executing Python code';
+                    statusDiv.className = 'status error';
+                } else {
+                    outputDiv.textContent = result.output || 'No output (code executed successfully)';
+                    statusDiv.textContent = 'Python code executed successfully!';
+                    statusDiv.className = 'status success';
+                }
+                
+                statusDiv.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Execution error:', error);
+                outputDiv.textContent = error.message;
+                statusDiv.textContent = 'Error connecting to execution service';
+                statusDiv.className = 'status error';
+                statusDiv.style.display = 'block';
+            } finally {
+                runBtn.disabled = false;
+                runBtn.textContent = 'Run Python Code';
+            }
+        }
+        
+        function clearCode() {
+            document.getElementById('python-code').value = '';
+            document.getElementById('output').textContent = '';
+            document.getElementById('status').style.display = 'none';
+        }
+        
+        // Event listeners
+        document.getElementById('run-btn').addEventListener('click', runPythonCode);
+        document.getElementById('clear-btn').addEventListener('click', clearCode);
+    </script>
+</body>
+</html>

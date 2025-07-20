@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Obfuscator</title>
+    <script src="https://cdn.jsdelivr.net/npm/javascript-obfuscator/dist/index.browser.js"></script>
+    <style>
+        :root {
+            --primary-color: #4a6baf;
+            --secondary-color: #3a5a9c;
+            --dark-bg: #1a1a2e;
+            --light-text: #f0f0f0;
+            --dark-text: #333;
+            --code-bg: #282c34;
+            --border-color: #444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--light-text);
+        }
+        
+        .editor-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .editor-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .editor-box {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .editor-label {
+            margin-bottom: 8px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .char-count {
+            font-size: 0.8rem;
+            color: var(--light-text);
+            opacity: 0.7;
+        }
+        
+        textarea {
+            flex: 1;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            background-color: var(--code-bg);
+            color: #abb2bf;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            resize: none;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        button:disabled {
+            background-color: #666;
+            cursor: not-allowed;
+        }
+        
+        .options {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .options h3 {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .option-item label {
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .editor-wrapper {
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .editor-wrapper:hover .copy-btn {
+            opacity: 1;
+        }
+        
+        .status {
+            text-align: center;
+            margin-top: 10px;
+            min-height: 20px;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .error {
+            color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-lock"></i> JavaScript Obfuscator</h1>
+        
+        <div class="options">
+            <h3><i class="fas fa-cog"></i> Obfuscation Options</h3>
+            <div class="option-grid">
+                <div class="option-item">
+                    <input type="checkbox" id="compact" checked>
+                    <label for="compact">Compact code</label>
+                </div>
+                <div class="option-item">
+                    <input type="checkbox" id="controlFlowFlattening" checked>
+                    <label for="controlFlowFlattening">Control flow flattening</label>
+                </div>
+                <div class="option-item">
+                    <input type="checkbox" id="numbersToExpressions" checked>
+                    <label for="numbersToExpressions">Numbers to expressions</label>
+                </div>
+                <div class="option-item">
+                    <input type="checkbox" id="simplify" checked>
+                    <label for="simplify">Simplify code</label>
+                </div>
+                <div class="option-item">
+                    <input type="checkbox" id="stringArrayShuffle" checked>
+                    <label for="stringArrayShuffle">Shuffle string array</label>
+                </div>
+                <div class="option-item">
+                    <input type="checkbox" id="splitStrings" checked>
+                    <label for="splitStrings">Split strings</label>
+                </div>
+                <div class="option-item">
+                    <input type="range" id="controlFlowThreshold" min="0" max="1" step="0.1" value="1">
+                    <label for="controlFlowThreshold">Flattening threshold: <span id="thresholdValue">1</span></label>
+                </div>
+                <div class="option-item">
+                    <input type="range" id="stringArrayThreshold" min="0" max="1" step="0.1" value="1">
+                    <label for="stringArrayThreshold">String array threshold: <span id="arrayThresholdValue">1</span></label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="editor-container">
+            <div class="editor-box">
+                <div class="editor-label">
+                    <span>Original JavaScript</span>
+                    <span class="char-count"><span id="input-count">0</span> characters</span>
+                </div>
+                <div class="editor-wrapper">
+                    <textarea id="input-code" placeholder="Paste your JavaScript code here..."></textarea>
+                    <button class="copy-btn" onclick="copyToClipboard('input-code')">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                </div>
+            </div>
+            
+            <div class="editor-box">
+                <div class="editor-label">
+                    <span>Obfuscated JavaScript</span>
+                    <span class="char-count"><span id="output-count">0</span> characters</span>
+                </div>
+                <div class="editor-wrapper">
+                    <textarea id="output-code" readonly placeholder="Obfuscated code will appear here"></textarea>
+                    <button class="copy-btn" onclick="copyToClipboard('output-code')">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="obfuscate-btn" onclick="obfuscateCode()">
+                <i class="fas fa-lock"></i> Obfuscate
+            </button>
+            <button onclick="clearCode()">
+                <i class="fas fa-trash"></i> Clear
+            </button>
+        </div>
+        
+        <div class="status" id="status"></div>
+    </div>
+
+    <script>
+        // Update threshold value displays
+        document.getElementById('controlFlowThreshold').addEventListener('input', function() {
+            document.getElementById('thresholdValue').textContent = this.value;
+        });
+        
+        document.getElementById('stringArrayThreshold').addEventListener('input', function() {
+            document.getElementById('arrayThresholdValue').textContent = this.value;
+        });
+        
+        // Update character counts
+        document.getElementById('input-code').addEventListener('input', function() {
+            document.getElementById('input-count').textContent = this.value.length;
+        });
+        
+        function updateOutputCount() {
+            const output = document.getElementById('output-code').value;
+            document.getElementById('output-count').textContent = output.length;
+        }
+        
+        function copyToClipboard(elementId) {
+            const textarea = document.getElementById(elementId);
+            textarea.select();
+            document.execCommand('copy');
+            
+            const status = document.getElementById('status');
+            status.textContent = 'Copied to clipboard!';
+            setTimeout(() => status.textContent = '', 2000);
+        }
+        
+        function clearCode() {
+            document.getElementById('input-code').value = '';
+            document.getElementById('output-code').value = '';
+            document.getElementById('input-count').textContent = '0';
+            document.getElementById('output-count').textContent = '0';
+            document.getElementById('status').textContent = '';
+        }
+        
+        function obfuscateCode() {
+            const inputCode = document.getElementById('input-code').value.trim();
+            const status = document.getElementById('status');
+            
+            if (!inputCode) {
+                status.textContent = 'Please enter some JavaScript code to obfuscate!';
+                status.className = 'status error';
+                return;
+            }
+            
+            try {
+                // Get all option values
+                const options = {
+                    compact: document.getElementById('compact').checked,
+                    controlFlowFlattening: document.getElementById('controlFlowFlattening').checked,
+                    controlFlowFlatteningThreshold: parseFloat(document.getElementById('controlFlowThreshold').value),
+                    numbersToExpressions: document.getElementById('numbersToExpressions').checked,
+                    simplify: document.getElementById('simplify').checked,
+                    stringArrayShuffle: document.getElementById('stringArrayShuffle').checked,
+                    splitStrings: document.getElementById('splitStrings').checked,
+                    stringArrayThreshold: parseFloat(document.getElementById('stringArrayThreshold').value)
+                };
+                
+                // Obfuscate the code
+                const obfuscationResult = JavaScriptObfuscator.obfuscate(inputCode, options);
+                const obfuscatedCode = obfuscationResult.getObfuscatedCode();
+                
+                // Display the result
+                document.getElementById('output-code').value = obfuscatedCode;
+                updateOutputCount();
+                
+                status.textContent = 'Code obfuscated successfully!';
+                status.className = 'status';
+            } catch (error) {
+                console.error('Obfuscation error:', error);
+                status.textContent = 'Error: ' + error.message;
+                status.className = 'status error';
+            }
+        }
+    </script>
+</body>
+</html>

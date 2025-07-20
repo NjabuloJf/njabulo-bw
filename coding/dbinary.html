@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary to Text Decoder</title>
+    <style>
+        :root {
+            --primary-color: #4a6baf;
+            --secondary-color: #3a5a9c;
+            --dark-bg: #1a1a2e;
+            --light-text: #f0f0f0;
+            --code-bg: #282c34;
+            --border-color: #444;
+            --success-color: #4CAF50;
+            --error-color: #f44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            background-color: var(--code-bg);
+            color: var(--light-text);
+            font-family: monospace;
+            resize: vertical;
+            font-size: 16px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            padding: 12px 24px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            flex: 1;
+        }
+        
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .result-section {
+            margin-top: 20px;
+        }
+        
+        .result-label {
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .text-output {
+            background-color: var(--code-bg);
+            padding: 15px;
+            border-radius: 5px;
+            min-height: 100px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+        }
+        
+        .success {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: var(--success-color);
+            display: block;
+        }
+        
+        .error {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: var(--error-color);
+            display: block;
+        }
+        
+        .copy-btn {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: rgba(0, 0, 0, 0.3);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Binary to Text Decoder</h1>
+        
+        <div class="input-section">
+            <textarea id="binary-input" placeholder="Enter binary string (e.g., 01001000 01100101 01101100 01101100 01101111)"></textarea>
+        </div>
+        
+        <div class="button-group">
+            <button id="decode-btn">Decode Binary</button>
+            <button id="clear-btn">Clear</button>
+        </div>
+        
+        <div class="result-section">
+            <div class="result-label">Decoded Text:</div>
+            <div class="text-output" id="text-output"></div>
+            <button class="copy-btn" id="copy-btn">Copy Text</button>
+        </div>
+        
+        <div id="status" class="status"></div>
+    </div>
+
+    <script>
+        function decodeBinary() {
+            const binaryInput = document.getElementById('binary-input').value.trim();
+            const outputDiv = document.getElementById('text-output');
+            const statusDiv = document.getElementById('status');
+            
+            if (!binaryInput) {
+                statusDiv.textContent = 'Please enter a binary string to decode';
+                statusDiv.className = 'status error';
+                return;
+            }
+            
+            try {
+                // Split binary string by spaces or any whitespace
+                const binaryArray = binaryInput.split(/\s+/);
+                
+                // Convert each binary chunk to character
+                const decodedText = binaryArray.map(bin => {
+                    // Validate binary string (only 0s and 1s)
+                    if (!/^[01]+$/.test(bin)) {
+                        throw new Error(`Invalid binary sequence: ${bin}`);
+                    }
+                    return String.fromCharCode(parseInt(bin, 2));
+                }).join('');
+                
+                outputDiv.textContent = decodedText;
+                statusDiv.textContent = 'Binary decoded successfully!';
+                statusDiv.className = 'status success';
+            } catch (error) {
+                console.error('Decoding error:', error);
+                outputDiv.textContent = '';
+                statusDiv.textContent = `Error: ${error.message}`;
+                statusDiv.className = 'status error';
+            }
+        }
+        
+        function copyText() {
+            const textOutput = document.getElementById('text-output');
+            const range = document.createRange();
+            range.selectNode(textOutput);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            
+            try {
+                const successful = document.execCommand('copy');
+                const statusDiv = document.getElementById('status');
+                
+                if (successful) {
+                    statusDiv.textContent = 'Text copied to clipboard!';
+                    statusDiv.className = 'status success';
+                } else {
+                    statusDiv.textContent = 'Failed to copy text';
+                    statusDiv.className = 'status error';
+                }
+            } catch (err) {
+                console.error('Copy failed:', err);
+            }
+            
+            window.getSelection().removeAllRanges();
+        }
+        
+        function clearAll() {
+            document.getElementById('binary-input').value = '';
+            document.getElementById('text-output').textContent = '';
+            document.getElementById('status').textContent = '';
+            document.getElementById('status').className = 'status';
+            document.getElementById('status').style.display = 'none';
+        }
+        
+        // Event listeners
+        document.getElementById('decode-btn').addEventListener('click', decodeBinary);
+        document.getElementById('copy-btn').addEventListener('click', copyText);
+        document.getElementById('clear-btn').addEventListener('click', clearAll);
+        
+        // Also decode when pressing Enter in the textarea
+        document.getElementById('binary-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                e.preventDefault();
+                decodeBinary();
+            }
+        });
+    </script>
+</body>
+</html>
