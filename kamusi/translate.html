@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fredi Translator | All Languages</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, sans-serif;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    video#bgVideo {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    main {
+      flex-grow: 1;
+      background: rgba(45, 0, 54, 0.85);
+      max-width: 640px;
+      margin: 2rem auto;
+      padding: 2rem 1rem;
+      border-radius: 1rem;
+      backdrop-filter: blur(4px);
+      z-index: 2;
+      width: 95%;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #ff4d4d;
+    }
+
+    form {
+      display: grid;
+      gap: 1rem;
+    }
+
+    input, select, button {
+      font-size: 1rem;
+      padding: 0.65rem;
+      border-radius: 0.5rem;
+      border: none;
+      width: 100%;
+    }
+
+    input, select {
+      background: #ffffffcc;
+      color: #222;
+    }
+
+    button {
+      cursor: pointer;
+      background: #b30000;
+      color: #fff;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #800000;
+    }
+
+    #result, #detected {
+      margin-top: 1rem;
+      font-size: 1.1rem;
+      background: #fff1f1;
+      color: #222;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+    }
+
+    .shortcuts {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .shortcuts button {
+      margin: 0.25rem;
+      padding: 0.5rem 1rem;
+      background: #b30000;
+      color: #fff;
+    }
+
+    .shortcuts button:hover {
+      background: #800000;
+    }
+
+    .back-btn {
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .back-btn a {
+      text-decoration: none;
+      color: #ff4d4d;
+      font-weight: bold;
+    }
+
+    .back-btn a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: rgba(45, 0, 54, 0.9);
+      color: #ccc;
+      font-size: 0.9rem;
+    }
+
+    #speakBtn {
+      margin-top: 0.5rem;
+      background: #2d0036;
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.4rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    #speakBtn:hover {
+      background: #4d0059;
+    }
+  </style>
+</head>
+<body>
+  <!-- Background video -->
+  <video id="bgVideo" autoplay muted loop>
+    <source src="https://files.catbox.moe/wv5h3v.mp4" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+
+  <main>
+    <h1>🌐 Language Translator</h1>
+
+    <div class="shortcuts">
+      <button onclick="setLanguage('sw', 'en')">Swahili → English</button>
+      <button onclick="setLanguage('en', 'sw')">English → Swahili</button>
+    </div>
+
+    <form id="translate-form" autocomplete="off">
+      <input id="text" type="text" placeholder="Type a word or sentence..." required />
+      <select id="targetLang" required>
+        <option value="" disabled selected>Select language</option>
+      </select>
+      <button type="submit">Translate</button>
+    </form>
+
+    <p id="detected" style="display: none;"></p>
+    <p id="result" aria-live="polite"></p>
+    <div style="text-align: center;">
+      <button id="speakBtn" style="display:none;">🔊 Speak Translation</button>
+    </div>
+
+    <div class="back-btn">
+      <a href="index.html">⬅️ Go Back Home</a>
+    </div>
+  </main>
+
+  <footer>
+    © 2025 Fredi AI | All rights reserved
+  </footer>
+
+  <script>
+    let sourceLang = 'auto';
+    const langMap = { "ab":"Abkhaz", "ace":"Acehnese", "ach":"Acholi", "af":"Afrikaans", "ak":"Twi", "am":"Amharic", "ar":"Arabic", "as":"Assamese", "ay":"Aymara", "az":"Azerbaijani", "ba":"Bashkir", "ban":"Balinese", "be":"Belarusian", "bem":"Bemba", "bg":"Bulgarian", "bho":"Bhojpuri", "bm":"Bambara", "bn":"Bengali", "br":"Breton", "bs":"Bosnian", "ca":"Catalan", "ceb":"Cebuano", "ckb":"Kurdish (Sorani)", "co":"Corsican", "crh":"Crimean Tatar", "cs":"Czech", "cy":"Welsh", "da":"Danish", "de":"German", "doi":"Dogri", "dv":"Dhivehi", "dz":"Dzongkha", "ee":"Ewe", "el":"Greek", "en":"English", "eo":"Esperanto", "es":"Spanish", "et":"Estonian", "eu":"Basque", "fa":"Persian", "ff":"Fulfulde", "fi":"Finnish", "fil":"Filipino", "fj":"Fijian", "fo":"Faroese", "fr":"French", "fy":"Frisian", "ga":"Irish", "gd":"Scots Gaelic", "gl":"Galician", "gn":"Guarani", "gom":"Konkani", "gu":"Gujarati", "ha":"Hausa", "haw":"Hawaiian", "he":"Hebrew", "hi":"Hindi", "hmn":"Hmong", "hr":"Croatian", "ht":"Haitian Creole", "hu":"Hungarian", "hy":"Armenian", "id":"Indonesian", "ig":"Igbo", "ilo":"Ilocano", "is":"Icelandic", "it":"Italian", "ja":"Japanese", "jv":"Javanese", "ka":"Georgian", "kab":"Kabyle", "kk":"Kazakh", "kl":"Kalaallisut", "km":"Khmer", "kn":"Kannada", "ko":"Korean", "kri":"Krio", "ku":"Kurdish (Kurmanji)", "ky":"Kyrgyz", "la":"Latin", "lb":"Luxembourgish", "lg":"Luganda", "ln":"Lingala", "lo":"Lao", "lt":"Lithuanian", "lv":"Latvian", "mai":"Maithili", "mg":"Malagasy", "mi":"Maori", "mk":"Macedonian", "ml":"Malayalam", "mn":"Mongolian", "mni":"Meiteilon (Manipuri)", "mr":"Marathi", "ms":"Malay", "mt":"Maltese", "my":"Myanmar (Burmese)", "ne":"Nepali", "nl":"Dutch", "no":"Norwegian", "nso":"Sepedi", "ny":"Chichewa", "om":"Oromo", "or":"Odia (Oriya)", "pa":"Punjabi", "pl":"Polish", "ps":"Pashto", "pt":"Portuguese", "qu":"Quechua", "ro":"Romanian", "ru":"Russian", "rw":"Kinyarwanda", "sa":"Sanskrit", "sd":"Sindhi", "si":"Sinhala", "sk":"Slovak", "sl":"Slovenian", "sm":"Samoan", "sn":"Shona", "so":"Somali", "sq":"Albanian", "sr":"Serbian", "st":"Sesotho", "su":"Sundanese", "sv":"Swedish", "sw":"Swahili", "ta":"Tamil", "te":"Telugu", "tg":"Tajik", "th":"Thai", "ti":"Tigrinya", "tk":"Turkmen", "tl":"Tagalog", "tr":"Turkish", "tt":"Tatar", "ug":"Uyghur", "uk":"Ukrainian", "ur":"Urdu", "uz":"Uzbek", "vi":"Vietnamese", "xh":"Xhosa", "yi":"Yiddish", "yo":"Yoruba", "zh":"Chinese (Simplified)", "zh-TW":"Chinese (Traditional)", "zu":"Zulu" };
+
+    const langSelect = document.getElementById('targetLang');
+
+    // Populate language list
+    window.onload = () => {
+      for (const [code, name] of Object.entries(langMap)) {
+        const option = document.createElement('option');
+        option.value = code;
+        option.textContent = `${name} (${code})`;
+        langSelect.appendChild(option);
+      }
+    };
+
+    function setLanguage(source, target) {
+      sourceLang = source;
+      langSelect.value = target;
+      document.getElementById('text').focus();
+    }
+
+    const speakBtn = document.getElementById('speakBtn');
+
+    document.getElementById('translate-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const text = document.getElementById('text').value.trim();
+      const target = langSelect.value;
+      const resultBox = document.getElementById('result');
+      const detectedBox = document.getElementById('detected');
+      speakBtn.style.display = 'none';
+
+      if (!text || !target) return;
+
+      resultBox.textContent = '⏳ Translating...';
+      detectedBox.style.display = 'none';
+
+      try {
+        const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${target}&dt=t&dt=ld&q=${encodeURIComponent(text)}`);
+        const data = await res.json();
+
+        const translatedText = data[0].map(item => item[0]).join('');
+        const detectedLangCode = data[2];
+
+        resultBox.textContent = translatedText;
+        speakBtn.style.display = 'inline-block';
+        speakBtn.onclick = () => {
+          const utterance = new SpeechSynthesisUtterance(translatedText);
+          utterance.lang = target;
+          speechSynthesis.speak(utterance);
+        };
+
+        if (detectedLangCode && langMap[detectedLangCode]) {
+          detectedBox.textContent = `Detected Language: ${langMap[detectedLangCode]} (${detectedLangCode})`;
+          detectedBox.style.display = 'block';
+        }
+      } catch (err) {
+        console.error(err);
+        resultBox.textContent = '⚠️ Translation failed. Please try again.';
+      } finally {
+        sourceLang = 'auto';
+      }
+    });
+  </script>
+</body>
+</html>

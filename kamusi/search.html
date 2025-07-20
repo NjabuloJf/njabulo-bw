@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Search Word | Fredi Dictionary</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff;
+      background: #300040;
+    }
+
+    video.bg-video {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: -1;
+      filter: brightness(0.5);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 5vh auto;
+      background: rgba(48, 0, 64, 0.85); /* dark purple with transparency */
+      padding: 2em;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.3); /* red glow */
+      color: #fff;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.3em;
+      color: #ff0033; /* bright red */
+      margin-bottom: 0.5em;
+    }
+
+    p.instructions {
+      font-size: 1.1em;
+      margin-bottom: 1em;
+      color: #ff9999;
+    }
+
+    input {
+      padding: .8em;
+      width: 80%;
+      font-size: 1em;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-top: 1em;
+      color: #333;
+    }
+
+    button {
+      margin-top: 1em;
+      padding: .8em 1.5em;
+      background: #ff0033;
+      color: #fff;
+      border: none;
+      font-size: 1em;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #cc002a;
+    }
+
+    .home-btn {
+      background: #6a0dad; /* dark purple */
+      margin-left: 0.5em;
+    }
+
+    .home-btn:hover {
+      background: #580a9c;
+    }
+
+    .result {
+      margin-top: 2em;
+      font-size: 1.1em;
+      color: #ffcccc;
+      line-height: 1.6;
+      text-align: left;
+      white-space: pre-wrap;
+    }
+
+    .footer {
+      margin-top: 2em;
+      font-size: .9em;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Video -->
+  <video autoplay muted loop playsinline class="bg-video">
+    <source src="https://files.catbox.moe/wv5h3v.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <div class="container">
+    <h1>🔍 Search Word - Fredi Dictionary</h1>
+    <p class="instructions">Enter a Swahili or English word, then click <em>Search</em>.</p>
+
+    <input type="text" id="searchWord" placeholder="e.g. love, mwalimu" />
+    <br>
+    <button id="btnSearch">Search</button>
+    <button id="btnDownload" style="display:none;">Download Meaning</button>
+    
+    <!-- Return to Home Button -->
+    <button onclick="window.location.href='index.html'" class="home-btn">⬅️ Back to Home</button>
+
+    <div id="result" class="result"></div>
+
+    <div class="footer">
+      &copy; 2025 Fredi Ai Stationaries | All rights reserved.
+    </div>
+  </div>
+
+  <script>
+    let latestDefinition = '';
+
+    async function fetchMeaning(word) {
+      const result = document.getElementById('result');
+      const downloadBtn = document.getElementById('btnDownload');
+      result.innerHTML = '⏳ Searching for the meaning of <strong>' + word + '</strong>...';
+      downloadBtn.style.display = 'none';
+      latestDefinition = '';
+
+      let found = false;
+      let finalDef = '';
+
+      // 1. Try DictionaryAPI.dev (English)
+      try {
+        const d = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
+        if (d.ok) {
+          const dj = await d.json();
+          if (Array.isArray(dj) && dj[0].meanings) {
+            finalDef = dj[0].meanings.map(m => 
+              m.definitions.map(def => def.definition).join('; ')
+            ).join('\n\n');
+            found = true;
+          }
+        }
+      } catch (e) {}
+
+      // 2. If not found, try Wikipedia Swahili
+      if (!found) {
+        try {
+          const wiki = await fetch(`https://sw.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(word)}`);
+          if (wiki.ok) {
+            const data = await wiki.json();
+            if (data.extract) {
+              finalDef = data.extract;
+              found = true;
+            }
+          }
+        } catch (e) {}
+      }
+
+      // 3. If still not found, try Glosbe Swahili-English
+      if (!found) {
+        try {
+          const gl = await fetch(`https://glosbe.com/gapi/translate?from=sw&dest=en&format=json&phrase=${encodeURIComponent(word)}`);
+          if (gl.ok) {
+            const g = await gl.json();
+            const defs = g.tuc?.filter(t => t.meanings)?.flatMap(t => t.meanings.map(m => m.text))?.join('; ');
+            if (defs) {
+              finalDef = defs;
+              found = true;
+            }
+          }
+        } catch (e) {}
+      }
+
+      if (found) {
+        latestDefinition = `${word}: ${finalDef}`;
+        result.innerHTML = `<strong>${word}</strong>:<br>${finalDef.replace(/\n/g, '<br>')}`;
+        downloadBtn.style.display = 'inline-block';
+      } else {
+        result.innerHTML = `Sorry! We couldn’t find a definition for <strong>${word}</strong>.`;
+      }
+    }
+
+    document.getElementById('btnSearch')
+            .addEventListener('click', () => {
+              const w = document.getElementById('searchWord').value.trim().toLowerCase();
+              if (w) fetchMeaning(w);
+            });
+
+    document.getElementById('searchWord')
+            .addEventListener('keypress', e => {
+              if (e.key === 'Enter') document.getElementById('btnSearch').click();
+            });
+
+    document.getElementById('btnDownload')
+            .addEventListener('click', () => {
+              const blob = new Blob([latestDefinition], { type: 'text/plain' });
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = 'meaning.txt';
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+            });
+  </script>
+</body>
+</html>

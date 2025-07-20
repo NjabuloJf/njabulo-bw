@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fredi Audio Speller</title>
+  <style>
+    * { box-sizing: border-box; }
+    body, html {
+      height: 100%;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff;
+      overflow: hidden;
+    }
+    #bg-video {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      z-index: -1;
+      filter: brightness(0.6);
+    }
+    .container {
+      position: relative;
+      max-width: 600px;
+      margin: 5vh auto;
+      background: rgba(40, 0, 60, 0.75);
+      padding: 2rem;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 25px rgba(255, 0, 64, 0.3);
+    }
+    h1 {
+      font-size: 2.2em;
+      color: #ff1744;
+      margin-bottom: 1rem;
+    }
+    input, select {
+      width: 90%;
+      padding: 0.8em;
+      font-size: 1em;
+      margin-top: 1em;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+    button {
+      margin-top: 1.5em;
+      padding: 0.8em 1.5em;
+      background-color: #d50000;
+      color: white;
+      font-size: 1em;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    button:hover {
+      background-color: #ff1744;
+      transform: scale(1.05);
+    }
+    .return-btn {
+      background-color: #6a1b9a;
+      margin-top: 2em;
+    }
+    .return-btn:hover {
+      background-color: #8e24aa;
+    }
+    .footer {
+      margin-top: 2em;
+      font-size: 0.9em;
+      color: #ccc;
+    }
+    a {
+      color: #ff5252;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    @media screen and (max-width: 600px) {
+      .container {
+        margin: 2vh 1rem;
+        padding: 1.5rem;
+      }
+      input, select {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Video Background -->
+  <video autoplay muted loop id="bg-video">
+    <source src="https://files.catbox.moe/wv5h3v.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <div class="container">
+    <h1>🔊 Fredi Audio Speller</h1>
+    <p>Type any word and choose a language to hear its pronunciation.</p>
+
+    <input type="text" id="wordInput" placeholder="Type a word..." />
+    <br>
+
+    <select id="languageSelect">
+      <option value="">Loading languages...</option>
+    </select>
+    <br>
+
+    <button onclick="speakWord()">🔊 Speak</button>
+
+    <div class="footer">
+      <p><a href="index.html">← Back to Home</a></p>
+      &copy; 2025 Fredi Ai Stationaries | all right reserved 
+    </div>
+
+    <button class="return-btn" onclick="location.href='index.html'">
+      ⬅️ Return Home
+    </button>
+  </div>
+
+  <script>
+    function populateLanguages() {
+      const select = document.getElementById("languageSelect");
+      const voices = speechSynthesis.getVoices();
+
+      // Clear existing options
+      select.innerHTML = "";
+
+      voices.forEach(voice => {
+        const option = document.createElement("option");
+        option.value = voice.lang;
+        option.textContent = `${voice.name} (${voice.lang})`;
+        select.appendChild(option);
+      });
+
+      if (voices.length === 0) {
+        select.innerHTML = "<option disabled>No voices available</option>";
+      }
+    }
+
+    function speakWord() {
+      const text = document.getElementById("wordInput").value.trim();
+      const lang = document.getElementById("languageSelect").value;
+
+      if (!text) {
+        alert("Please enter a word first.");
+        return;
+      }
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang;
+
+      const voices = speechSynthesis.getVoices();
+      const voiceMatch = voices.find(voice => voice.lang === lang);
+      if (voiceMatch) utterance.voice = voiceMatch;
+
+      speechSynthesis.cancel();
+      speechSynthesis.speak(utterance);
+    }
+
+    // Load voices on page load and when available
+    window.speechSynthesis.onvoiceschanged = populateLanguages;
+    window.addEventListener('load', populateLanguages);
+  </script>
+
+</body>
+</html>
