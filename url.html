@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fredi Ai | Media Uploader</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary: #ff007f;
+      --background: #120026;
+      --secondary: #4e008e;
+      --highlight: #ff4da6;
+      --text-light: #ddd;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #1e0035, #000033);
+      font-family: 'Segoe UI', sans-serif;
+      color: var(--text-light);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      align-items: center;
+    }
+
+    header {
+      width: 100%;
+      background: var(--secondary);
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .container {
+      background: var(--background);
+      margin-top: 60px;
+      padding: 40px;
+      border-radius: 16px;
+      width: 95%;
+      max-width: 800px;
+      box-shadow: 0 0 30px rgba(255, 0, 255, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      margin-bottom: 30px;
+    }
+
+    input[type="file"] {
+      background: #fff;
+      color: #000;
+      border-radius: 10px;
+      padding: 12px;
+      width: 100%;
+      margin-bottom: 20px;
+      font-size: 1rem;
+      border: none;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    }
+
+    .btn {
+      background: var(--primary);
+      color: white;
+      padding: 14px 24px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin: 10px 0;
+      transition: all 0.3s ease;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .btn:hover {
+      background: var(--highlight);
+      transform: scale(1.05);
+    }
+
+    .url-box {
+      margin-top: 25px;
+      background: #1a1a2e;
+      padding: 20px;
+      border-radius: 10px;
+      width: 100%;
+      word-break: break-all;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .url-box input {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .footer {
+      margin-top: auto;
+      padding: 20px;
+      background: #220033;
+      width: 100%;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 25px;
+      }
+
+      h2 {
+        font-size: 1.3rem;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>Fredi Ai | Media Uploader</header>
+
+  <div class="container">
+    <h2>Upload any media file & get a public URL instantly</h2>
+    <input type="file" id="mediaFile" />
+    <button class="btn" onclick="uploadFile()">Upload File</button>
+
+    <div class="url-box" id="result" style="display:none;">
+      <p><strong>File URL:</strong></p>
+      <input type="text" id="fileUrl" readonly />
+      <button class="btn" onclick="copyLink()">Copy URL</button>
+    </div>
+  </div>
+
+  <div class="footer">© 2025 Fredi Ai | All rights reserved</div>
+
+  <script>
+    async function uploadFile() {
+      const fileInput = document.getElementById('mediaFile');
+      const file = fileInput.files[0];
+
+      if (!file) {
+        alert("Please select a file to upload.");
+        return;
+      }
+
+      const uploadUrl = "https://transfer.sh/" + encodeURIComponent(file.name);
+
+      try {
+        const response = await fetch(uploadUrl, {
+          method: "PUT",
+          body: file
+        });
+
+        const url = await response.text();
+        document.getElementById("fileUrl").value = url;
+        document.getElementById("result").style.display = "flex";
+      } catch (error) {
+        alert("Upload failed. Please try again.");
+        console.error(error);
+      }
+    }
+
+    function copyLink() {
+      const urlBox = document.getElementById("fileUrl");
+      urlBox.select();
+      document.execCommand("copy");
+      alert("URL copied to clipboard 📋");
+    }
+  </script>
+</body>
+</html>
