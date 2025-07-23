@@ -661,7 +661,7 @@
                     
                     <div class="control-group">
                         <label for="verse">Verse(s)</label>
-                        <input type="text" id="verse" placeholder="e.g. 16 or 1-5" value="7">
+                        <input type="text" id="verse" placeholder="e.g. 16 or 1-5" value="1-14">
                     </div>
                     
                     <div class="control-group">
@@ -799,7 +799,7 @@
             let searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
             
             // Initial load with default values
-            fetchVerse('John', 3, '16', 'web');
+            fetchVerse('Mathew', 7, '1-14', 'web');
             
             // Update history dropdown
             updateHistoryDropdown();
