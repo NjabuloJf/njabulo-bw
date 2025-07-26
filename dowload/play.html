@@ -3,722 +3,828 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Audio Downloader</title>
+    <title>YouTube Downloader</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #ff0000;
+            --secondary-color: #282828;
+            --background-color: #121212;
+            --card-color: #1e1e1e;
+            --text-color: #ffffff;
+            --text-secondary: #aaaaaa;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         body {
-            background-color: #f5f5f5;
-            color: #333;
-            line-height: 1.6;
-            padding: 20px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding-bottom: 50px;
         }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-        }
-        
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #ff0000;
-        }
-        
-        .tabs {
-            display: flex;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            background: #f1f1f1;
-            border: 1px solid #ddd;
-            border-bottom: none;
-            border-radius: 5px 5px 0 0;
-            margin-right: 5px;
-        }
-        
-        .tab.active {
-            background: white;
-            border-bottom: 1px solid white;
-            margin-bottom: -1px;
-            font-weight: bold;
-        }
-        
-        .tab-content {
-            display: none;
+
+        header {
+            background-color: var(--secondary-color);
             padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        
-        .tab-content.active {
-            display: block;
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
-        
-        .input-group {
-            margin-bottom: 20px;
-        }
-        
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-        
-        .input-field {
+
+        .header-content {
             display: flex;
+            justify-content: space-between;
             align-items: center;
         }
-        
-        .input-field i {
-            padding: 10px;
-            background: #f1f1f1;
-            border: 1px solid #ddd;
-            border-right: none;
-            border-radius: 5px 0 0 5px;
-            color: #666;
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        
-        input[type="text"] {
+
+        .logo i {
+            color: var(--primary-color);
+            font-size: 2rem;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .search-input {
             flex: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 0 5px 5px 0;
-            font-size: 16px;
+            padding: 12px 15px;
+            border-radius: 30px;
+            border: none;
+            background-color: var(--card-color);
+            color: var(--text-color);
+            font-size: 1rem;
+            outline: none;
         }
-        
-        button {
-            background: #ff0000;
+
+        .search-button {
+            background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 12px 20px;
-            border-radius: 5px;
+            border-radius: 30px;
+            padding: 0 20px;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: 500;
-            width: 100%;
-            transition: background 0.3s;
+            font-weight: 600;
+            transition: background-color 0.3s;
         }
-        
-        button:hover {
-            background: #cc0000;
+
+        .search-button:hover {
+            background-color: #cc0000;
         }
-        
-        button:disabled {
-            background: #cccccc;
-            cursor: not-allowed;
+
+        .url-input-container {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
         }
-        
-        .loading {
-            text-align: center;
-            padding: 20px;
-            display: none;
-        }
-        
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-radius: 50%;
-            border-top: 4px solid #ff0000;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .error {
-            color: #d32f2f;
-            background: #fce4e4;
-            padding: 10px;
+
+        .url-input {
+            flex: 1;
+            padding: 12px 15px;
             border-radius: 5px;
-            margin-bottom: 20px;
-            display: none;
+            border: none;
+            background-color: var(--card-color);
+            color: var(--text-color);
+            font-size: 1rem;
+            outline: none;
         }
-        
-        .search-results {
+
+        .url-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 0 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .url-button:hover {
+            background-color: #cc0000;
+        }
+
+        .or-divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: var(--text-secondary);
+        }
+
+        .or-divider::before,
+        .or-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: var(--text-secondary);
+            margin: 0 10px;
+        }
+
+        .main-content {
+            margin-top: 30px;
+        }
+
+        .section-title {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .results-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
             margin-top: 20px;
         }
-        
-        .result-item {
-            display: flex;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            align-items: center;
+
+        .video-card {
+            background-color: var(--card-color);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
-        
+
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .thumbnail-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 aspect ratio */
+            overflow: hidden;
+        }
+
         .thumbnail {
-            width: 120px;
-            height: 90px;
-            border-radius: 5px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
-            margin-right: 15px;
         }
-        
-        .result-info {
+
+        .duration-badge {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .video-info {
+            padding: 15px;
+        }
+
+        .video-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .video-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .preview-btn, .download-btn {
             flex: 1;
+            padding: 8px 0;
+            border-radius: 5px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.3s;
         }
-        
-        .result-title {
-            font-weight: 500;
-            margin-bottom: 5px;
+
+        .preview-btn {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .preview-btn:hover {
+            opacity: 0.8;
+        }
+
+        .download-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .download-btn:hover {
+            opacity: 0.8;
+        }
+
+        .audio-player-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--secondary-color);
+            padding: 15px 20px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 1000;
+        }
+
+        .audio-player {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .audio-info {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .audio-title {
+            font-weight: 600;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
-        .result-meta {
-            font-size: 14px;
-            color: #666;
+
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
-        
-        .result-meta span {
-            margin-right: 15px;
-        }
-        
-        .download-btn {
-            background: #ff0000;
+
+        .play-pause-btn {
+            background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 8px 15px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .progress-container {
+            flex: 1;
+            height: 5px;
+            background-color: var(--card-color);
             border-radius: 5px;
             cursor: pointer;
-            font-size: 14px;
-            white-space: nowrap;
+            position: relative;
         }
-        
-        .download-info {
-            text-align: center;
-            padding: 20px;
-            display: none;
-        }
-        
-        .download-thumbnail {
-            width: 200px;
-            height: 150px;
-            border-radius: 5px;
-            object-fit: cover;
-            margin-bottom: 15px;
-        }
-        
-        .download-title {
-            font-weight: 500;
-            margin-bottom: 10px;
-            font-size: 18px;
-        }
-        
-        .download-meta {
-            color: #666;
-            margin-bottom: 20px;
-        }
-        
-        .progress-container {
-            margin: 20px 0;
-            display: none;
-        }
-        
+
         .progress-bar {
-            height: 10px;
-            background: #f1f1f1;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
             height: 100%;
-            background: #ff0000;
-            width: 0%;
-            transition: width 0.3s;
-        }
-        
-        .progress-text {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 5px;
-            font-size: 14px;
-        }
-        
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #333;
-            color: white;
-            padding: 15px 20px;
+            background-color: var(--primary-color);
             border-radius: 5px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-            display: none;
+            width: 0%;
         }
-        
+
+        .time-display {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .close-player {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 50px 0;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 0;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .empty-state p {
+            font-size: 1.2rem;
+        }
+
+        .error-message {
+            color: #ff4444;
+            margin-top: 10px;
+            text-align: center;
+        }
+
         @media (max-width: 768px) {
-            .result-item {
+            .header-content {
                 flex-direction: column;
-                text-align: center;
+                gap: 15px;
             }
-            
-            .thumbnail {
-                margin-right: 0;
-                margin-bottom: 10px;
+
+            .search-container {
                 width: 100%;
-                height: auto;
             }
-            
-            .result-meta {
-                margin-bottom: 10px;
+
+            .results-container {
+                grid-template-columns: 1fr;
+            }
+
+            .audio-player {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .audio-controls {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1><i class="fas fa-music"></i> YouTube Audio Downloader</h1>
-        
-        <div class="tabs">
-            <div class="tab active" data-tab="search">
-                <i class="fas fa-search"></i> Search
-            </div>
-            <div class="tab" data-tab="url">
-                <i class="fas fa-link"></i> URL
-            </div>
-        </div>
-        
-        <!-- Search Tab -->
-        <div id="search-tab" class="tab-content active">
-            <div class="input-group">
-                <label for="search-query">Search YouTube:</label>
-                <div class="input-field">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="search-query" placeholder="Enter song name or artist...">
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fab fa-youtube"></i>
+                    <h1>YouTube Downloader</h1>
+                </div>
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Search YouTube..." id="searchQuery">
+                    <button class="search-button" id="searchButton">
+                        <i class="fas fa-search"></i> Search
+                    </button>
                 </div>
             </div>
-            <button id="search-btn">
-                <i class="fas fa-search"></i> Search
-            </button>
-            
-            <div class="error" id="search-error"></div>
-            
-            <div class="loading" id="search-loading">
-                <div class="spinner"></div>
-                <p>Searching YouTube...</p>
-            </div>
-            
-            <div class="search-results" id="search-results"></div>
-        </div>
-        
-        <!-- URL Tab -->
-        <div id="url-tab" class="tab-content">
-            <div class="input-group">
-                <label for="youtube-url">YouTube Video URL:</label>
-                <div class="input-field">
-                    <i class="fas fa-link"></i>
-                    <input type="text" id="youtube-url" placeholder="https://youtube.com/watch?v=...">
-                </div>
-            </div>
-            <button id="download-url-btn">
-                <i class="fas fa-download"></i> Download
-            </button>
-            
-            <div class="error" id="url-error"></div>
-            
-            <div class="loading" id="url-loading">
-                <div class="spinner"></div>
-                <p>Processing URL...</p>
-            </div>
-            
-            <div class="download-info" id="download-info">
-                <img class="download-thumbnail" id="download-thumbnail" src="" alt="Thumbnail">
-                <h3 class="download-title" id="download-title"></h3>
-                <div class="download-meta">
-                    <span><i class="fas fa-clock"></i> <span id="download-duration"></span></span>
-                    <span><i class="fas fa-music"></i> <span id="download-quality"></span></span>
-                </div>
-                
-                <div class="progress-container" id="progress-container">
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progress-fill"></div>
-                    </div>
-                    <div class="progress-text">
-                        <span id="progress-status">Preparing download...</span>
-                        <span id="progress-percent">0%</span>
-                    </div>
-                </div>
-                
-                <button id="start-download-btn" class="download-btn">
-                    <i class="fas fa-download"></i> Download Now
+            <div class="url-input-container">
+                <input type="text" class="url-input" placeholder="Or paste YouTube URL here..." id="youtubeUrl">
+                <button class="url-button" id="urlButton">
+                    <i class="fas fa-download"></i> Download
                 </button>
             </div>
         </div>
+    </header>
+
+    <div class="container main-content">
+        <h2 class="section-title">Search Results</h2>
+        <div id="resultsContainer">
+            <div class="empty-state">
+                <i class="fas fa-music"></i>
+                <p>Search for YouTube videos or paste a URL to download</p>
+            </div>
+        </div>
+        <div id="errorMessage" class="error-message"></div>
     </div>
-    
-    <div class="toast" id="toast"></div>
-    
+
+    <div class="audio-player-container" id="audioPlayerContainer">
+        <div class="audio-player">
+            <div class="audio-info">
+                <div class="audio-title" id="audioTitle">Now Playing: Song Title</div>
+            </div>
+            <div class="audio-controls">
+                <button class="play-pause-btn" id="playPauseBtn">
+                    <i class="fas fa-pause" id="playPauseIcon"></i>
+                </button>
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="time-display" id="timeDisplay">0:00 / 0:00</div>
+            </div>
+            <button class="close-player" id="closePlayer">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <audio id="audioPlayer"></audio>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // DOM Elements
-            const tabs = document.querySelectorAll('.tab');
-            const tabContents = document.querySelectorAll('.tab-content');
-            const searchBtn = document.getElementById('search-btn');
-            const searchQuery = document.getElementById('search-query');
-            const searchResults = document.getElementById('search-results');
-            const searchError = document.getElementById('search-error');
-            const searchLoading = document.getElementById('search-loading');
-            const downloadUrlBtn = document.getElementById('download-url-btn');
-            const youtubeUrl = document.getElementById('youtube-url');
-            const urlError = document.getElementById('url-error');
-            const urlLoading = document.getElementById('url-loading');
-            const downloadInfo = document.getElementById('download-info');
-            const downloadThumbnail = document.getElementById('download-thumbnail');
-            const downloadTitle = document.getElementById('download-title');
-            const downloadDuration = document.getElementById('download-duration');
-            const downloadQuality = document.getElementById('download-quality');
-            const startDownloadBtn = document.getElementById('start-download-btn');
-            const progressContainer = document.getElementById('progress-container');
-            const progressFill = document.getElementById('progress-fill');
-            const progressPercent = document.getElementById('progress-percent');
-            const progressStatus = document.getElementById('progress-status');
-            const toast = document.getElementById('toast');
-            
-            // Tab switching
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    tabs.forEach(t => t.classList.remove('active'));
-                    tabContents.forEach(c => c.classList.remove('active'));
-                    
-                    tab.classList.add('active');
-                    const tabId = tab.getAttribute('data-tab');
-                    document.getElementById(`${tabId}-tab`).classList.add('active');
-                });
+            const searchQueryInput = document.getElementById('searchQuery');
+            const searchButton = document.getElementById('searchButton');
+            const youtubeUrlInput = document.getElementById('youtubeUrl');
+            const urlButton = document.getElementById('urlButton');
+            const resultsContainer = document.getElementById('resultsContainer');
+            const errorMessage = document.getElementById('errorMessage');
+            const audioPlayerContainer = document.getElementById('audioPlayerContainer');
+            const audioPlayer = document.getElementById('audioPlayer');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            const playPauseIcon = document.getElementById('playPauseIcon');
+            const progressBar = document.getElementById('progressBar');
+            const progressContainer = document.getElementById('progressContainer');
+            const timeDisplay = document.getElementById('timeDisplay');
+            const audioTitle = document.getElementById('audioTitle');
+            const closePlayer = document.getElementById('closePlayer');
+
+            // Global variables
+            let currentAudioUrl = '';
+            let isPlaying = false;
+            let currentSearchResults = [];
+
+            // Event Listeners
+            searchButton.addEventListener('click', handleSearch);
+            searchQueryInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') handleSearch();
             });
-            
-            // Search functionality
-            searchBtn.addEventListener('click', searchVideos);
-            searchQuery.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') searchVideos();
+
+            urlButton.addEventListener('click', handleUrlDownload);
+            youtubeUrlInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') handleUrlDownload();
             });
-            
-            // URL download functionality
-            downloadUrlBtn.addEventListener('click', downloadFromUrl);
-            youtubeUrl.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') downloadFromUrl();
-            });
-            
-            // Start download button
-            startDownloadBtn.addEventListener('click', startDownload);
-            
-            // Search videos on YouTube
-            async function searchVideos() {
-                const query = searchQuery.value.trim();
-                
+
+            playPauseBtn.addEventListener('click', togglePlayPause);
+            progressContainer.addEventListener('click', seekAudio);
+            audioPlayer.addEventListener('timeupdate', updateProgress);
+            audioPlayer.addEventListener('ended', audioEnded);
+            audioPlayer.addEventListener('loadedmetadata', updateDuration);
+            closePlayer.addEventListener('click', closeAudioPlayer);
+
+            // Functions
+            function handleSearch() {
+                const query = searchQueryInput.value.trim();
                 if (!query) {
-                    showError(searchError, "Please enter a search query");
+                    showError('Please enter a search term');
                     return;
                 }
-                
-                // Clear previous results and errors
-                searchResults.innerHTML = "";
-                hideError(searchError);
-                
-                // Show loading
-                showLoading(searchLoading);
-                searchBtn.disabled = true;
-                searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
-                
-                try {
-                    const response = await fetch(`https://apis-keith.vercel.app/search/yts?query=${encodeURIComponent(query)}`);
-                    const data = await response.json();
-                    
-                    if (data.status && data.result?.length > 0) {
-                        displaySearchResults(data.result);
-                    } else {
-                        showError(searchError, "No results found. Try a different search term.");
-                    }
-                } catch (error) {
-                    console.error('Search error:', error);
-                    showError(searchError, "An error occurred while searching. Please try again.");
-                    showToast('Search failed', 'error');
-                } finally {
-                    hideLoading(searchLoading);
-                    searchBtn.disabled = false;
-                    searchBtn.innerHTML = '<i class="fas fa-search"></i> Search';
+
+                showLoading();
+                errorMessage.textContent = '';
+
+                fetch(`https://apis-keith.vercel.app/search/yts?query=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status && data.result && data.result.length > 0) {
+                            currentSearchResults = data.result;
+                            displayResults(data.result);
+                        } else {
+                            showEmptyState('No results found for your search');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showError('Failed to fetch search results. Please try again.');
+                    });
+            }
+
+            function handleUrlDownload() {
+                const url = youtubeUrlInput.value.trim();
+                if (!url) {
+                    showError('Please enter a YouTube URL');
+                    return;
+                }
+
+                // Validate URL
+                if (!isValidYouTubeUrl(url)) {
+                    showError('Please enter a valid YouTube URL');
+                    return;
+                }
+
+                // Extract video ID from URL
+                const videoId = extractVideoId(url);
+                if (!videoId) {
+                    showError('Could not extract video ID from URL');
+                    return;
+                }
+
+                // Find in current search results if available
+                const existingVideo = currentSearchResults.find(video => video.id === videoId);
+                if (existingVideo) {
+                    downloadVideo(existingVideo);
+                } else {
+                    // Create a mock video object
+                    const video = {
+                        id: videoId,
+                        title: 'Direct URL Video',
+                        url: url,
+                        thumbnail: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+                        duration: 'Unknown duration'
+                    };
+                    downloadVideo(video);
                 }
             }
-            
-            // Display search results
-            function displaySearchResults(results) {
-                results.forEach(video => {
-                    const resultItem = document.createElement('div');
-                    resultItem.className = 'result-item';
-                    
-                    resultItem.innerHTML = `
-                        <img src="${video.thumbnail}" class="thumbnail" alt="Thumbnail" onerror="this.src='https://via.placeholder.com/120x90?text=No+Thumbnail'">
-                        <div class="result-info">
-                            <div class="result-title" title="${video.title}">${video.title}</div>
-                            <div class="result-meta">
-                                <span><i class="fas fa-clock"></i> ${video.duration}</span>
-                                <span><i class="fas fa-eye"></i> ${video.views}</span>
-                                ${video.published ? `<span><i class="fas fa-calendar-alt"></i> ${video.published}</span>` : ''}
+
+            function isValidYouTubeUrl(url) {
+                return url.includes('youtube.com/watch') || url.includes('youtu.be/');
+            }
+
+            function extractVideoId(url) {
+                const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+                const match = url.match(regExp);
+                return (match && match[2].length === 11) ? match[2] : null;
+            }
+
+            function showLoading() {
+                resultsContainer.innerHTML = `
+                    <div class="loading">
+                        <div class="spinner"></div>
+                    </div>
+                `;
+            }
+
+            function showEmptyState(message) {
+                resultsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-music"></i>
+                        <p>${message}</p>
+                    </div>
+                `;
+            }
+
+            function showError(message) {
+                errorMessage.textContent = message;
+            }
+
+            function displayResults(videos) {
+                if (!videos || videos.length === 0) {
+                    showEmptyState('No results found');
+                    return;
+                }
+
+                let html = '<div class="results-container">';
+                
+                videos.forEach(video => {
+                    html += `
+                        <div class="video-card" data-id="${video.id}">
+                            <div class="thumbnail-container">
+                                <img src="${video.thumbnail}" alt="${video.title}" class="thumbnail" loading="lazy">
+                                <span class="duration-badge">${formatDuration(video.duration)}</span>
+                            </div>
+                            <div class="video-info">
+                                <div class="video-title" title="${video.title}">${video.title}</div>
+                                <div class="video-meta">
+                                    <span>${video.views || 'N/A'} views</span>
+                                    <span>${video.published || 'Unknown date'}</span>
+                                </div>
+                                <div class="action-buttons">
+                                    <button class="preview-btn" data-id="${video.id}" data-title="${video.title}">
+                                        <i class="fas fa-play"></i> Preview
+                                    </button>
+                                    <button class="download-btn" data-id="${video.id}" data-title="${video.title}">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        <button class="download-btn" data-video-url="${video.url}" data-video-title="${video.title}" data-video-thumbnail="${video.thumbnail}" data-video-duration="${video.duration}">
-                            <i class="fas fa-download"></i> Download
-                        </button>
                     `;
-                    
-                    // Add event listener to the download button
-                    const downloadBtn = resultItem.querySelector('.download-btn');
-                    downloadBtn.addEventListener('click', function() {
-                        prepareDownload(
-                            this.dataset.videoUrl,
-                            this.dataset.videoTitle,
-                            this.dataset.videoThumbnail,
-                            this.dataset.videoDuration
-                        );
+                });
+
+                html += '</div>';
+                resultsContainer.innerHTML = html;
+
+                // Add event listeners to the new buttons
+                document.querySelectorAll('.preview-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const videoId = this.getAttribute('data-id');
+                        const videoTitle = this.getAttribute('data-title');
+                        previewAudio(videoId, videoTitle);
                     });
-                    
-                    searchResults.appendChild(resultItem);
+                });
+
+                document.querySelectorAll('.download-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const videoId = this.getAttribute('data-id');
+                        const videoTitle = this.getAttribute('data-title');
+                        const video = currentSearchResults.find(v => v.id === videoId);
+                        if (video) {
+                            downloadVideo(video);
+                        } else {
+                            // Create a mock video object if not found in search results
+                            const video = {
+                                id: videoId,
+                                title: videoTitle,
+                                url: `https://youtube.com/watch?v=${videoId}`,
+                                thumbnail: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+                                duration: 'Unknown duration'
+                            };
+                            downloadVideo(video);
+                        }
+                    });
                 });
             }
-            
-            // Download from URL
-            async function downloadFromUrl() {
-                const urlInput = youtubeUrl.value.trim();
-                
-                if (!urlInput) {
-                    showError(urlError, "Please enter a YouTube URL");
-                    return;
+
+            function formatDuration(durationStr) {
+                // Extract time in seconds or formatted time
+                const secondsMatch = durationStr.match(/(\d+) seconds/);
+                if (secondsMatch) {
+                    const seconds = parseInt(secondsMatch[1]);
+                    return formatSeconds(seconds);
                 }
                 
-                // Clear previous errors and hide download info
-                hideError(urlError);
-                hideElement(downloadInfo);
-                
-                // Show loading
-                showLoading(urlLoading);
-                downloadUrlBtn.disabled = true;
-                downloadUrlBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-                
-                try {
-                    // Extract video ID if URL is in different formats
-                    let videoUrl = urlInput;
-                    if (urlInput.includes('youtu.be/')) {
-                        const videoId = urlInput.split('youtu.be/')[1].split(/[?&]/)[0];
-                        videoUrl = `https://youtube.com/watch?v=${videoId}`;
-                    } else if (urlInput.includes('v=')) {
-                        const videoId = urlInput.split('v=')[1].split(/[?&]/)[0];
-                        videoUrl = `https://youtube.com/watch?v=${videoId}`;
-                    }
-                    
-                    await prepareDownload(videoUrl);
-                } catch (error) {
-                    console.error('Download error:', error);
-                    showError(urlError, "An error occurred while preparing the download. Please try again.");
-                    showToast('Download preparation failed', 'error');
-                } finally {
-                    hideLoading(urlLoading);
-                    downloadUrlBtn.disabled = false;
-                    downloadUrlBtn.innerHTML = '<i class="fas fa-download"></i> Download';
-                }
-            }
-            
-            // Prepare download with video information
-            async function prepareDownload(videoUrl, title = '', thumbnail = '', duration = '') {
-                // Clear previous errors and hide download info
-                hideError(urlError);
-                hideElement(downloadInfo);
-                hideElement(progressContainer);
-                
-                // Show loading
-                showLoading(urlLoading);
-                
-                try {
-                    const response = await fetch(`https://apis-keith.vercel.app/download/dlmp3?url=${encodeURIComponent(videoUrl)}`);
-                    const data = await response.json();
-                    
-                    if (data.status && data.result) {
-                        // Display download information
-                        downloadTitle.textContent = title || data.result.title || 'Unknown Title';
-                        downloadThumbnail.src = thumbnail || data.result.thumbnail || '';
-                        downloadDuration.textContent = duration || data.result.duration || 'N/A';
-                        downloadQuality.textContent = data.result.quality || 'High quality';
-                        
-                        // Set download URL on the button
-                        startDownloadBtn.setAttribute('data-download-url', data.result.downloadUrl);
-                        
-                        // Show download info and switch to URL tab
-                        showElement(downloadInfo);
-                        document.querySelector('.tab[data-tab="url"]').click();
-                        
-                        // Show toast notification
-                        showToast('Download ready! Click to start.', 'success');
-                    } else {
-                        showError(urlError, "Could not prepare download. Please check the URL and try again.");
-                        showToast('Failed to prepare download', 'error');
-                    }
-                } catch (error) {
-                    console.error('Download error:', error);
-                    showError(urlError, "An error occurred while preparing the download. Please try again.");
-                    showToast('An error occurred', 'error');
-                } finally {
-                    hideLoading(urlLoading);
-                }
-            }
-            
-            // Start the download process
-            function startDownload() {
-                const downloadUrl = startDownloadBtn.getAttribute('data-download-url');
-                const fileName = `${downloadTitle.textContent}.mp3`.replace(/[<>:"/\\|?*]/g, '_');
-                
-                if (!downloadUrl) {
-                    showToast('No download URL available', 'error');
-                    return;
+                // Check for formatted time like "3:27"
+                const timeMatch = durationStr.match(/\((\d+:\d+)\)/);
+                if (timeMatch) {
+                    return timeMatch[1];
                 }
                 
-                // Reset progress
-                progressFill.style.width = '0%';
-                progressPercent.textContent = '0%';
-                progressStatus.textContent = 'Starting download...';
-                
-                // Show progress container
-                showElement(progressContainer);
-                
-                // Disable download button
-                startDownloadBtn.disabled = true;
-                startDownloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Downloading...';
-                
-                // Create a new XMLHttpRequest
-                const xhr = new XMLHttpRequest();
-                xhr.open('GET', downloadUrl, true);
-                xhr.responseType = 'blob';
-                
-                // Progress tracking
-                xhr.onprogress = function(e) {
-                    if (e.lengthComputable) {
-                        const percentComplete = Math.round((e.loaded / e.total) * 100);
-                        progressFill.style.width = `${percentComplete}%`;
-                        progressPercent.textContent = `${percentComplete}%`;
-                        progressStatus.textContent = getDownloadStatus(percentComplete);
-                    }
-                };
-                
-                // When download completes
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        // Create a blob from the response
-                        const blob = new Blob([xhr.response], { type: 'audio/mp3' });
-                        const url = window.URL.createObjectURL(blob);
-                        
-                        // Create a temporary anchor element to trigger the download
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = fileName;
-                        document.body.appendChild(a);
-                        a.click();
-                        
-                        // Clean up
-                        window.URL.revokeObjectURL(url);
-                        document.body.removeChild(a);
-                        
-                        // Update UI
-                        progressStatus.textContent = 'Download complete!';
-                        startDownloadBtn.disabled = false;
-                        startDownloadBtn.innerHTML = '<i class="fas fa-download"></i> Download Again';
-                        
-                        showToast('Download completed successfully!', 'success');
-                    }
-                };
-                
-                // Error handling
-                xhr.onerror = function() {
-                    progressStatus.textContent = 'Download failed. Please try again.';
-                    startDownloadBtn.disabled = false;
-                    startDownloadBtn.innerHTML = '<i class="fas fa-download"></i> Try Again';
-                    showToast('Download failed', 'error');
-                };
-                
-                // Start the download
-                xhr.send();
+                // If no match, return as is
+                return durationStr;
             }
-            
-            // Get download status text based on percentage
-            function getDownloadStatus(percent) {
-                if (percent < 10) return 'Initializing download...';
-                if (percent < 30) return 'Downloading...';
-                if (percent < 60) return 'Download in progress...';
-                if (percent < 90) return 'Almost there...';
-                if (percent < 100) return 'Finalizing...';
-                return 'Processing...';
+
+            function formatSeconds(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
             }
-            
-            // Helper functions
-            function showLoading(element) {
-                element.style.display = 'block';
-            }
-            
-            function hideLoading(element) {
-                element.style.display = 'none';
-            }
-            
-            function showError(element, message) {
-                element.textContent = message;
-                element.style.display = 'block';
-            }
-            
-            function hideError(element) {
-                element.style.display = 'none';
-            }
-            
-            function showElement(element) {
-                element.style.display = 'block';
-            }
-            
-            function hideElement(element) {
-                element.style.display = 'none';
-            }
-            
-            function showToast(message, type = 'success') {
-                toast.innerHTML = '';
+
+            function previewAudio(videoId, videoTitle) {
+                showLoadingAudio(videoTitle);
                 
-                // Create icon based on type
-                const icon = document.createElement('i');
-                if (type === 'success') {
-                    icon.className = 'fas fa-check-circle';
-                } else if (type === 'error') {
-                    icon.className = 'fas fa-exclamation-circle';
+                fetch(`https://apis-keith.vercel.app/download/ytmp3?url=https://youtube.com/watch?v=${videoId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status && data.result && data.result.download_url) {
+                            currentAudioUrl = data.result.download_url;
+                            audioPlayer.src = currentAudioUrl;
+                            audioTitle.textContent = `Now Playing: ${videoTitle}`;
+                            audioPlayerContainer.style.display = 'block';
+                            audioPlayer.play()
+                                .then(() => {
+                                    isPlaying = true;
+                                    playPauseIcon.className = 'fas fa-pause';
+                                })
+                                .catch(error => {
+                                    console.error('Playback failed:', error);
+                                    showError('Could not play audio preview');
+                                });
+                        } else {
+                            showError('Could not get audio preview URL');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showError('Failed to fetch audio preview. Please try again.');
+                    });
+            }
+
+            function showLoadingAudio(title) {
+                audioTitle.textContent = `Loading: ${title}`;
+                timeDisplay.textContent = '0:00 / 0:00';
+                progressBar.style.width = '0%';
+                audioPlayerContainer.style.display = 'block';
+            }
+
+            function togglePlayPause() {
+                if (isPlaying) {
+                    audioPlayer.pause();
+                    playPauseIcon.className = 'fas fa-play';
                 } else {
-                    icon.className = 'fas fa-info-circle';
+                    audioPlayer.play()
+                        .then(() => {
+                            playPauseIcon.className = 'fas fa-pause';
+                        })
+                        .catch(error => {
+                            console.error('Playback failed:', error);
+                            showError('Could not play audio');
+                        });
                 }
+                isPlaying = !isPlaying;
+            }
+
+            function updateProgress() {
+                const { currentTime, duration } = audioPlayer;
+                const progressPercent = (currentTime / duration) * 100;
+                progressBar.style.width = `${progressPercent}%`;
                 
-                toast.appendChild(icon);
-                toast.appendChild(document.createTextNode(' ' + message));
-                toast.className = 'toast';
-                if (type) toast.classList.add(type);
-                
-                // Show toast
-                setTimeout(() => {
-                    toast.style.display = 'flex';
-                }, 100);
-                
-                // Hide toast after 3 seconds
-                setTimeout(() => {
-                    toast.style.display = 'none';
-                }, 3000);
+                const currentTimeFormatted = formatSeconds(Math.floor(currentTime));
+                const durationFormatted = formatSeconds(Math.floor(duration));
+                timeDisplay.textContent = `${currentTimeFormatted} / ${durationFormatted}`;
+            }
+
+            function seekAudio(e) {
+                const width = this.clientWidth;
+                const clickX = e.offsetX;
+                const duration = audioPlayer.duration;
+                audioPlayer.currentTime = (clickX / width) * duration;
+            }
+
+            function updateDuration() {
+                const duration = audioPlayer.duration;
+                const durationFormatted = formatSeconds(Math.floor(duration));
+                timeDisplay.textContent = `0:00 / ${durationFormatted}`;
+            }
+
+            function audioEnded() {
+                isPlaying = false;
+                playPauseIcon.className = 'fas fa-play';
+                audioPlayer.currentTime = 0;
+                progressBar.style.width = '0%';
+                timeDisplay.textContent = `0:00 / ${formatSeconds(Math.floor(audioPlayer.duration))}`;
+            }
+
+            function closeAudioPlayer() {
+                audioPlayer.pause();
+                isPlaying = false;
+                audioPlayerContainer.style.display = 'none';
+                audioPlayer.currentTime = 0;
+                progressBar.style.width = '0%';
+            }
+
+            function downloadVideo(video) {
+                // Show loading state for the specific video
+                const videoCard = document.querySelector(`.video-card[data-id="${video.id}"]`);
+                if (videoCard) {
+                    const downloadBtn = videoCard.querySelector('.download-btn');
+                    if (downloadBtn) {
+                        downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                        downloadBtn.disabled = true;
+                    }
+                }
+
+                fetch(`https://apis-keith.vercel.app/download/ytmp3?url=${encodeURIComponent(video.url)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status && data.result && data.result.download_url) {
+                            // Create a temporary link to trigger the download
+                            const link = document.createElement('a');
+                            link.href = data.result.download_url;
+                            link.download = `${video.title}.mp3`.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                        } else {
+                            showError('Could not get download URL');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showError('Failed to initiate download. Please try again.');
+                    })
+                    .finally(() => {
+                        // Reset the download button state
+                        if (videoCard) {
+                            const downloadBtn = videoCard.querySelector('.download-btn');
+                            if (downloadBtn) {
+                                downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download';
+                                downloadBtn.disabled = false;
+                            }
+                        }
+                    });
             }
         });
     </script>
