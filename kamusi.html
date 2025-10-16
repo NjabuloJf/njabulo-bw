@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fredi Ai Dictionary</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff;
+      overflow-x: hidden;
+    }
+    
+    #bg-video {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      z-index: -1;
+      filter: brightness(0.5);
+    }
+    .container {
+      max-width: 800px;
+      margin: 6vh auto;
+      background: rgba(50, 0, 80, 0.7);
+      padding: 2em;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 25px rgba(255, 0, 64, 0.3);
+      text-align: center;
+    }
+    
+    h1 {
+      font-size: 2.5em;
+      color: #ff1744;
+    }
+
+    .quote {
+      font-style: italic;
+      margin: 1em 0;
+      color: #ccc;
+    }
+    
+    input {
+      padding: 0.8em;
+      width: 90%;
+      font-size: 1em;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      margin-top: 1em;
+    }
+    
+    .btn {
+      margin-top: 1em;
+      padding: 0.8em 1.5em;
+      background-color: #d50000;
+      color: #fff;
+      border: none;
+      font-size: 1em;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    
+    .btn:hover {
+      background-color: #ff1744;
+      transform: scale(1.05);
+    }
+
+    .apk-download {
+      display: inline-block;
+      margin: 1.5em auto 0;
+      padding: 0.8em 1.5em;
+      background-color: #6a1b9a;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .apk-download:hover {
+      background-color: #8e24aa;
+      transform: scale(1.05);
+    }
+    
+    .result {
+      margin-top: 2em;
+      font-size: 1.2em;
+      color: #fff;
+    }
+    
+    .footer {
+      margin-top: 2em;
+      font-size: 0.9em;
+      color: #ccc;
+    }
+
+    .footer a {
+      color: #ff5252;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media screen and (max-width: 600px) {
+      .container {
+        margin: 3vh 1rem;
+        padding: 1.5rem;
+      }
+      
+      input {
+        width: 100%;
+      }
+
+      .btn, .apk-download {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Video -->
+  <video autoplay muted loop id="bg-video">
+    <source src="https://files.catbox.moe/wv5h3v.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <div class="container">
+    <a class="apk-download" href="https://www.mediafire.com/file/5n03od82j3owsmw/Maka_kamusi_%25282%2529.apk/file" target="_blank">
+      ⬇️ Download Apk
+    </a>
+
+    <h1>📘 Fredi Dictionary</h1>
+    <p class="quote">"I know every word... even those that haven't been invented yet!" 😎</p>
+
+    <!-- Search field -->
+    <input type="text" id="searchWord" placeholder="Search a Swahili word..." />
+
+    <!-- Action buttons -->
+    <div>
+      <button class="btn" onclick="goToSearch()">Search Online</button>
+      <button class="btn" onclick="goToPronounce()">Pronounce 🔊</button>
+      <button class="btn" onclick="goToTranslate()">🌐 Translate Word</button>
+    </div>
+
+    <div class="result" id="result"></div>
+
+    <div class="footer">
+      <p><a href="search.html">⚡ Open online search without a word</a></p>
+      &copy; 2025 Fredi Ai Libraries | all right reserved 
+    </div>
+  </div>
+
+  <script>
+    function goToSearch() {
+      const word = document.getElementById("searchWord").value.trim().toLowerCase();
+      if (word) {
+        window.location.href = `./kamusi/search.html?word=${encodeURIComponent(word)}`;
+      } else {
+        alert("Please enter a word first.");
+      }
+    }
+
+    function goToPronounce() {
+      window.location.href = "./kamusi/audio.html";
+    }
+
+    function goToTranslate() {
+      window.location.href = "./kamusi/translate.html";
+    }
+
+    document.getElementById("searchWord")
+      .addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+          goToSearch();
+        }
+      });
+  </script>
+
+</body>
+</html>
