@@ -157,8 +157,8 @@
 <!-- Scroll progress circle -->
 <div class="scroll-circle" id="scrollCircle" title="Scroll">
   <svg class="scroll-svg" width="64" height="64" viewBox="0 0 36 36">
-    <path id="circleBg" d="M18 2.0845a15.9155 15.9155 0 1 0 0 31.831 15.9155 15.9155 0 1 0 0-31.831" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2"/>
-    <path id="circleFill" d="M18 2.0845a15.9155 15.9155 0 1 0 0 31.831 15.9155 15.9155 0 1 0 0-31.831"
+    <path id="circleBg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2"/>
+    <path id="circleFill" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
       fill="none" stroke="#ff6b6b" stroke-width="2" stroke-dasharray="0 100" stroke-linecap="round"/>
   </svg>
   <div class="circle-icon" id="circleIcon">⬇️</div>
@@ -287,7 +287,7 @@ function renderGrid(items){
         </div>
       </div>
     `;
-    c.onclick = ()=> selectIndex(idx);
+    c.onclick = ()=> selectMovie(it, idx);
     grid.appendChild(c);
   });
 
@@ -305,100 +305,159 @@ function filterByGenre(g){
   renderGrid(filtered);
 }
 
-/* Select item */
-async function selectIndex(idx){
+/* Select movie - FIXED FUNCTION */
+async function selectMovie(movie, idx){
   currentIndex = idx;
-  const it = currentList[idx];
-  if(!it) return;
-  titleEl.textContent = it.title;
-  subEl.textContent = `${it.genre || ''} • ${it.releaseDate || ''}`;
-  // set poster
-  video.poster = it.thumbnail || (it.cover && it.cover.url) || '';
-  // fetch info to get resources & sources
-  const info = await apiInfo(it.subjectId || it.subjectId || it.subjectId || it.subjectId || it.subjectId || it.subjectId || it.subjectId) // redundant safe key
-    .catch(()=>null);
-  // fallback if apiInfo not available (use item)
-  const subject = info || it;
-  detailTitle.textContent = subject.title || it.title;
-  detailDesc.textContent = subject.description || it.description || '';
-  detailMeta.innerHTML = `<div>Duration: ${fmtTime(subject.duration/1 || subject.duration || 0)}</div><div>Country: ${subject.countryName || ''}</div><div>IMDB: ${subject.imdbRatingValue || ''}</div>`;
-  subtitleLang.textContent = (subject.subtitles || '—').split(',').slice(0,3).join(', ');
-  // load sources
-  const sources = await apiSources(subject.subjectId || it.subjectId || it.subjectId || it.id || subject.id);
-  // sources: array with quality properties (quality:"360p", url saved in result items probably)
-  // The API returns objects with id, quality and url fields — adapt accordingly
-  // Build quality options
-  qualitySelect.innerHTML = '';
-  const qualMap = [];
-  if(Array.isArray(sources) && sources.length){
-    sources.forEach(s=>{
-      // s may contain 'url' or 'downloadUrl' or be nested; adapt defensively
-      const label = s.quality || s.resolution || (s.title) || 'auto';
-      const url = s.url || s.u || s.download || (s.videoUrl) || null;
-      qualMap.push({label, url, raw: s});
-      const opt = document.createElement('option'); opt.value = qualMap.length-1; opt.textContent = label; qualitySelect.appendChild(opt);
-    });
-  } else if (subject.trailer && subject.trailer.videoAddress && subject.trailer.videoAddress.url){
-    qualMap.push({label:'trailer', url:subject.trailer.videoAddress.url, raw:subject.trailer.videoAddress});
-    const opt = document.createElement('option'); opt.value = 0; opt.textContent = 'Trailer'; qualitySelect.appendChild(opt);
-  } else {
-    // no remote sources listed in /api/sources - fallback: try detailPath or external
-    qualitySelect.innerHTML = '<option value="-1">No sources</option>';
-  }
-
-  // attach play source when user chooses quality
-  qualitySelect.onchange = ()=>{
-    const sel = qualMap[parseInt(qualitySelect.value)];
-    if(sel && sel.url){
-      setVideoSource(sel.url);
+  
+  // Update UI immediately
+  titleEl.textContent = movie.title;
+  subEl.textContent = `${movie.genre || ''} • ${movie.releaseDate || ''}`;
+  video.poster = movie.thumbnail || (movie.cover && movie.cover.url) || '';
+  
+  // Show loading state
+  loading.style.display = 'block';
+  loading.textContent = 'Loading movie details...';
+  
+  try {
+    // Get movie ID - try multiple possible fields
+    const movieId = movie.subjectId || movie.id || movie._id;
+    
+    if (!movieId) {
+      throw new Error('No movie ID found');
     }
-  };
-
-  // auto-select first quality if exists
-  if(qualMap.length) {
-    qualitySelect.value = 0;
-    if(qualMap[0].url) setVideoSource(qualMap[0].url);
+    
+    // Fetch movie info and sources in parallel for better performance
+    const [info, sources] = await Promise.all([
+      apiInfo(movieId),
+      apiSources(movieId)
+    ]);
+    
+    // Use the fetched info or fallback to basic movie data
+    const movieData = info || movie;
+    
+    // Update details panel
+    detailTitle.textContent = movieData.title || movie.title;
+    detailDesc.textContent = movieData.description || movie.description || 'No description available';
+    detailMeta.innerHTML = `
+      <div>Duration: ${fmtTime(movieData.duration/1 || movieData.duration || 0)}</div>
+      <div>Country: ${movieData.countryName || ''}</div>
+      <div>IMDB: ${movieData.imdbRatingValue || ''}</div>
+    `;
+    subtitleLang.textContent = (movieData.subtitles || '—').split(',').slice(0,3).join(', ');
+    
+    // Build quality options
+    qualitySelect.innerHTML = '';
+    const qualMap = [];
+    
+    if (Array.isArray(sources) && sources.length > 0) {
+      sources.forEach((source, index) => {
+        const label = source.quality || source.resolution || `Quality ${index + 1}`;
+        const url = source.url || source.downloadUrl || source.videoUrl;
+        
+        if (url) {
+          qualMap.push({label, url});
+          const opt = document.createElement('option');
+          opt.value = qualMap.length - 1;
+          opt.textContent = label;
+          qualitySelect.appendChild(opt);
+        }
+      });
+    } else if (movieData.trailer && movieData.trailer.videoAddress && movieData.trailer.videoAddress.url) {
+      // Fallback to trailer
+      qualMap.push({
+        label: 'Trailer', 
+        url: movieData.trailer.videoAddress.url
+      });
+      const opt = document.createElement('option');
+      opt.value = 0;
+      opt.textContent = 'Trailer';
+      qualitySelect.appendChild(opt);
+    } else {
+      // No sources available
+      const opt = document.createElement('option');
+      opt.value = -1;
+      opt.textContent = 'No sources available';
+      qualitySelect.appendChild(opt);
+    }
+    
+    // Auto-play first available source
+    if (qualMap.length > 0) {
+      qualitySelect.value = 0;
+      setVideoSource(qualMap[0].url);
+    }
+    
+    // Store sources for download
+    video.dataset.sources = JSON.stringify(qualMap);
+    
+    // Hide details panel by default
+    detailPanel.style.display = 'none';
+    
+  } catch (error) {
+    console.error('Error loading movie:', error);
+    alert('Failed to load movie details. Please try again.');
+  } finally {
+    loading.style.display = 'none';
   }
-
-  // store for download
-  video.dataset.sources = JSON.stringify(qualMap);
-  detailPanel.style.display='none';
 }
 
 /* Set video src */
 function setVideoSource(src){
-  // if source is a relative path or a list object, try to read .url
-  const url = typeof src === 'string' ? src : (src.url || src.raw && (src.raw.url || src.raw.videoUrl) || '');
-  if(!url) return;
-  video.src = url;
-  video.play().catch(()=>{});
+  if(!src) return;
+  
+  video.src = src;
+  video.load();
+  
+  // Auto-play when source is set
+  video.play().catch(e => {
+    console.log('Auto-play prevented:', e);
+    // User interaction might be required for autoplay
+  });
 }
 
 /* Player controls */
 playBtn.onclick = ()=> {
-  if(video.paused) { video.play(); playBtn.textContent='⏸'; } else { video.pause(); playBtn.textContent='▶️'; }
+  if(video.paused) { 
+    video.play(); 
+    playBtn.textContent='⏸'; 
+  } else { 
+    video.pause(); 
+    playBtn.textContent='▶️'; 
+  }
 };
 video.onplay = ()=> playBtn.textContent='⏸';
 video.onpause = ()=> playBtn.textContent='▶️';
 prevBtn.onclick = ()=> {
-  if(currentIndex>0) selectIndex(currentIndex-1);
+  if(currentIndex > 0) {
+    const prevMovie = currentList[currentIndex - 1];
+    selectMovie(prevMovie, currentIndex - 1);
+  }
 };
 nextBtn.onclick = ()=> {
-  if(currentIndex < currentList.length-1) selectIndex(currentIndex+1);
+  if(currentIndex < currentList.length - 1) {
+    const nextMovie = currentList[currentIndex + 1];
+    selectMovie(nextMovie, currentIndex + 1);
+  }
 };
-rewBtn.onclick = ()=> { video.currentTime = Math.max(0, video.currentTime - 10); };
-fwdBtn.onclick = ()=> { video.currentTime = Math.min(video.duration || 0, video.currentTime + 10); };
+rewBtn.onclick = ()=> { 
+  video.currentTime = Math.max(0, video.currentTime - 10); 
+};
+fwdBtn.onclick = ()=> { 
+  video.currentTime = Math.min(video.duration || 0, video.currentTime + 10); 
+};
 
 rotateBtn.onclick = ()=>{
-  rotation = (rotation+90) % 360;
+  rotation = (rotation + 90) % 360;
   video.style.transform = `rotate(${rotation}deg)`;
 };
 
 fullBtn.onclick = async ()=>{
   try{
-    if(!document.fullscreenElement) await video.requestFullscreen();
-    else await document.exitFullscreen();
-  }catch(e){ console.warn(e); }
+    if(!document.fullscreenElement) {
+      await video.requestFullscreen();
+    } else {
+      await document.exitFullscreen();
+    }
+  }catch(e){ console.warn('Fullscreen error:', e); }
 };
 
 video.ontimeupdate = ()=>{
@@ -414,65 +473,57 @@ detailsBtn.onclick = ()=>{
 
 /* Download logic */
 downloadBtn.onclick = async ()=>{
-  const sources = JSON.parse(video.dataset.sources || '[]');
-  if(!sources.length){ alert('No downloadable sources'); return; }
-  // try to pick the currently selected quality
-  const selIndex = parseInt(qualitySelect.value) || 0;
-  const sel = sources[selIndex] || sources[0];
-  const url = sel.url || (sel.raw && (sel.raw.url || sel.raw.videoUrl));
-  if(!url){ alert('No valid download URL'); return; }
-
-  const fileName = (titleEl.textContent || 'movie').replace(/\s+/g,'_') + `_${(sel.label||'video')}.mp4`;
-  try{
-    // Try File System Access API (Chromium)
-    if('showDirectoryPicker' in window){
-      const dir = await window.showDirectoryPicker();
-      // try to get / create FrediMuvies folder
-      let fdir;
-      try{ fdir = await dir.getDirectoryHandle('FrediMuvies', {create:true}); }
-      catch(_){ fdir = await dir; } // fallback to chosen dir
-      const fh = await fdir.getFileHandle(fileName, {create:true});
-      const writable = await fh.createWritable();
-      const resp = await fetch(url);
-      if(!resp.ok) throw new Error('Network error');
-      const reader = resp.body.getReader();
-      // stream to file
-      while(true){
-        const {done, value} = await reader.read();
-        if(done) break;
-        await writable.write(value);
-      }
-      await writable.close();
-      alert('Saved to FrediMuvies folder!');
-      return;
-    }else{
-      // fallback: blob + anchor download
-      const resp = await fetch(url);
-      if(!resp.ok) throw new Error('Network error');
-      const blob = await resp.blob();
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(a.href);
-      alert('Download started (fallback).');
+  try {
+    const sources = JSON.parse(video.dataset.sources || '[]');
+    if(!sources.length){ 
+      alert('No downloadable sources available'); 
+      return; 
     }
-  }catch(e){
-    console.error(e);
-    alert('Download error: ' + (e.message || e));
+    
+    const selIndex = parseInt(qualitySelect.value) || 0;
+    const selectedSource = sources[selIndex] || sources[0];
+    
+    if(!selectedSource || !selectedSource.url){ 
+      alert('No valid download URL'); 
+      return; 
+    }
+    
+    const movieTitle = titleEl.textContent || 'movie';
+    const fileName = `${movieTitle.replace(/\s+/g,'_')}_${selectedSource.label || 'video'}.mp4`;
+    
+    // Simple download approach
+    const a = document.createElement('a');
+    a.href = selectedSource.url;
+    a.download = fileName;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    
+    alert(`Download started: ${fileName}`);
+    
+  } catch(error) {
+    console.error('Download error:', error);
+    alert('Download failed: ' + error.message);
   }
 };
 
 /* Menu */
-menuBtn.onclick = ()=> sideMenu.style.display = sideMenu.style.display==='none' ? 'block' : 'none';
+menuBtn.onclick = ()=> {
+  sideMenu.style.display = sideMenu.style.display === 'none' ? 'block' : 'none';
+};
+
 function buildMenuFromList(items){
   menuItems.innerHTML = '';
   const categories = new Set();
-  items.forEach(i => { if(i.genre) i.genre.split(',').forEach(g=>categories.add(g.trim())); });
+  items.forEach(i => { 
+    if(i.genre) i.genre.split(',').forEach(g=>categories.add(g.trim())); 
+  });
+  
   Array.from(categories).slice(0,10).forEach(g=>{
-    const btn = document.createElement('div'); btn.className='item'; btn.textContent = g;
+    const btn = document.createElement('div'); 
+    btn.className='item'; 
+    btn.textContent = g;
     btn.onclick = ()=> filterByGenre(g);
     menuItems.appendChild(btn);
   });
@@ -480,62 +531,98 @@ function buildMenuFromList(items){
 
 /* Search */
 searchBtn.onclick = async ()=>{
-  const q = searchInput.value.trim() || 'a';
-  const res = await apiSearch(q);
-  renderGrid(res);
-  buildMenuFromList(res);
+  const query = searchInput.value.trim();
+  if(!query) {
+    // If search is empty, show some default content
+    const items = await apiSearch('a');
+    renderGrid(items);
+    buildMenuFromList(items);
+    return;
+  }
+  
+  const results = await apiSearch(query);
+  renderGrid(results);
+  buildMenuFromList(results);
 };
-/* Allow Enter */
-searchInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') searchBtn.click(); });
 
-/* Initial load: fetch default list as "top" assumption */
+/* Allow Enter key for search */
+searchInput.addEventListener('keydown', (e)=> {
+  if(e.key === 'Enter') searchBtn.click();
+});
+
+/* Initial load */
 (async function init(){
-  // apply theme
+  // Apply theme
   document.body.setAttribute('data-theme', THEME);
-  // initial fetch: assumption -> search for 'a' to get a broad list
-  const items = await apiSearch('a'); // ASSUMPTION: no explicit 'top' endpoint; using broad search to show initial items.
-  renderGrid(items);
-  buildMenuFromList(items);
+  
+  // Load initial movies
+  const initialMovies = await apiSearch('a');
+  renderGrid(initialMovies);
+  buildMenuFromList(initialMovies);
 })();
 
 /* Scroll circle behaviour */
 function updateScrollCircle(){
   const scrolled = window.scrollY;
-  const docH = document.documentElement.scrollHeight - window.innerHeight;
-  const pct = docH > 0 ? (scrolled / docH) : 0;
-  const dash = `${(pct*100).toFixed(1)} 100`;
-  circleFill.setAttribute('stroke-dasharray', dash);
-  if(scrolled === 0){ circleIcon.textContent = '⬇️'; circleFill.setAttribute('stroke', '#4dd0e1'); }
-  else { circleIcon.textContent = '⬆️'; circleFill.setAttribute('stroke', '#ff6b6b'); }
-  if(pct >= 0.999){ circleFill.setAttribute('stroke', '#28c76f'); circleIcon.textContent = '✔️'; }
+  const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const percentage = totalHeight > 0 ? (scrolled / totalHeight) : 0;
+  
+  const dashValue = `${(percentage * 100).toFixed(1)} 100`;
+  circleFill.setAttribute('stroke-dasharray', dashValue);
+  
+  if(scrolled === 0){
+    circleIcon.textContent = '⬇️';
+    circleFill.setAttribute('stroke', '#4dd0e1');
+  } else {
+    circleIcon.textContent = '⬆️';
+    circleFill.setAttribute('stroke', '#ff6b6b');
+  }
+  
+  if(percentage >= 0.999){
+    circleFill.setAttribute('stroke', '#28c76f');
+    circleIcon.textContent = '✔️';
+  }
 }
+
 window.addEventListener('scroll', updateScrollCircle);
 updateScrollCircle();
+
 scrollCircle.onclick = ()=> {
-  if(window.scrollY === 0) window.scrollTo({top: document.body.scrollHeight, behavior:'smooth'});
-  else window.scrollTo({top:0, behavior:'smooth'});
+  if(window.scrollY === 0) {
+    window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
+  } else {
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
 };
 
 /* Language & theme toggles */
 langToggle.onclick = ()=> {
   LANG = LANG === 'sw' ? 'en' : 'sw';
-  // update small labels
+  
+  // Update UI texts
   document.querySelectorAll('[data-i18n]').forEach(el=>{
-    const k = el.getAttribute('data-i18n');
-    el.textContent = t(k);
+    const key = el.getAttribute('data-i18n');
+    el.textContent = t(key);
   });
-  langToggle.textContent = LANG.toUpperCase();
+  
+  // Update button text
+  langToggle.textContent = LANG === 'sw' ? 'SW / EN' : 'EN / SW';
+  
+  // Update search placeholder
+  searchInput.placeholder = LANG === 'sw' 
+    ? 'Search movies or channels... (tafuta)'
+    : 'Search movies or channels... (search)';
 };
+
 themeToggle.onclick = ()=> {
   THEME = THEME === 'dark' ? 'light' : 'dark';
-  document.body.setAttribute('data-theme', THEME === 'dark' ? 'dark' : 'light');
+  document.body.setAttribute('data-theme', THEME);
+  themeToggle.textContent = THEME === 'dark' ? '🌙/☀️' : '☀️/🌙';
 };
 
-/* Small helper to enable filtering from inline buttons (genre) */
-window.filterByGenre = function(g){ filterByGenre(g); };
-
-/* Expose select by index for grid */
-window.selectIndex = selectIndex;
+/* Make functions available globally */
+window.filterByGenre = filterByGenre;
+window.selectMovie = selectMovie;
 
 /* End of script */
 </script>
