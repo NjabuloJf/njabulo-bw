@@ -3,21 +3,40 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Fredi Ai Dictionary</title>
+  <title>Fredi AI Dictionary - Advanced</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #818cf8;
+      --accent: #8b5cf6;
+      --danger: #ef4444;
+      --dark: #0f172a;
+      --darker: #020617;
+      --light: #f8fafc;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --glass: rgba(255, 255, 255, 0.1);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
     * {
+      margin: 0;
+      padding: 0;
       box-sizing: border-box;
     }
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      font-family: 'Segoe UI', sans-serif;
-      color: #fff;
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+      color: var(--light);
+      min-height: 100vh;
+      line-height: 1.6;
       overflow-x: hidden;
     }
-    
+
+    /* Background Video */
     #bg-video {
       position: fixed;
       right: 0;
@@ -26,110 +45,347 @@
       min-height: 100%;
       object-fit: cover;
       z-index: -1;
-      filter: brightness(0.5);
+      filter: brightness(0.3) contrast(1.2);
     }
+
+    /* Main Container */
     .container {
-      max-width: 800px;
-      margin: 6vh auto;
-      background: rgba(50, 0, 80, 0.7);
-      padding: 2em;
-      border-radius: 20px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 25px rgba(255, 0, 64, 0.3);
+      max-width: 900px;
+      margin: 8vh auto;
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      padding: 3em;
+      border-radius: 24px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
       text-align: center;
+      position: relative;
+      overflow: hidden;
+      animation: slideUp 0.8s ease-out;
     }
-    
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    /* Header */
+    .header {
+      margin-bottom: 2em;
+    }
+
+    .apk-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 1.5em;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 600;
+      transition: var(--transition);
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+    }
+
+    .apk-download:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(99, 102, 241, 0.5);
+    }
+
     h1 {
-      font-size: 2.5em;
-      color: #ff1744;
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 0.5em;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .quote {
       font-style: italic;
-      margin: 1em 0;
-      color: #ccc;
+      font-size: 1.2rem;
+      color: var(--light);
+      opacity: 0.8;
+      margin-bottom: 2em;
+      position: relative;
+      padding: 0 2em;
     }
-    
+
+    .quote::before, .quote::after {
+      content: '"';
+      font-size: 2em;
+      color: var(--primary);
+      position: absolute;
+      top: -10px;
+    }
+
+    .quote::before { left: 0; }
+    .quote::after { right: 0; }
+
+    /* Search Section */
+    .search-section {
+      margin: 2em 0;
+    }
+
+    .search-input {
+      position: relative;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
     input {
-      padding: 0.8em;
-      width: 90%;
-      font-size: 1em;
-      border-radius: 10px;
-      border: none;
+      padding: 1.2em 1.5em;
+      width: 100%;
+      font-size: 1.1rem;
+      border-radius: 16px;
+      border: 2px solid var(--glass-border);
       outline: none;
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
-      margin-top: 1em;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--light);
+      transition: var(--transition);
+      font-family: inherit;
     }
-    
+
+    input:focus {
+      border-color: var(--primary);
+      background: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1em;
+      margin: 2em 0;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
     .btn {
-      margin-top: 1em;
-      padding: 0.8em 1.5em;
-      background-color: #d50000;
-      color: #fff;
-      border: none;
-      font-size: 1em;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.3s ease, transform 0.2s ease;
-    }
-    
-    .btn:hover {
-      background-color: #ff1744;
-      transform: scale(1.05);
-    }
-
-    .apk-download {
-      display: inline-block;
-      margin: 1.5em auto 0;
-      padding: 0.8em 1.5em;
-      background-color: #6a1b9a;
+      padding: 1.2em 1.5em;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
       color: white;
-      text-decoration: none;
-      border-radius: 8px;
-      font-weight: bold;
-      transition: background-color 0.3s, transform 0.2s;
+      border: none;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
     }
 
-    .apk-download:hover {
-      background-color: #8e24aa;
-      transform: scale(1.05);
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(99, 102, 241, 0.5);
     }
-    
+
+    .btn:active {
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid var(--glass-border);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: var(--primary);
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+      display: flex;
+      justify-content: center;
+      gap: 1em;
+      margin: 2em 0;
+      flex-wrap: wrap;
+    }
+
+    .quick-btn {
+      padding: 0.8em 1.2em;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      color: var(--light);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .quick-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    /* Result Section */
     .result {
       margin-top: 2em;
-      font-size: 1.2em;
-      color: #fff;
+      padding: 2em;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      border: 1px solid var(--glass-border);
+      text-align: left;
+      animation: fadeIn 0.5s ease-out;
     }
-    
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result h3 {
+      color: var(--primary);
+      margin-bottom: 1em;
+      font-size: 1.4rem;
+    }
+
+    /* Footer */
     .footer {
-      margin-top: 2em;
-      font-size: 0.9em;
-      color: #ccc;
+      margin-top: 3em;
+      padding-top: 2em;
+      border-top: 1px solid var(--glass-border);
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
     }
 
     .footer a {
-      color: #ff5252;
+      color: var(--primary-light);
       text-decoration: none;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .footer a:hover {
-      text-decoration: underline;
+      color: var(--primary);
     }
 
-    @media screen and (max-width: 600px) {
+    /* Stats */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 2em;
+      margin: 2em 0;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Responsive Design */
+    @media screen and (max-width: 768px) {
       .container {
-        margin: 3vh 1rem;
-        padding: 1.5rem;
-      }
-      
-      input {
-        width: 100%;
+        margin: 4vh 1rem;
+        padding: 2rem 1.5rem;
       }
 
-      .btn, .apk-download {
-        width: 100%;
+      h1 {
+        font-size: 2.2rem;
       }
+
+      .quote {
+        font-size: 1rem;
+        padding: 0 1em;
+      }
+
+      .action-buttons {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        gap: 1em;
+      }
+
+      .stat-number {
+        font-size: 1.6rem;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .container {
+        padding: 1.5rem 1rem;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .btn {
+        padding: 1em 1.2em;
+        font-size: 0.9rem;
+      }
+
+      .quick-actions {
+        gap: 0.5em;
+      }
+
+      .quick-btn {
+        padding: 0.6em 1em;
+        font-size: 0.8rem;
+      }
+    }
+
+    /* Loading Animation */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -142,55 +398,242 @@
   </video>
 
   <div class="container">
-    <a class="apk-download" href="https://www.mediafire.com/file/5n03od82j3owsmw/Maka_kamusi_%25282%2529.apk/file" target="_blank">
-      ⬇️ Download Apk
-    </a>
+    <!-- Header -->
+    <div class="header">
+      <a class="apk-download" href="https://www.mediafire.com/file/5n03od82j3owsmw/Maka_kamusi_%25282%2529.apk/file" target="_blank">
+        <i class="fas fa-download"></i>
+        Download Dictionary App
+      </a>
 
-    <h1>📘 Fredi Dictionary</h1>
-    <p class="quote">"I know every word... even those that haven't been invented yet!" 😎</p>
-
-    <!-- Search field -->
-    <input type="text" id="searchWord" placeholder="Search a Swahili word..." />
-
-    <!-- Action buttons -->
-    <div>
-      <button class="btn" onclick="goToSearch()">Search Online</button>
-      <button class="btn" onclick="goToPronounce()">Pronounce 🔊</button>
-      <button class="btn" onclick="goToTranslate()">🌐 Translate Word</button>
+      <h1>📘 Fredi AI Dictionary</h1>
+      <p class="quote">"I know every word... even those that haven't been invented yet!" 😎</p>
     </div>
 
-    <div class="result" id="result"></div>
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat-item">
+        <span class="stat-number" id="wordCount">50K+</span>
+        <span class="stat-label">Words</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" id="languageCount">100+</span>
+        <span class="stat-label">Languages</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" id="userCount">10K+</span>
+        <span class="stat-label">Users</span>
+      </div>
+    </div>
 
+    <!-- Search Section -->
+    <div class="search-section">
+      <div class="search-input">
+        <input type="text" id="searchWord" placeholder="🔍 Enter a Swahili word to search..." />
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <button class="quick-btn" onclick="showRecentSearches()">
+          <i class="fas fa-history"></i> Recent
+        </button>
+        <button class="quick-btn" onclick="showPopularWords()">
+          <i class="fas fa-fire"></i> Popular
+        </button>
+        <button class="quick-btn" onclick="showRandomWord()">
+          <i class="fas fa-random"></i> Random
+        </button>
+        <button class="quick-btn" onclick="clearSearch()">
+          <i class="fas fa-times"></i> Clear
+        </button>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button class="btn" onclick="goToSearch()">
+          <i class="fas fa-search"></i> Search Online
+        </button>
+        <button class="btn btn-secondary" onclick="goToPronounce()">
+          <i class="fas fa-volume-up"></i> Pronounce 🔊
+        </button>
+        <button class="btn btn-secondary" onclick="goToTranslate()">
+          <i class="fas fa-globe"></i> Translate Word
+        </button>
+      </div>
+    </div>
+
+    <!-- Result Section -->
+    <div class="result" id="result" style="display: none;">
+      <h3><i class="fas fa-book-open"></i> Search Results</h3>
+      <div id="resultContent"></div>
+    </div>
+
+    <!-- Footer -->
     <div class="footer">
-      <p><a href="search.html">⚡ Open online search without a word</a></p>
-      &copy; 2025 Fredi Ai Libraries | all right reserved 
+      <p>
+        <a href="./kamusi/search.html">
+          <i class="fas fa-bolt"></i> Open online search without a word
+        </a>
+      </p>
+      <p style="margin-top: 1em;">&copy; 2025 Fredi AI Libraries | All rights reserved</p>
     </div>
   </div>
 
   <script>
+    // Enhanced functionality
     function goToSearch() {
       const word = document.getElementById("searchWord").value.trim().toLowerCase();
       if (word) {
-        window.location.href = `./kamusi/search.html?word=${encodeURIComponent(word)}`;
+        // Show loading state
+        const result = document.getElementById("result");
+        const resultContent = document.getElementById("resultContent");
+        result.style.display = 'block';
+        resultContent.innerHTML = '<div style="text-align: center;"><div class="loading"></div><p>Searching for "' + word + '"...</p></div>';
+        
+        // Simulate search delay
+        setTimeout(() => {
+          window.location.href = `./kamusi/search.html?word=${encodeURIComponent(word)}`;
+        }, 800);
       } else {
-        alert("Please enter a word first.");
+        showNotification("Please enter a word first.", "warning");
       }
     }
 
     function goToPronounce() {
-      window.location.href = "./kamusi/audio.html";
+      const word = document.getElementById("searchWord").value.trim();
+      if (word) {
+        showNotification("Opening pronunciation for: " + word, "info");
+        setTimeout(() => {
+          window.location.href = "./kamusi/audio.html?word=" + encodeURIComponent(word);
+        }, 500);
+      } else {
+        window.location.href = "./kamusi/audio.html";
+      }
     }
 
     function goToTranslate() {
-      window.location.href = "./kamusi/translate.html";
+      const word = document.getElementById("searchWord").value.trim();
+      if (word) {
+        showNotification("Translating: " + word, "info");
+        setTimeout(() => {
+          window.location.href = "./kamusi/translate.html?word=" + encodeURIComponent(word);
+        }, 500);
+      } else {
+        window.location.href = "./kamusi/translate.html";
+      }
     }
 
-    document.getElementById("searchWord")
-      .addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-          goToSearch();
-        }
+    // Quick Actions
+    function showRecentSearches() {
+      showNotification("Recent searches feature coming soon!", "info");
+    }
+
+    function showPopularWords() {
+      const popularWords = ["habari", "asante", "rafiki", "shule", "maji"];
+      const randomWord = popularWords[Math.floor(Math.random() * popularWords.length)];
+      document.getElementById("searchWord").value = randomWord;
+      showNotification("Try searching: " + randomWord, "success");
+    }
+
+    function showRandomWord() {
+      const words = ["upendo", "elimu", "uhuru", "amani", "furaha", "ndoto"];
+      const randomWord = words[Math.floor(Math.random() * words.length)];
+      document.getElementById("searchWord").value = randomWord;
+      showNotification("Random word: " + randomWord, "success");
+    }
+
+    function clearSearch() {
+      document.getElementById("searchWord").value = "";
+      document.getElementById("result").style.display = "none";
+      showNotification("Search cleared", "info");
+    }
+
+    // Notification System
+    function showNotification(message, type) {
+      // Remove existing notification
+      const existingNotification = document.querySelector('.notification');
+      if (existingNotification) {
+        existingNotification.remove();
+      }
+
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'warning' ? '#f59e0b' : type === 'success' ? '#10b981' : '#6366f1'};
+        color: white;
+        padding: 12px 20px;
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        z-index: 1000;
+        animation: slideInRight 0.3s ease-out;
+      `;
+      
+      notification.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <i class="fas fa-${type === 'warning' ? 'exclamation-triangle' : type === 'success' ? 'check-circle' : 'info-circle'}"></i>
+          <span>${message}</span>
+        </div>
+      `;
+
+      document.body.appendChild(notification);
+
+      setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.3s ease-in';
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+
+    // Add CSS for notification animations
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideInRight {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes slideOutRight {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Enter key support
+    document.getElementById("searchWord").addEventListener("keypress", function (event) {
+      if (event.key === "Enter") {
+        goToSearch();
+      }
+    });
+
+    // Auto-focus on search input
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById("searchWord").focus();
+    });
+
+    // Animate stats on load
+    document.addEventListener('DOMContentLoaded', function() {
+      const stats = document.querySelectorAll('.stat-number');
+      stats.forEach(stat => {
+        const finalValue = stat.textContent;
+        stat.textContent = '0';
+        
+        let current = 0;
+        const increment = finalValue.includes('+') ? 
+          parseInt(finalValue) / 50 : 
+          parseInt(finalValue.replace('K', '000').replace('+', '')) / 50;
+        
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= parseInt(finalValue.replace('K', '000').replace('+', ''))) {
+            stat.textContent = finalValue;
+            clearInterval(timer);
+          } else {
+            stat.textContent = Math.floor(current) + (finalValue.includes('K') ? 'K' : '+');
+          }
+        }, 30);
       });
+    });
   </script>
 
 </body>
