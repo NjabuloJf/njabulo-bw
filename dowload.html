@@ -3,309 +3,997 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FREDI DOWLOAD DASHBOARD</title>
+  <title>FREDI AI DASHBOARD</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <style>
     :root {
-      --red-primary: #5f0305;
-      --red-secondary: #b001b6;
-      --dark: #01014b;
-      --light: rgb(255, 255, 255);
-      --glass: rgba(118, 10, 219, 0.05);
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #818cf8;
+      --secondary: #f59e0b;
+      --accent: #8b5cf6;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --dark: #0f172a;
+      --darker: #020617;
+      --light: #f8fafc;
+      --gray: #64748b;
+      --gray-light: #cbd5e1;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --glass: rgba(255, 255, 255, 0.1);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
     body {
-      margin: 0;
       font-family: 'Inter', sans-serif;
-      background: #0a0011;
+      background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
       color: var(--light);
       min-height: 100vh;
+      line-height: 1.6;
       overflow-x: hidden;
     }
 
+    /* Scroll Progress */
+    .scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      z-index: 1000;
+      transition: width 0.3s ease;
+    }
+
+    /* Scroll to Top */
+    .scroll-to-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 50px;
+      height: 50px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: var(--transition);
+      z-index: 999;
+      box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+    }
+
+    .scroll-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .scroll-to-top:hover {
+      background: var(--primary-dark);
+      transform: translateY(-5px);
+    }
+
+    /* Header */
     .top-nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: var(--red-primary);
-      padding: 12px 20px;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(20px);
+      padding: 15px 30px;
       position: sticky;
       top: 0;
-      z-index: 999;
-      box-shadow: 0 4px 10px rgba(255, 59, 63, 0.2);
+      z-index: 100;
+      border-bottom: 1px solid var(--glass-border);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     }
 
-    .top-nav h1 {
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
       font-size: 18px;
-      color: rgb(8, 187, 231);
     }
 
-    .top-nav .menu-btn {
-      font-size: 20px;
-      background: transparent;
-      border: none;
-      color: #fff;
+    .logo-text {
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .theme-toggle, .menu-btn {
+      background: none;
+      border: 1px solid var(--glass-border);
+      color: var(--light);
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
     }
 
+    .theme-toggle:hover, .menu-btn:hover {
+      background: var(--glass);
+      border-color: var(--primary);
+    }
+
+    /* Hero Section */
+    .hero-section {
+      text-align: center;
+      padding: 60px 30px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero-title {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.2;
+    }
+
+    .hero-subtitle {
+      font-size: 1.2rem;
+      color: var(--gray-light);
+      margin-bottom: 40px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--primary);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--gray-light);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Real-time Stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto 40px;
+      padding: 0 30px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 25px;
+      text-align: center;
+      transition: var(--transition);
+    }
+
+    .stat-card:hover {
+      border-color: var(--primary-light);
+      transform: translateY(-3px);
+    }
+
+    .stat-card i {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 15px;
+    }
+
+    .stat-card .number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--light);
+      display: block;
+    }
+
+    .stat-card .label {
+      color: var(--gray-light);
+      font-size: 0.9rem;
+    }
+
+    /* Slide Menu */
     .slide-menu {
       position: fixed;
       bottom: -100%;
       left: 0;
       width: 100%;
-      max-height: 50%;
-      background: rgba(133, 3, 5, 0.95);
-      backdrop-filter: blur(10px);
-      padding: 20px;
-      box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.5);
+      max-height: 70%;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 30px;
+      box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
       border-radius: 25px 25px 0 0;
       transition: all 0.4s ease;
       z-index: 998;
+      border: 1px solid var(--glass-border);
+      overflow-y: auto;
     }
 
     .slide-menu.active {
       bottom: 0;
     }
 
-    .slide-menu a {
-      display: block;
-      color: #fff;
-      margin: 10px 0;
-      font-size: 16px;
-      text-decoration: none;
+    .menu-header {
+      text-align: center;
+      margin-bottom: 25px;
     }
 
-    .dashboard {
-      padding: 20px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-    }
-
-    .card {
-      background: var(--glass);
-      border: 1px solid rgb(42, 0, 82);
-      border-radius: 15px;
-      padding: 20px;
-      backdrop-filter: blur(8px);
-      transition: 0.3s;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(171, 189, 8, 0.767);
-    }
-
-    .card h3 {
-      color: var(--red-secondary);
+    .menu-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
       margin-bottom: 10px;
     }
 
-    .card p {
-      font-size: 14px;
-      color: #ddd;
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
     }
 
-  .card-btn {
-    margin-top: 15px;
-    display: inline-block;
-    background: var(--red-primary);
-    color: #fff;
-    padding: 8px 16px;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: 0.3s;
-    font-size: 14px;
-  }
-
-  .card-btn:hover {
-    background: var(--red-secondary);
-    box-shadow: 0 5px 15px rgba(242, 255, 59, 0.3);
-  }
-  
-   .menu-footer {
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
       padding: 15px;
-      text-align: center;
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.5);
-      border-top: 1px solid rgba(146, 97, 127, 0.952);
-        }
-        
-   @media (max-width: 600px) {
-      .menu-items {
-       grid-template-columns: 1fr;
-            }
-            
-   .user-info {
-      flex-direction: column;
-            }
-        }
-  
-    .contact-fab {
-      position: fixed;
-      bottom: 15px;
-      left: 15px;
-      background: var(--red-primary);
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      color: #fff;
-      font-size: 22px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid transparent;
+      border-radius: 10px;
+      color: var(--light);
+      text-decoration: none;
+      transition: var(--transition);
+      font-weight: 500;
+    }
+
+    .menu-item:hover {
+      background: rgba(99, 102, 241, 0.1);
+      border-color: var(--primary);
+      transform: translateX(5px);
+    }
+
+    .menu-item-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 15px rgba(226, 255, 59, 0.4);
+      color: white;
+      font-size: 1.1rem;
+    }
+
+    /* Dashboard Cards */
+    .dashboard {
+      padding: 30px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 25px;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      border-color: var(--primary-light);
+    }
+
+    .card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .card-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      font-size: 24px;
+      color: white;
+    }
+
+    .card h3 {
+      color: var(--light);
+      margin-bottom: 12px;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .card p {
+      color: var(--gray-light);
+      margin-bottom: 20px;
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .card-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: var(--transition);
+      font-size: 0.9rem;
+      border: none;
+      cursor: pointer;
+    }
+
+    .card-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--darker);
+      border-top: 1px solid var(--glass-border);
+      padding: 40px 0 20px;
+      margin-top: 60px;
+      text-align: center;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 30px;
+    }
+
+    .footer-text {
+      color: var(--gray);
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--gray);
+      text-decoration: none;
+      transition: var(--transition);
+      font-size: 0.9rem;
+    }
+
+    .footer-links a:hover {
+      color: var(--primary-light);
+    }
+
+    /* Contact FAB */
+    .contact-fab {
+      position: fixed;
+      bottom: 30px;
+      left: 30px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      color: white;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
       z-index: 1000;
+      transition: var(--transition);
     }
 
     .contact-fab:hover {
-      background: #c0392b;
+      transform: scale(1.1);
+      box-shadow: 0 15px 35px rgba(99, 102, 241, 0.6);
     }
 
-    @media (max-width: 600px) {
-      .card p {
-        font-size: 13px;
+    /* Loading Bar */
+    .loading-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      z-index: 1001;
+      transition: width 0.4s ease;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in-up {
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .top-nav {
+        padding: 12px 20px;
+      }
+
+      .hero-title {
+        font-size: 2.2rem;
+      }
+
+      .hero-subtitle {
+        font-size: 1rem;
+      }
+
+      .dashboard {
+        grid-template-columns: 1fr;
+        padding: 20px;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 0 20px;
+      }
+
+      .menu-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .contact-fab {
+        bottom: 20px;
+        left: 20px;
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+      }
+
+      .scroll-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .hero-stats {
+        gap: 20px;
+      }
+      
+      .stat-number {
+        font-size: 1.8rem;
       }
     }
   </style>
 </head>
 <body>
-  <!-- TOP NAV -->
+  <!-- Loading Bar -->
+  <div class="loading-bar" id="loadingBar"></div>
+
+  <!-- Scroll Progress -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <!-- Scroll to Top Button -->
+  <button class="scroll-to-top" id="scrollToTop">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+
+  <!-- Header -->
   <div class="top-nav">
-    <h1>DOWLOAD CENTER</h1>
-    <button class="menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+    <div class="logo">
+      <div class="logo-icon">AI</div>
+      <div class="logo-text">FREDI AI CENTER</div>
+    </div>
+    <div class="nav-controls">
+      <button class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+      </button>
+      <button class="menu-btn" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
   </div>
 
-  <!-- SLIDE DOWN MENU -->
-  <div class="slide-menu" id="slideMenu">
-    <a href="./dowload/apk.html">APK Downloader</a>
-    <a href="./dowload/instagram.html">Instagram Downloader</a>
-    <a href="./dowload/capcut.html">CapCut Downloader</a>
-    <a href="./dowload/spotify.html">Spotify Downloader</a>
-    <A href="./dowload/tiktok.html">TikTok Dowloader</a>
-    <a href="./dowload/facebook.html">Facebook Dowloader</a>
-    <a href="./dowload/pinterest.html">Pinterest im/video dl</a>
-    <a href="./dowload/mediafire.html">MediaFire Dowloader</a>
-    <a href="./dowload/likee.html">Likee Dowloader</a>
-    <a href="./dowload/play.html">Play Audio/Download</a>
-    <a href="./dowload/video.html">Play Video/Download</a>
-    <a href="./dowload/yt.html">YouTube mp3 Downloader</a>
-    <a href="./dowload/ytmp4.html">YouTube mp4 Dowloader</a>
-    <a href="./dowload/soundcloud.html">SoundCloud Dowloader</a>
-    <a href="./dowload/twitter.html">Twitter Dowloader</a>
+  <!-- Hero Section -->
+  <section class="hero-section fade-in-up">
+    <h1 class="hero-title">Advanced AI Dashboard</h1>
+    <p class="hero-subtitle">
+      Explore cutting-edge artificial intelligence tools and models in one powerful platform
+    </p>
+    
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-number" id="aiModels">12+</span>
+        <span class="stat-label">AI Models</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" id="activeUsers">2.8K+</span>
+        <span class="stat-label">Active Users</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" id="responseTime">98ms</span>
+        <span class="stat-label">Avg Response</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Real-time Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <i class="fas fa-brain"></i>
+      <span class="number" id="onlineUsers">2,847</span>
+      <span class="label">Online Users</span>
+    </div>
+    <div class="stat-card">
+      <i class="fas fa-bolt"></i>
+      <span class="number" id="responseTimeLive">98ms</span>
+      <span class="label">Response Time</span>
+    </div>
+    <div class="stat-card">
+      <i class="fas fa-server"></i>
+      <span class="number" id="uptime">99.9%</span>
+      <span class="label">System Uptime</span>
+    </div>
+    <div class="stat-card">
+      <i class="fas fa-download"></i>
+      <span class="number" id="requests">1.2M</span>
+      <span class="label">Total Requests</span>
+    </div>
   </div>
 
-  <!-- DASHBOARD CARDS -->
-  <div class="dashboard">
-    <div class="card">
-  <h3>APK Downloader</h3>
-  <p>Download APK files of Android apps directly without Play Store dependency.</p>
-  <a href="./dowload/apk.html" class="card-btn">Explore</a>
+
+<!-- SLIDE DOWN MENU -->
+<div class="slide-menu" id="slideMenu">
+  <a href="./dowload/apk.html">APK Downloader</a>
+  <a href="./dowload/instagram.html">Instagram Downloader</a>
+  <a href="./dowload/capcut.html">CapCut Downloader</a>
+  <a href="./dowload/spotify.html">Spotify Downloader</a>
+  <a href="./dowload/tiktok.html">TikTok Downloader</a>
+  <a href="./dowload/facebook.html">Facebook Downloader</a>
+  <a href="./dowload/pinterest.html">Pinterest Downloader</a>
+  <a href="./dowload/mediafire.html">MediaFire Downloader</a>
+  <a href="./dowload/likee.html">Likee Downloader</a>
+  <a href="./dowload/play.html">Play Audio / Download</a>
+  <a href="./dowload/video.html">Play Video / Download</a>
+  <a href="./dowload/yt.html">YouTube MP3 Downloader</a>
+  <a href="./dowload/ytmp4.html">YouTube MP4 Downloader</a>
+  <a href="./dowload/soundcloud.html">SoundCloud Downloader</a>
+  <a href="./dowload/twitter.html">Twitter Downloader</a>
 </div>
 
-<div class="card">
-  <h3>Instagram Downloader</h3>
-  <p>Save Instagram photos, reels, and stories in high resolution to your device.</p>
-  <a href="./dowload/instagram.html" class="card-btn">Explore</a>
+<!-- DASHBOARD CARDS (Modern Downloader Style) -->
+<div class="dashboard">
+
+  <!-- APK Downloader -->
+  <div class="card fade-in-up">
+    <div class="card-icon"><i class="fas fa-android"></i></div>
+    <h3>APK Downloader</h3>
+    <p>Grab Android APKs directly without relying on Play Store.</p>
+    <a href="./dowload/apk.html" class="card-btn"><i class="fas fa-download"></i> Download Now</a>
+  </div>
+
+  <!-- Instagram Downloader -->
+  <div class="card fade-in-up">
+    <div class="card-icon"><i class="fab fa-instagram"></i></div>
+    <h3>Instagram Downloader</h3>
+    <p>Save photos, reels, and stories in HD with zero hassle.</p>
+    <a href="./dowload/instagram.html" class="card-btn"><i class="fas fa-arrow-down"></i> Try Tool</a>
+  </div>
+
+  <!-- CapCut Downloader -->
+  <div class="card fade-in-up">
+    <div class="card-icon"><i class="fas fa-video"></i></div>
+    <h3>CapCut Downloader</h3>
+    <p>Get CapCut templates or edits without watermark — fast and easy.</p>
+    <a href="./dowload/capcut.html" class="card-btn"><i class="fas fa-magic"></i> Download</a>
+  </div>
+
+  <!-- Spotify Downloader -->
+  <div class="card fade-in-up">
+    <div class="card-icon"><i class="fab fa-spotify"></i></div>
+    <h3>Spotify Downloader</h3>
+    <p>Download songs or playlists from Spotify in MP3 format.</p>
+    <a href="./dowload/spotify.html" class="card-btn"><i class="fas fa-music"></i> Get Tracks</a>
+  </div>
+
+  <!-- TikTok Downloader -->
+  <div class="card fade-in-up">
+    <div class="card-icon"><i class="fab fa-tiktok"></i></div>
+    <h3>TikTok Downloader</h3>
+    <p>Save TikTok videos with or without watermark in HD.</p>
+    <a href="./dowload/tiktok.html" class="card-btn"><i class="fas fa-play-circle"></i> Download</a>
+  </div>
+
+  <!-- Facebook Downloader -->
+  <div class="card fade-in-up">
+    <div class="card-icon"><i class="fab fa-facebook"></i></div>
+    <h3>Facebook Downloader</h3>
+    <p>Grab public Facebook videos or reels directly to your device.</p>
+    <a href="./dowload/facebook.html" class="card-btn"><i class="fas fa-cloud-download-alt"></i> Try Tool</a>
+  </div>
+
+  <!-- Pinterest Downloader -->
+  <div class="card fade-in-up">
+    <div class="card-icon"><i class="fab fa-pinterest"></i></div>
+    <h3>Pinterest Downloader</h3>
+    <p>Download images or videos from Pinterest instantly — no login needed.</p>
+    <a href="./dowload/pinterest.html" class="card-btn"><i class="fas fa-image"></i> Download</a>
+  </div>
+
+  <!-- MediaFire Downloader -->
+  <div class="card fade-in-up">
+    <div class="card-icon"><i class="fas fa-cloud"></i></div>
+    <h3>MediaFire Downloader</h3>
+    <p>Access MediaFire links directly and download files faster.</p>
+    <a href="./dowload/mediafire.html" class="card-btn"><i class="fas fa-file-download"></i> Get Files</a>
+  </div>
+
+  <!-- Likee Downloader -->
+  <div class="card fade-in-up">
+    <div class="card-icon"><i class="fas fa-heart"></i></div>
+    <h3>Likee Downloader</h3>
+    <p>Save Likee videos without watermark in full HD resolution.</p>
+    <a href="./dowload/likee.html" class="card-btn"><i class="fas fa-download"></i> Download</a>
+  </div>
+
+  <!-- Play Audio / Download -->
+  <div class="card fade-in-up">
+    <div class="card-icon"><i class="fas fa-headphones-alt"></i></div>
+    <h3>Play Audio / Download</h3>
+    <p>Listen or download MP3 and AAC audio tracks on demand.</p>
+    <a href="./dowload/play.html" class="card-btn"><i class="fas fa-play"></i> Play Audio</a>
+  </div>
+
+  <!-- Play Video / Download -->
+  <div class="card fade-in-up">
+    <div class="card-icon"><i class="fas fa-film"></i></div>
+    <h3>Play Video / Download</h3>
+    <p>Stream or download videos in multiple formats — MP4, 3GP, or MKV.</p>
+    <a href="./dowload/video.html" class="card-btn"><i class="fas fa-video"></i> Watch Now</a>
+  </div>
+
+  <!-- YouTube MP3 Downloader -->
+  <div class="card fade-in-up">
+    <div class="card-icon"><i class="fab fa-youtube"></i></div>
+    <h3>YouTube MP3 Downloader</h3>
+    <p>Convert and download YouTube videos into MP3 audio files.</p>
+    <a href="./dowload/yt.html" class="card-btn"><i class="fas fa-music"></i> Convert</a>
+  </div>
+
+  <!-- YouTube MP4 Downloader -->
+  <div class="card fade-in-up">
+    <div class="card-icon"><i class="fab fa-youtube-square"></i></div>
+    <h3>YouTube MP4 Downloader</h3>
+    <p>Download YouTube videos in MP4 format for offline viewing.</p>
+    <a href="./dowload/ytmp4.html" class="card-btn"><i class="fas fa-video"></i> Download</a>
+  </div>
+
+  <!-- SoundCloud Downloader -->
+  <div class="card fade-in-up">
+    <div class="card-icon"><i class="fab fa-soundcloud"></i></div>
+    <h3>SoundCloud Downloader</h3>
+    <p>Get SoundCloud tracks or playlists in MP3 quality instantly.</p>
+    <a href="./dowload/soundcloud.html" class="card-btn"><i class="fas fa-cloud-download-alt"></i> Download</a>
+  </div>
+
+  <!-- Twitter Downloader -->
+  <div class="card fade-in-up">
+    <div class="card-icon"><i class="fab fa-twitter"></i></div>
+    <h3>Twitter Downloader</h3>
+    <p>Save Twitter videos or GIFs directly to your gallery.</p>
+    <a href="./dowload/twitter.html" class="card-btn"><i class="fas fa-download"></i> Save Now</a>
+  </div>
+
 </div>
 
-<div class="card">
-  <h3>CapCut Downloader</h3>
-  <p>Download CapCut video edits or templates easily without watermark.</p>
-  <a href="./dowload/capcut.html" class="card-btn">Explore</a>
-</div>
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-links">
+        <a href="#privacy">Privacy Policy</a>
+        <a href="#terms">Terms of Service</a>
+        <a href="#support">Support</a>
+        <a href="#about">About Us</a>
+      </div>
+      <p class="footer-text">
+        © 2025 FREDI PREMIUM AI CENTER | ALL RIGHTS RESERVED
+      </p>
+    </div>
+  </footer>
 
-<div class="card">
-  <h3>Spotify Downloader</h3>
-  <p>Get songs and playlists from Spotify in MP3 format for offline use.</p>
-  <a href="./dowload/spotify.html" class="card-btn">Explore</a>
-</div>
-
-<div class="card">
-  <h3>TikTok Downloader</h3>
-  <p>Download TikTok videos with or without watermark in HD quality.</p>
-  <a href="./dowload/tiktok.html" class="card-btn">Explore</a>
-</div>
-
-<div class="card">
-  <h3>Facebook Downloader</h3>
-  <p>Download public Facebook videos and reels easily to your phone or PC.</p>
-  <a href="./dowload/facebook.html" class="card-btn">Explore</a>
-</div>
-
-<div class="card">
-  <h3>Pinterest Media Downloader</h3>
-  <p>Save Pinterest images or videos with one click, no login required.</p>
-  <a href="./dowload/pinterest.html" class="card-btn">Explore</a>
-</div>
-
-<div class="card">
-  <h3>MediaFire Downloader</h3>
-  <p>Download files directly from MediaFire using fast and stable links.</p>
-  <a href="./dowload/mediafire.html" class="card-btn">Explore</a>
-</div>
-
-<div class="card">
-  <h3>Likee Downloader</h3>
-  <p>Get Likee videos instantly without watermark and in full resolution.</p>
-  <a href="./dowload/likee.html" class="card-btn">Explore</a>
-</div>
-
-<div class="card">
-  <h3>Play Audio / Download</h3>
-  <p>Listen and download audio files in MP3, AAC, and other formats.</p>
-  <a href="./dowload/play.html" class="card-btn">Explore</a>
-</div>
-
-<div class="card">
-  <h3>Play Video / Download</h3>
-  <p>Stream and download videos in various formats like MP4, 3GP, or MKV.</p>
-  <a href="./dowload/video.html" class="card-btn">Explore</a>
-</div>
-
-<div class="card">
-  <h3>YouTube MP3 Downloader</h3>
-  <p>Convert and download YouTube videos as MP3 audio in high quality.</p>
-  <a href="./dowload/yt.html" class="card-btn">Explore</a>
-</div>
-
-<div class="card">
-  <h3>YouTube MP4 Downloader</h3>
-  <p>Save YouTube videos as MP4 for offline playback anytime.</p>
-  <a href="./dowload/ytmp4.html" class="card-btn">Explore</a>
-</div>
-
-<div class="card">
-  <h3>SoundCloud Downloader</h3>
-  <p>Download SoundCloud tracks or full playlists in MP3 format.</p>
-  <a href="./dowload/soundcloud.html" class="card-btn">Explore</a>
-</div>
-
-<div class="card">
-  <h3>Twitter Downloader</h3>
-  <p>Save Twitter videos or GIFs to your gallery in just one tap.</p>
-  <a href="./dowload/twitter.html" class="card-btn">Explore</a>
-</div>
-</div>
-  
-  <!-- FOOTER -->
-  <div class="menu-footer">
-            © 2025 FREDI PREMIUM DOWNLOAD CENTER | ALL RIGHT RESERVED 
-        </div>
-
-  <!-- CONTACT ICON -->
+  <!-- Contact FAB -->
   <a href="https://fredi-ai-contacts-us.vercel.app" class="contact-fab" title="Contact Us">
     <i class="fas fa-headset"></i>
   </a>
 
-  <!-- SCRIPT -->
+  <!-- JavaScript -->
   <script>
+    // Initialize everything when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeApp();
+    });
+
+    function initializeApp() {
+      // Simulate loading
+      simulateLoading();
+      
+      // Initialize components
+      initScrollProgress();
+      initScrollToTop();
+      initThemeToggle();
+      initRealTimeStats();
+      initSmoothScroll();
+      initAnimations();
+      
+      // Update time every second
+      setInterval(updateRealTimeStats, 1000);
+    }
+
+    // Loading simulation
+    function simulateLoading() {
+      const loadingBar = document.getElementById('loadingBar');
+      let progress = 0;
+      
+      const interval = setInterval(() => {
+        progress += Math.random() * 20;
+        if (progress > 100) progress = 100;
+        loadingBar.style.width = `${progress}%`;
+        
+        if (progress === 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            loadingBar.style.opacity = '0';
+            setTimeout(() => {
+              loadingBar.style.display = 'none';
+            }, 500);
+          }, 500);
+        }
+      }, 100);
+    }
+
+    // Scroll progress indicator
+    function initScrollProgress() {
+      const scrollProgress = document.getElementById('scrollProgress');
+      
+      window.addEventListener('scroll', () => {
+        const windowHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrolled = (window.scrollY / windowHeight) * 100;
+        scrollProgress.style.width = `${scrolled}%`;
+      });
+    }
+
+    // Scroll to top functionality
+    function initScrollToTop() {
+      const scrollToTopBtn = document.getElementById('scrollToTop');
+      
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+          scrollToTopBtn.classList.add('visible');
+        } else {
+          scrollToTopBtn.classList.remove('visible');
+        }
+      });
+      
+      scrollToTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+    }
+
+    // Theme toggle functionality
+    function initThemeToggle() {
+      const themeToggle = document.getElementById('themeToggle');
+      const icon = themeToggle.querySelector('i');
+      
+      // Check for saved theme preference
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.body.classList.add('light-mode');
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+      }
+      
+      themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('light-mode');
+        
+        if (document.body.classList.contains('light-mode')) {
+          icon.classList.remove('fa-moon');
+          icon.classList.add('fa-sun');
+          localStorage.setItem('theme', 'light');
+        } else {
+          icon.classList.remove('fa-sun');
+          icon.classList.add('fa-moon');
+          localStorage.setItem('theme', 'dark');
+        }
+      });
+    }
+
+    // Real-time statistics
+    function initRealTimeStats() {
+      updateRealTimeStats();
+    }
+
+    function updateRealTimeStats() {
+      // Update online users (simulated)
+      const onlineUsers = document.getElementById('onlineUsers');
+      const baseUsers = 2847;
+      const randomChange = Math.floor(Math.random() * 21) - 10; // -10 to +10
+      onlineUsers.textContent = (baseUsers + randomChange).toLocaleString();
+      
+      // Update response time (simulated)
+      const responseTime = document.getElementById('responseTimeLive');
+      const baseTime = 98;
+      const timeChange = Math.floor(Math.random() * 6) - 2; // -2 to +3
+      responseTime.textContent = (baseTime + timeChange) + 'ms';
+      
+      // Update requests (simulated)
+      const requests = document.getElementById('requests');
+      const baseRequests = 1200000;
+      const requestChange = Math.floor(Math.random() * 1000);
+      requests.textContent = ((baseRequests + requestChange) / 1000000).toFixed(1) + 'M';
+    }
+
+    // Slide menu functionality
     function toggleMenu() {
       const menu = document.getElementById('slideMenu');
       menu.classList.toggle('active');
     }
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+      const menu = document.getElementById('slideMenu');
+      const menuBtn = document.querySelector('.menu-btn');
+      
+      if (menu.classList.contains('active') && 
+          !menu.contains(e.target) && 
+          !menuBtn.contains(e.target)) {
+        menu.classList.remove('active');
+      }
+    });
+
+    // Smooth scroll for navigation
+    function initSmoothScroll() {
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        });
+      });
+    }
+
+    // Animation on scroll
+    function initAnimations() {
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, observerOptions);
+
+      // Observe all fade-in-up elements
+      document.querySelectorAll('.fade-in-up').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
+      });
+    }
   </script>
 </body>
 </html>
-
