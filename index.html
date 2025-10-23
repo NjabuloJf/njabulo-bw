@@ -302,6 +302,113 @@
             transform: translateY(-3px);
         }
 
+        /* Main Menu Section */
+        .menu-section {
+            max-width: 1200px;
+            margin: 40px auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 40px;
+        }
+
+        .menu-section-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .menu-category {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 25px;
+            transition: var(--transition);
+        }
+
+        .menu-category:hover {
+            border-color: var(--primary-light);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .category-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .category-title i {
+            font-size: 1.5rem;
+        }
+
+        .menu-items {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid transparent;
+            border-radius: 10px;
+            color: var(--light);
+            text-decoration: none;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .menu-item:hover {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .menu-item-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .menu-item-text {
+            flex: 1;
+        }
+
+        .menu-item-badge {
+            background: var(--secondary);
+            color: var(--dark);
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
         /* Projects Grid */
         .section {
             max-width: 1200px;
@@ -725,6 +832,10 @@
                 font-size: 1.1rem;
             }
 
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+
             .projects-grid {
                 grid-template-columns: 1fr;
             }
@@ -735,6 +846,10 @@
 
             .section-title {
                 font-size: 2rem;
+            }
+
+            .menu-section {
+                padding: 20px;
             }
         }
 
@@ -772,9 +887,9 @@
             </div>
             <nav class="nav-menu">
                 <a href="#home" class="nav-item active">Home</a>
+                <a href="#menu" class="nav-item">Quick Menu</a>
                 <a href="#projects" class="nav-item">Projects</a>
                 <a href="#features" class="nav-item">Features</a>
-                <a href="#stats" class="nav-item">Stats</a>
                 <a href="#feedback" class="nav-item">Feedback</a>
             </nav>
         </div>
@@ -811,14 +926,152 @@
             </div>
 
             <div class="cta-buttons">
-                <a href="#projects" class="btn btn-primary">
+                <a href="#menu" class="btn btn-primary">
                     <i class="fas fa-rocket"></i>
-                    Explore Projects
+                    Explore Menu
                 </a>
-                <a href="#feedback" class="btn btn-secondary">
-                    <i class="fas fa-comment"></i>
-                    Leave Feedback
+                <a href="#projects" class="btn btn-secondary">
+                    <i class="fas fa-code"></i>
+                    View Projects
                 </a>
+            </div>
+        </section>
+
+        <!-- Main Menu Section -->
+        <section id="menu" class="menu-section fade-in-up">
+            <h2 class="menu-section-title">Quick Access Menu</h2>
+            
+            <div class="menu-grid">
+                <!-- Main Category -->
+                <div class="menu-category">
+                    <h3 class="category-title">
+                        <i class="fas fa-home"></i>
+                        Main
+                    </h3>
+                    <div class="menu-items">
+                        <a href="/" class="menu-item">
+                            <div class="menu-item-icon">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            <div class="menu-item-text">Dashboard</div>
+                        </a>
+                        <a href="/portfolio" class="menu-item">
+                            <div class="menu-item-icon">
+                                <i class="fas fa-briefcase"></i>
+                            </div>
+                            <div class="menu-item-text">Portfolio</div>
+                        </a>
+                        <a href="/support" class="menu-item">
+                            <div class="menu-item-icon">
+                                <i class="fas fa-praying-hands"></i>
+                            </div>
+                            <div class="menu-item-text">Support</div>
+                        </a>
+                        <a href="/project" class="menu-item">
+                            <div class="menu-item-icon">
+                                <i class="fas fa-comment-dots"></i>
+                            </div>
+                            <div class="menu-item-text">Project</div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Categories -->
+                <div class="menu-category">
+                    <h3 class="category-title">
+                        <i class="fas fa-th-large"></i>
+                        Categories
+                    </h3>
+                    <div class="menu-items">
+                        <a href="./search.html" class="menu-item">
+                            <div class="menu-item-icon">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="menu-item-text">Search</div>
+                        </a>
+                        <a href="./ai.html" class="menu-item">
+                            <div class="menu-item-icon">
+                                <i class="fas fa-gears"></i>
+                            </div>
+                            <div class="menu-item-text">AI {Artificial Intelligence}</div>
+                        </a>
+                        <a href="./movie.html" class="menu-item">
+                            <div class="menu-item-icon">
+                                <i class="fas fa-film"></i>
+                            </div>
+                            <div class="menu-item-text">Movies</div>
+                        </a>
+                        <a href="./porno.html" class="menu-item">
+                            <div class="menu-item-icon">
+                                <i class="fas fa-ban"></i>
+                            </div>
+                            <div class="menu-item-text">18+ menu</div>
+                            <div class="menu-item-badge">🔞</div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- More Categories -->
+                <div class="menu-category">
+                    <h3 class="category-title">
+                        <i class="fas fa-layer-group"></i>
+                        More Tools
+                    </h3>
+                    <div class="menu-items">
+                        <a href="./dowload.html" class="menu-item">
+                            <div class="menu-item-icon">
+                                <i class="fas fa-download"></i>
+                            </div>
+                            <div class="menu-item-text">Download</div>
+                        </a>
+                        <a href="./stalker.html" class="menu-item">
+                            <div class="menu-item-icon">
+                                <i class="fas fa-user-secret"></i>
+                            </div>
+                            <div class="menu-item-text">Stalker</div>
+                        </a>
+                        <a href="./fun.html" class="menu-item">
+                            <div class="menu-item-icon">
+                                <i class="fas fa-gamepad"></i>
+                            </div>
+                            <div class="menu-item-text">Fun</div>
+                        </a>
+                        <a href="./editing.html" class="menu-item">
+                            <div class="menu-item-icon">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                            <div class="menu-item-text">Editing</div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Development -->
+                <div class="menu-category">
+                    <h3 class="category-title">
+                        <i class="fas fa-code"></i>
+                        Development
+                    </h3>
+                    <div class="menu-items">
+                        <a href="./coding.html" class="menu-item">
+                            <div class="menu-item-icon">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <div class="menu-item-text">Coding</div>
+                        </a>
+                        <a href="./sports.html" class="menu-item">
+                            <div class="menu-item-icon">
+                                <i class="fas fa-running"></i>
+                            </div>
+                            <div class="menu-item-text">Sports</div>
+                        </a>
+                        <a href="./kamusi.html" class="menu-item">
+                            <div class="menu-item-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="menu-item-text">Dictionary</div>
+                        </a>
+                    </div>
+                </div>
             </div>
         </section>
 
