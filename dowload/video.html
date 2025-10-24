@@ -14,6 +14,7 @@
             --light: #ffffff;
             --gray: #aaaaaa;
             --success: #28a745;
+            --blue: #3ea6ff;
         }
         
         * {
@@ -486,6 +487,155 @@
             cursor: pointer;
         }
         
+        /* Auth Modal */
+        .auth-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .auth-container {
+            width: 400px;
+            background-color: var(--secondary);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .auth-header h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--dark);
+        }
+        
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .auth-tab.active {
+            border-bottom: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .auth-form {
+            display: none;
+        }
+        
+        .auth-form.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: var(--dark);
+            color: var(--light);
+            font-size: 16px;
+        }
+        
+        .auth-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .auth-btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--secondary);
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .footer-section h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .footer-section p {
+            margin-bottom: 10px;
+            color: var(--gray);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .social-links a {
+            color: var(--gray);
+            font-size: 20px;
+            transition: color 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: var(--primary);
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--dark);
+            color: var(--gray);
+        }
+        
         /* Responsive */
         @media (max-width: 992px) {
             .main-content {
@@ -616,9 +766,9 @@
                 </div>
                 
                 <div class="user-actions">
+                    <button id="auth-btn" title="Account"><i class="fas fa-user"></i></button>
                     <button id="downloads-btn" title="Downloads"><i class="fas fa-download"></i></button>
-                    <button id="folders-btn" title="Folders"><i class="fas fa-folder"></i></button>
-                    <button id="settings-btn" title="Settings"><i class="fas fa-cog"></i></button>
+                    <button id="upload-btn" title="Upload"><i class="fas fa-upload"></i></button>
                 </div>
             </div>
         </div>
@@ -638,6 +788,8 @@
                     <li><i class="fas fa-newspaper"></i> News</li>
                     <li><i class="fas fa-basketball-ball"></i> Sports</li>
                     <li><i class="fas fa-lightbulb"></i> Learning</li>
+                    <li><i class="fas fa-history"></i> History</li>
+                    <li><i class="fas fa-heart"></i> Liked Videos</li>
                 </ul>
             </div>
             
@@ -738,6 +890,93 @@
         </div>
     </div>
     
+    <!-- Auth Modal -->
+    <div class="auth-modal" id="auth-modal">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h2>FrediTube Go</h2>
+                <p>Sign in to your account</p>
+            </div>
+            
+            <div class="auth-tabs">
+                <div class="auth-tab active" data-tab="login">Login</div>
+                <div class="auth-tab" data-tab="signup">Sign Up</div>
+            </div>
+            
+            <div class="auth-form active" id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" placeholder="Enter your email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password">
+                </div>
+                
+                <button class="auth-btn" id="login-btn">Login</button>
+            </div>
+            
+            <div class="auth-form" id="signup-form">
+                <div class="form-group">
+                    <label for="signup-username">Username</label>
+                    <input type="text" id="signup-username" placeholder="Choose a username">
+                </div>
+                
+                <div class="form-group">
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" placeholder="Enter your email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" placeholder="Create a password">
+                </div>
+                
+                <button class="auth-btn" id="signup-btn">Sign Up</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About FrediTube Go</h3>
+                    <p>FrediTube Go is a modern YouTube dashboard that allows you to search, watch, and download videos with ease.</p>
+                    <p>Created with ❤️ for the best user experience.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Owner Details</h3>
+                    <p><strong>Name:</strong> Fredi Elibarick Ezra</p>
+                    <p><strong>Contact:</strong> +255 752 593 977</p>
+                    <p><strong>Email:</strong> frediezra360@gmail.com</p>
+                    
+                    <div class="social-links">
+                        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" title="Email"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <p><a href="#" style="color: var(--gray); text-decoration: none;">Home</a></p>
+                    <p><a href="#" style="color: var(--gray); text-decoration: none;">Trending</a></p>
+                    <p><a href="#" style="color: var(--gray); text-decoration: none;">Download Manager</a></p>
+                    <p><a href="#" style="color: var(--gray); text-decoration: none;">Account</a></p>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 FrediTube Go. All rights reserved. Created by Fredi Elibarick Ezra</p>
+            </div>
+        </div>
+    </footer>
+    
     <!-- Loading Animation -->
     <div class="loader" id="loader">
         <div class="spinner"></div>
@@ -764,116 +1003,145 @@
         const videoPlayer = document.getElementById('video-player');
         const playerTitle = document.getElementById('player-title');
         const categoryTabs = document.querySelectorAll('.category-tab');
+        const authModal = document.getElementById('auth-modal');
+        const authBtn = document.getElementById('auth-btn');
+        const authTabs = document.querySelectorAll('.auth-tab');
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const loginBtn = document.getElementById('login-btn');
+        const signupBtn = document.getElementById('signup-btn');
         
         // API Configuration
         const API_BASE = 'https://api.giftedtech.co.ke/api';
         const API_KEY = 'gifted';
         
-        // Sample data for demonstration (in a real app, this would come from API)
-        const sampleVideos = [
-            {
-                id: 1,
-                title: "How to Build a Modern Web Dashboard",
-                thumbnail: "https://picsum.photos/320/180?random=1",
-                channel: "Web Dev Tutorials",
-                views: "125K",
-                duration: "15:42",
-                url: "https://youtu.be/sample1",
-                videoId: "qF-JLqKtr2Q",
-                category: "education"
-            },
-            {
-                id: 2,
-                title: "JavaScript ES6 Features You Should Know",
-                thumbnail: "https://picsum.photos/320/180?random=2",
-                channel: "Code Master",
-                views: "89K",
-                duration: "22:15",
-                url: "https://youtu.be/sample2",
-                videoId: "wdJrTQJh1ZQ",
-                category: "education"
-            },
-            {
-                id: 3,
-                title: "Building a YouTube Clone with HTML & CSS",
-                thumbnail: "https://picsum.photos/320/180?random=3",
-                channel: "Frontend Dev",
-                views: "210K",
-                duration: "18:30",
-                url: "https://youtu.be/sample3",
-                videoId: "60ItHLz5WEA",
-                category: "education"
-            },
-            {
-                id: 4,
-                title: "Mobile App Development Trends 2023",
-                thumbnail: "https://picsum.photos/320/180?random=4",
-                channel: "Tech Insights",
-                views: "156K",
-                duration: "12:45",
-                url: "https://youtu.be/sample4",
-                videoId: "qF-JLqKtr2Q",
-                category: "education"
-            },
-            {
-                id: 5,
-                title: "Learn CSS Grid in 20 Minutes",
-                thumbnail: "https://picsum.photos/320/180?random=5",
-                channel: "CSS Wizard",
-                views: "305K",
-                duration: "19:52",
-                url: "https://youtu.be/sample5",
-                videoId: "wdJrTQJh1ZQ",
-                category: "education"
-            },
-            {
-                id: 6,
-                title: "Node.js Backend Development Tutorial",
-                thumbnail: "https://picsum.photos/320/180?random=6",
-                channel: "Backend Pro",
-                views: "98K",
-                duration: "28:10",
-                url: "https://youtu.be/sample6",
-                videoId: "60ItHLz5WEA",
-                category: "education"
-            },
-            {
-                id: 7,
-                title: "Top Hits 2023 - Music Playlist",
-                thumbnail: "https://picsum.photos/320/180?random=7",
-                channel: "Music Channel",
-                views: "2.5M",
-                duration: "1:15:42",
-                url: "https://youtu.be/sample7",
-                videoId: "qF-JLqKtr2Q",
-                category: "music"
-            },
-            {
-                id: 8,
-                title: "Gaming Highlights - Best Moments",
-                thumbnail: "https://picsum.photos/320/180?random=8",
-                channel: "Gaming Pro",
-                views: "450K",
-                duration: "22:30",
-                url: "https://youtu.be/sample8",
-                videoId: "wdJrTQJh1ZQ",
-                category: "gaming"
-            }
-        ];
-        
-        // Current selected video for download
+        // App State
         let selectedVideo = null;
         let currentCategory = 'all';
+        let currentUser = null;
+        let searchResults = [];
         
         // Initialize the app
         function initApp() {
-            displayVideos(sampleVideos);
+            // Check if user is logged in
+            const savedUser = localStorage.getItem('freditube_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                updateUIForUser();
+            }
+            
+            // Load trending videos initially
+            loadTrendingVideos();
             setupEventListeners();
+        }
+        
+        // Load trending videos
+        function loadTrendingVideos() {
+            // In a real app, you would fetch from API
+            // For demo, we'll use sample data
+            const sampleVideos = [
+                {
+                    id: 1,
+                    title: "How to Build a Modern Web Dashboard",
+                    thumbnail: "https://picsum.photos/320/180?random=1",
+                    channel: "Web Dev Tutorials",
+                    views: "125K",
+                    duration: "15:42",
+                    url: "https://youtu.be/qF-JLqKtr2Q",
+                    videoId: "qF-JLqKtr2Q",
+                    category: "education"
+                },
+                {
+                    id: 2,
+                    title: "JavaScript ES6 Features You Should Know",
+                    thumbnail: "https://picsum.photos/320/180?random=2",
+                    channel: "Code Master",
+                    views: "89K",
+                    duration: "22:15",
+                    url: "https://youtu.be/wdJrTQJh1ZQ",
+                    videoId: "wdJrTQJh1ZQ",
+                    category: "education"
+                },
+                {
+                    id: 3,
+                    title: "Building a YouTube Clone with HTML & CSS",
+                    thumbnail: "https://picsum.photos/320/180?random=3",
+                    channel: "Frontend Dev",
+                    views: "210K",
+                    duration: "18:30",
+                    url: "https://youtu.be/60ItHLz5WEA",
+                    videoId: "60ItHLz5WEA",
+                    category: "education"
+                },
+                {
+                    id: 4,
+                    title: "Mobile App Development Trends 2023",
+                    thumbnail: "https://picsum.photos/320/180?random=4",
+                    channel: "Tech Insights",
+                    views: "156K",
+                    duration: "12:45",
+                    url: "https://youtu.be/qF-JLqKtr2Q",
+                    videoId: "qF-JLqKtr2Q",
+                    category: "education"
+                },
+                {
+                    id: 5,
+                    title: "Learn CSS Grid in 20 Minutes",
+                    thumbnail: "https://picsum.photos/320/180?random=5",
+                    channel: "CSS Wizard",
+                    views: "305K",
+                    duration: "19:52",
+                    url: "https://youtu.be/wdJrTQJh1ZQ",
+                    videoId: "wdJrTQJh1ZQ",
+                    category: "education"
+                },
+                {
+                    id: 6,
+                    title: "Node.js Backend Development Tutorial",
+                    thumbnail: "https://picsum.photos/320/180?random=6",
+                    channel: "Backend Pro",
+                    views: "98K",
+                    duration: "28:10",
+                    url: "https://youtu.be/60ItHLz5WEA",
+                    videoId: "60ItHLz5WEA",
+                    category: "education"
+                },
+                {
+                    id: 7,
+                    title: "Top Hits 2023 - Music Playlist",
+                    thumbnail: "https://picsum.photos/320/180?random=7",
+                    channel: "Music Channel",
+                    views: "2.5M",
+                    duration: "1:15:42",
+                    url: "https://youtu.be/qF-JLqKtr2Q",
+                    videoId: "qF-JLqKtr2Q",
+                    category: "music"
+                },
+                {
+                    id: 8,
+                    title: "Gaming Highlights - Best Moments",
+                    thumbnail: "https://picsum.photos/320/180?random=8",
+                    channel: "Gaming Pro",
+                    views: "450K",
+                    duration: "22:30",
+                    url: "https://youtu.be/wdJrTQJh1ZQ",
+                    videoId: "wdJrTQJh1ZQ",
+                    category: "gaming"
+                }
+            ];
+            
+            displayVideos(sampleVideos);
+            searchResults = sampleVideos;
         }
         
         // Display videos in the grid
         function displayVideos(videos) {
             videoGrid.innerHTML = '';
+            
+            if (videos.length === 0) {
+                videoGrid.innerHTML = '<p style="text-align:center;grid-column:1/-1;padding:40px;color:var(--gray)">No videos found. Try a different search.</p>';
+                return;
+            }
             
             videos.forEach(video => {
                 const videoCard = document.createElement('div');
@@ -926,6 +1194,11 @@
             
             // Show the modal
             videoPlayerModal.style.display = 'flex';
+            
+            // Add to watch history if user is logged in
+            if (currentUser) {
+                addToHistory(video);
+            }
         }
         
         // Close video player
@@ -955,7 +1228,7 @@
             
             // Build API URL
             const encodedUrl = encodeURIComponent(selectedVideo.url);
-            let apiUrl = '';
+            let apiUrl = 'https://api.giftedtech.co.ke/';
             
             // Determine the correct API endpoint based on format
             switch(apiEndpoint) {
@@ -1032,6 +1305,11 @@
                     clearInterval(interval);
                     statusText.textContent = 'Download completed';
                     downloadItem.querySelector('.fa-pause').style.display = 'none';
+                    
+                    // Save to user's downloads if logged in
+                    if (currentUser) {
+                        saveToDownloads(downloadItem);
+                    }
                 } else {
                     statusText.textContent = `Downloading - ${Math.round(progress)}%`;
                 }
@@ -1053,10 +1331,169 @@
         // Filter videos by category
         function filterVideosByCategory(category) {
             if (category === 'all') {
-                displayVideos(sampleVideos);
+                displayVideos(searchResults);
             } else {
-                const filteredVideos = sampleVideos.filter(video => video.category === category);
+                const filteredVideos = searchResults.filter(video => video.category === category);
                 displayVideos(filteredVideos);
+            }
+        }
+        
+        // User authentication functions
+        function showAuthModal() {
+            authModal.style.display = 'flex';
+        }
+        
+        function hideAuthModal() {
+            authModal.style.display = 'none';
+        }
+        
+        function loginUser(email, password) {
+            // In a real app, you would validate with a backend
+            // For demo, we'll use localStorage
+            const users = JSON.parse(localStorage.getItem('freditube_users') || '[]');
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('freditube_user', JSON.stringify(user));
+                updateUIForUser();
+                hideAuthModal();
+                showToast(`Welcome back, ${user.username}!`);
+                return true;
+            } else {
+                showToast('Invalid email or password');
+                return false;
+            }
+        }
+        
+        function signupUser(username, email, password) {
+            // In a real app, you would send to a backend
+            // For demo, we'll use localStorage
+            const users = JSON.parse(localStorage.getItem('freditube_users') || '[]');
+            
+            // Check if user already exists
+            if (users.find(u => u.email === email)) {
+                showToast('User with this email already exists');
+                return false;
+            }
+            
+            const newUser = {
+                id: Date.now(),
+                username,
+                email,
+                password,
+                joinDate: new Date().toISOString()
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('freditube_users', JSON.stringify(users));
+            
+            currentUser = newUser;
+            localStorage.setItem('freditube_user', JSON.stringify(newUser));
+            updateUIForUser();
+            hideAuthModal();
+            showToast(`Welcome to FrediTube Go, ${username}!`);
+            return true;
+        }
+        
+        function logoutUser() {
+            currentUser = null;
+            localStorage.removeItem('freditube_user');
+            updateUIForUser();
+            showToast('You have been logged out');
+        }
+        
+        function updateUIForUser() {
+            if (currentUser) {
+                authBtn.innerHTML = `<i class="fas fa-user-check"></i>`;
+                authBtn.title = `Logged in as ${currentUser.username}`;
+            } else {
+                authBtn.innerHTML = `<i class="fas fa-user"></i>`;
+                authBtn.title = 'Account';
+            }
+        }
+        
+        // User data functions
+        function addToHistory(video) {
+            if (!currentUser) return;
+            
+            const history = JSON.parse(localStorage.getItem(`freditube_history_${currentUser.id}`) || '[]');
+            
+            // Remove if already exists
+            const existingIndex = history.findIndex(item => item.id === video.id);
+            if (existingIndex !== -1) {
+                history.splice(existingIndex, 1);
+            }
+            
+            // Add to beginning
+            history.unshift({
+                ...video,
+                watchedAt: new Date().toISOString()
+            });
+            
+            // Keep only last 50 items
+            if (history.length > 50) {
+                history.pop();
+            }
+            
+            localStorage.setItem(`freditube_history_${currentUser.id}`, JSON.stringify(history));
+        }
+        
+        function saveToDownloads(downloadItem) {
+            if (!currentUser) return;
+            
+            const downloads = JSON.parse(localStorage.getItem(`freditube_downloads_${currentUser.id}`) || '[]');
+            
+            downloads.push({
+                title: downloadItem.querySelector('.download-title').textContent,
+                completedAt: new Date().toISOString()
+            });
+            
+            localStorage.setItem(`freditube_downloads_${currentUser.id}`, JSON.stringify(downloads));
+        }
+        
+        // Perform search using API
+        async function performSearch() {
+            const query = searchInput.value.trim();
+            if (!query) return;
+            
+            // Show loading
+            loader.classList.add('active');
+            
+            try {
+                // Use the search API endpoint
+                const searchUrl = `${API_BASE}/search/yts?apikey=${API_KEY}&query=${encodeURIComponent(query)}`;
+                
+                // In a real app, you would fetch from the API
+                // For demo, we'll simulate with sample data
+                console.log(`Searching via: ${searchUrl}`);
+                
+                // Simulate API call delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // For demo, filter sample videos by query
+                const filteredVideos = searchResults.filter(video => 
+                    video.title.toLowerCase().includes(query.toLowerCase()) ||
+                    video.channel.toLowerCase().includes(query.toLowerCase())
+                );
+                
+                // Update search results
+                searchResults = filteredVideos;
+                
+                // Display results
+                displayVideos(filteredVideos.length > 0 ? filteredVideos : []);
+                
+                // Hide loading
+                loader.classList.remove('active');
+                
+                // Show message if no results
+                if (filteredVideos.length === 0) {
+                    showToast('No results found. Try a different search term.');
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+                loader.classList.remove('active');
+                showToast('Search failed. Please try again.');
             }
         }
         
@@ -1112,36 +1549,61 @@
                     filterVideosByCategory(currentCategory);
                 });
             });
-        }
-        
-        // Perform search
-        function performSearch() {
-            const query = searchInput.value.trim();
-            if (!query) return;
             
-            // Show loading
-            loader.classList.add('active');
+            // Auth modal events
+            authBtn.addEventListener('click', showAuthModal);
             
-            // In a real app, you would call the search API
-            // For demo, we'll simulate search with sample data
-            setTimeout(() => {
-                // Filter videos based on query
-                const filteredVideos = sampleVideos.filter(video => 
-                    video.title.toLowerCase().includes(query.toLowerCase()) ||
-                    video.channel.toLowerCase().includes(query.toLowerCase())
-                );
+            // Auth tabs
+            authTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    authTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Show corresponding form
+                    if (tabName === 'login') {
+                        loginForm.classList.add('active');
+                        signupForm.classList.remove('active');
+                    } else {
+                        signupForm.classList.add('active');
+                        loginForm.classList.remove('active');
+                    }
+                });
+            });
+            
+            // Login form
+            loginBtn.addEventListener('click', () => {
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
                 
-                // Display results
-                displayVideos(filteredVideos.length > 0 ? filteredVideos : sampleVideos);
-                
-                // Hide loading
-                loader.classList.remove('active');
-                
-                // Show message if no results
-                if (filteredVideos.length === 0) {
-                    showToast('No results found. Showing all videos instead.');
+                if (email && password) {
+                    loginUser(email, password);
+                } else {
+                    showToast('Please fill in all fields');
                 }
-            }, 1000);
+            });
+            
+            // Signup form
+            signupBtn.addEventListener('click', () => {
+                const username = document.getElementById('signup-username').value;
+                const email = document.getElementById('signup-email').value;
+                const password = document.getElementById('signup-password').value;
+                
+                if (username && email && password) {
+                    signupUser(username, email, password);
+                } else {
+                    showToast('Please fill in all fields');
+                }
+            });
+            
+            // Close auth modal when clicking outside
+            authModal.addEventListener('click', (e) => {
+                if (e.target === authModal) {
+                    hideAuthModal();
+                }
+            });
         }
         
         // Initialize the app when DOM is loaded
