@@ -30,7 +30,7 @@
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 15px;
         }
@@ -210,6 +210,37 @@
             object-fit: cover;
         }
         
+        .play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .thumbnail:hover .play-overlay {
+            opacity: 1;
+        }
+        
+        .play-btn {
+            background-color: var(--primary);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
         .duration {
             position: absolute;
             bottom: 8px;
@@ -238,6 +269,76 @@
             justify-content: space-between;
             color: var(--gray);
             font-size: 14px;
+        }
+        
+        /* Video Player Modal */
+        .video-player-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .video-player-container {
+            width: 90%;
+            max-width: 1000px;
+            background-color: var(--dark);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .video-player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: var(--secondary);
+        }
+        
+        .video-player-title {
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .close-player {
+            background: none;
+            border: none;
+            color: var(--light);
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .video-player {
+            width: 100%;
+            height: 500px;
+            background-color: black;
+        }
+        
+        .video-player-actions {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .download-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
         }
         
         /* Download Options */
@@ -398,6 +499,10 @@
             .video-grid {
                 grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             }
+            
+            .video-player {
+                height: 400px;
+            }
         }
         
         @media (max-width: 768px) {
@@ -413,6 +518,10 @@
             
             .video-grid {
                 grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+            
+            .video-player {
+                height: 300px;
             }
         }
         
@@ -461,6 +570,33 @@
         .toast.show {
             transform: translateY(0);
             opacity: 1;
+        }
+        
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        
+        .category-tab {
+            background-color: var(--secondary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background-color 0.3s;
+        }
+        
+        .category-tab.active {
+            background-color: var(--primary);
+        }
+        
+        .category-tab:hover {
+            background-color: var(--primary-dark);
         }
     </style>
 </head>
@@ -515,9 +651,42 @@
                     </div>
                 </div>
                 
+                <!-- Category Tabs -->
+                <div class="category-tabs">
+                    <div class="category-tab active" data-category="all">All</div>
+                    <div class="category-tab" data-category="music">Music</div>
+                    <div class="category-tab" data-category="gaming">Gaming</div>
+                    <div class="category-tab" data-category="movies">Movies</div>
+                    <div class="category-tab" data-category="news">News</div>
+                    <div class="category-tab" data-category="sports">Sports</div>
+                    <div class="category-tab" data-category="education">Education</div>
+                </div>
+                
                 <!-- Video Grid -->
                 <div class="video-grid" id="video-grid">
                     <!-- Videos will be populated here by JavaScript -->
+                </div>
+                
+                <!-- Video Player Modal -->
+                <div class="video-player-modal" id="video-player-modal">
+                    <div class="video-player-container">
+                        <div class="video-player-header">
+                            <div class="video-player-title" id="player-title">Video Title</div>
+                            <button class="close-player" id="close-player"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="video-player" id="video-player">
+                            <!-- Video will be embedded here -->
+                        </div>
+                        <div class="video-player-actions">
+                            <button class="download-btn" id="player-download-btn">
+                                <i class="fas fa-download"></i> Download Video
+                            </button>
+                            <div class="video-actions">
+                                <button><i class="fas fa-share"></i></button>
+                                <button><i class="fas fa-thumbs-up"></i></button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Download Options -->
@@ -528,25 +697,25 @@
                     </div>
                     
                     <div class="format-options">
-                        <div class="format-option" data-format="mp4-720p">
+                        <div class="format-option" data-format="mp4-720p" data-api="ytvid">
                             <div class="format-icon"><i class="fas fa-file-video"></i></div>
                             <div class="format-name">MP4 720p</div>
                             <div class="format-details">High Quality Video</div>
                         </div>
                         
-                        <div class="format-option" data-format="mp4-360p">
+                        <div class="format-option" data-format="mp4-360p" data-api="ytvid">
                             <div class="format-icon"><i class="fas fa-file-video"></i></div>
                             <div class="format-name">MP4 360p</div>
                             <div class="format-details">Standard Quality</div>
                         </div>
                         
-                        <div class="format-option" data-format="mp3-128kbps">
+                        <div class="format-option" data-format="mp3-128kbps" data-api="ytmp3">
                             <div class="format-icon"><i class="fas fa-file-audio"></i></div>
                             <div class="format-name">MP3 128kbps</div>
                             <div class="format-details">Good Quality Audio</div>
                         </div>
                         
-                        <div class="format-option" data-format="mp3-320kbps">
+                        <div class="format-option" data-format="mp3-320kbps" data-api="ytmusic">
                             <div class="format-icon"><i class="fas fa-file-audio"></i></div>
                             <div class="format-name">MP3 320kbps</div>
                             <div class="format-details">High Quality Audio</div>
@@ -589,8 +758,18 @@
         const downloadList = document.getElementById('download-list');
         const loader = document.getElementById('loader');
         const toast = document.getElementById('toast');
+        const videoPlayerModal = document.getElementById('video-player-modal');
+        const closePlayer = document.getElementById('close-player');
+        const playerDownloadBtn = document.getElementById('player-download-btn');
+        const videoPlayer = document.getElementById('video-player');
+        const playerTitle = document.getElementById('player-title');
+        const categoryTabs = document.querySelectorAll('.category-tab');
         
-        // Sample data for demonstration
+        // API Configuration
+        const API_BASE = 'https://api.giftedtech.co.ke/api';
+        const API_KEY = 'gifted';
+        
+        // Sample data for demonstration (in a real app, this would come from API)
         const sampleVideos = [
             {
                 id: 1,
@@ -599,7 +778,9 @@
                 channel: "Web Dev Tutorials",
                 views: "125K",
                 duration: "15:42",
-                url: "https://youtu.be/sample1"
+                url: "https://youtu.be/sample1",
+                videoId: "qF-JLqKtr2Q",
+                category: "education"
             },
             {
                 id: 2,
@@ -608,7 +789,9 @@
                 channel: "Code Master",
                 views: "89K",
                 duration: "22:15",
-                url: "https://youtu.be/sample2"
+                url: "https://youtu.be/sample2",
+                videoId: "wdJrTQJh1ZQ",
+                category: "education"
             },
             {
                 id: 3,
@@ -617,7 +800,9 @@
                 channel: "Frontend Dev",
                 views: "210K",
                 duration: "18:30",
-                url: "https://youtu.be/sample3"
+                url: "https://youtu.be/sample3",
+                videoId: "60ItHLz5WEA",
+                category: "education"
             },
             {
                 id: 4,
@@ -626,7 +811,9 @@
                 channel: "Tech Insights",
                 views: "156K",
                 duration: "12:45",
-                url: "https://youtu.be/sample4"
+                url: "https://youtu.be/sample4",
+                videoId: "qF-JLqKtr2Q",
+                category: "education"
             },
             {
                 id: 5,
@@ -635,7 +822,9 @@
                 channel: "CSS Wizard",
                 views: "305K",
                 duration: "19:52",
-                url: "https://youtu.be/sample5"
+                url: "https://youtu.be/sample5",
+                videoId: "wdJrTQJh1ZQ",
+                category: "education"
             },
             {
                 id: 6,
@@ -644,12 +833,37 @@
                 channel: "Backend Pro",
                 views: "98K",
                 duration: "28:10",
-                url: "https://youtu.be/sample6"
+                url: "https://youtu.be/sample6",
+                videoId: "60ItHLz5WEA",
+                category: "education"
+            },
+            {
+                id: 7,
+                title: "Top Hits 2023 - Music Playlist",
+                thumbnail: "https://picsum.photos/320/180?random=7",
+                channel: "Music Channel",
+                views: "2.5M",
+                duration: "1:15:42",
+                url: "https://youtu.be/sample7",
+                videoId: "qF-JLqKtr2Q",
+                category: "music"
+            },
+            {
+                id: 8,
+                title: "Gaming Highlights - Best Moments",
+                thumbnail: "https://picsum.photos/320/180?random=8",
+                channel: "Gaming Pro",
+                views: "450K",
+                duration: "22:30",
+                url: "https://youtu.be/sample8",
+                videoId: "wdJrTQJh1ZQ",
+                category: "gaming"
             }
         ];
         
         // Current selected video for download
         let selectedVideo = null;
+        let currentCategory = 'all';
         
         // Initialize the app
         function initApp() {
@@ -667,6 +881,11 @@
                 videoCard.innerHTML = `
                     <div class="thumbnail">
                         <img src="${video.thumbnail}" alt="${video.title}">
+                        <div class="play-overlay">
+                            <div class="play-btn">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
                         <div class="duration">${video.duration}</div>
                     </div>
                     <div class="video-info">
@@ -679,11 +898,40 @@
                 `;
                 
                 videoCard.addEventListener('click', () => {
-                    showDownloadOptions(video);
+                    playVideo(video);
                 });
                 
                 videoGrid.appendChild(videoCard);
             });
+        }
+        
+        // Play video in modal
+        function playVideo(video) {
+            playerTitle.textContent = video.title;
+            
+            // In a real app, you would embed the actual YouTube video
+            // For demo purposes, we'll use a placeholder
+            videoPlayer.innerHTML = `
+                <div style="width:100%;height:100%;display:flex;justify-content:center;align-items:center;background:linear-gradient(45deg, #ff0000, #cc0000);color:white;font-size:24px;">
+                    <div style="text-align:center;">
+                        <i class="fab fa-youtube" style="font-size:80px;margin-bottom:20px;"></i>
+                        <p>Video Player - ${video.title}</p>
+                        <p style="font-size:16px;margin-top:10px;">In a real app, the YouTube video would play here</p>
+                    </div>
+                </div>
+            `;
+            
+            // Set the selected video for download
+            selectedVideo = video;
+            
+            // Show the modal
+            videoPlayerModal.style.display = 'flex';
+        }
+        
+        // Close video player
+        function closeVideoPlayer() {
+            videoPlayerModal.style.display = 'none';
+            videoPlayer.innerHTML = '';
         }
         
         // Show download options for a video
@@ -699,11 +947,34 @@
         }
         
         // Start download process
-        function startDownload(format) {
+        function startDownload(format, apiEndpoint) {
             if (!selectedVideo) return;
             
             // Show loading
             loader.classList.add('active');
+            
+            // Build API URL
+            const encodedUrl = encodeURIComponent(selectedVideo.url);
+            let apiUrl = '';
+            
+            // Determine the correct API endpoint based on format
+            switch(apiEndpoint) {
+                case 'ytmp3':
+                    apiUrl = `${API_BASE}/download/ytmp3?apikey=${API_KEY}&url=${encodedUrl}`;
+                    break;
+                case 'ytmusic':
+                    apiUrl = `${API_BASE}/download/ytmusic?apikey=${API_KEY}&quality=128kbps&url=${encodedUrl}`;
+                    break;
+                case 'ytvid':
+                    apiUrl = `${API_BASE}/download/ytvid?apikey=${API_KEY}&quality=720p&url=${encodedUrl}`;
+                    break;
+                default:
+                    apiUrl = `${API_BASE}/download/ytdl?apikey=${API_KEY}&url=${encodedUrl}`;
+            }
+            
+            // In a real app, you would make the API call here
+            // For demo, we'll simulate the download
+            console.log(`Downloading via: ${apiUrl}`);
             
             // Simulate API call
             setTimeout(() => {
@@ -779,6 +1050,16 @@
             }, 3000);
         }
         
+        // Filter videos by category
+        function filterVideosByCategory(category) {
+            if (category === 'all') {
+                displayVideos(sampleVideos);
+            } else {
+                const filteredVideos = sampleVideos.filter(video => video.category === category);
+                displayVideos(filteredVideos);
+            }
+        }
+        
         // Setup event listeners
         function setupEventListeners() {
             // Search functionality
@@ -796,7 +1077,8 @@
             formatOptions.forEach(option => {
                 option.addEventListener('click', () => {
                     const format = option.getAttribute('data-format');
-                    startDownload(format);
+                    const apiEndpoint = option.getAttribute('data-api');
+                    startDownload(format, apiEndpoint);
                 });
             });
             
@@ -810,6 +1092,26 @@
                     }
                 });
             });
+            
+            // Video player events
+            closePlayer.addEventListener('click', closeVideoPlayer);
+            playerDownloadBtn.addEventListener('click', () => {
+                closeVideoPlayer();
+                showDownloadOptions(selectedVideo);
+            });
+            
+            // Category tabs
+            categoryTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs
+                    categoryTabs.forEach(t => t.classList.remove('active'));
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+                    // Filter videos
+                    currentCategory = tab.getAttribute('data-category');
+                    filterVideosByCategory(currentCategory);
+                });
+            });
         }
         
         // Perform search
@@ -820,11 +1122,13 @@
             // Show loading
             loader.classList.add('active');
             
-            // Simulate API call
+            // In a real app, you would call the search API
+            // For demo, we'll simulate search with sample data
             setTimeout(() => {
-                // Filter videos based on query (in a real app, this would be an API call)
+                // Filter videos based on query
                 const filteredVideos = sampleVideos.filter(video => 
-                    video.title.toLowerCase().includes(query.toLowerCase())
+                    video.title.toLowerCase().includes(query.toLowerCase()) ||
+                    video.channel.toLowerCase().includes(query.toLowerCase())
                 );
                 
                 // Display results
@@ -835,7 +1139,7 @@
                 
                 // Show message if no results
                 if (filteredVideos.length === 0) {
-                    showToast('No results found. Showing trending videos instead.');
+                    showToast('No results found. Showing all videos instead.');
                 }
             }, 1000);
         }
