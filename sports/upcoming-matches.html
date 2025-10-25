@@ -344,6 +344,38 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Error Message */
+        .error-message {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray);
+        }
+
+        .error-message i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--danger);
+        }
+
+        /* Refresh Button */
+        .refresh-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-left: auto;
+            transition: background-color 0.3s;
+        }
+
+        .refresh-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .main-content {
@@ -397,18 +429,22 @@
 
     <div class="container">
         <div class="date-nav">
-            <div class="date-item">Yesterday</div>
-            <div class="date-item active">Today</div>
-            <div class="date-item">Tomorrow</div>
-            <div class="date-item">Mon 27 Oct</div>
+            <div class="date-item" data-date="yesterday">Yesterday</div>
+            <div class="date-item active" data-date="today">Today</div>
+            <div class="date-item" data-date="tomorrow">Tomorrow</div>
+            <div class="date-item" data-date="future">Future</div>
         </div>
 
         <div class="main-content">
             <div class="matches-section">
-                <h2 class="section-title">
+                <div class="section-title">
                     <i class="fas fa-list"></i>
-                    Following
-                </h2>
+                    Live Scores
+                    <button class="refresh-btn" id="refreshScores">
+                        <i class="fas fa-sync-alt"></i>
+                        Refresh
+                    </button>
+                </div>
                 <div class="matches-list" id="matchesList">
                     <div class="loading">
                         <div class="spinner"></div>
@@ -445,23 +481,23 @@
     </div>
 
     <div class="bottom-nav">
-        <div class="nav-item active">
+        <div class="nav-item active" data-tab="home">
             <i class="fas fa-home"></i>
             <span>Home</span>
         </div>
-        <div class="nav-item">
+        <div class="nav-item" data-tab="news">
             <i class="fas fa-newspaper"></i>
             <span>News</span>
         </div>
-        <div class="nav-item">
+        <div class="nav-item" data-tab="leagues">
             <i class="fas fa-trophy"></i>
             <span>Leagues</span>
         </div>
-        <div class="nav-item">
+        <div class="nav-item" data-tab="following">
             <i class="fas fa-heart"></i>
             <span>Following</span>
         </div>
-        <div class="nav-item">
+        <div class="nav-item" data-tab="more">
             <i class="fas fa-ellipsis-h"></i>
             <span>More</span>
         </div>
@@ -477,6 +513,13 @@
         const leaguesList = document.getElementById('leaguesList');
         const sportsList = document.getElementById('sportsList');
         const dateItems = document.querySelectorAll('.date-item');
+        const refreshBtn = document.getElementById('refreshScores');
+        const navItems = document.querySelectorAll('.nav-item');
+
+        // Current state
+        let currentDateFilter = 'today';
+        let currentTab = 'home';
+        let autoRefreshInterval;
 
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
@@ -484,45 +527,97 @@
             loadTopLeagues();
             loadSports();
             
+            // Set up auto-refresh every 30 seconds
+            autoRefreshInterval = setInterval(loadLiveScores, 30000);
+            
             // Add event listeners to date navigation
             dateItems.forEach(item => {
                 item.addEventListener('click', function() {
                     dateItems.forEach(i => i.classList.remove('active'));
                     this.classList.add('active');
-                    // In a real app, you would load matches for the selected date
+                    currentDateFilter = this.getAttribute('data-date');
                     loadLiveScores();
                 });
             });
             
             // Add event listeners to bottom navigation
-            const navItems = document.querySelectorAll('.nav-item');
             navItems.forEach(item => {
                 item.addEventListener('click', function() {
                     navItems.forEach(i => i.classList.remove('active'));
                     this.classList.add('active');
+                    currentTab = this.getAttribute('data-tab');
+                    handleTabChange(currentTab);
                 });
             });
+
+            // Add event listener to refresh button
+            refreshBtn.addEventListener('click', function() {
+                loadLiveScores();
+                loadTopLeagues();
+                loadSports();
+            });
         });
+
+        // Handle tab changes
+        function handleTabChange(tab) {
+            // In a real app, you would load different content based on the tab
+            console.log(`Switched to ${tab} tab`);
+            
+            if (tab === 'home') {
+                loadLiveScores();
+            } else if (tab === 'leagues') {
+                // Load leagues content
+            } else if (tab === 'following') {
+                // Load following content
+            }
+        }
 
         // Load live scores
         async function loadLiveScores() {
             try {
                 matchesList.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
                 
-                // Fetch live scores for soccer
-                const response = await fetch(`${API_BASE_URL}/livescore/soccer`);
+                // Fetch all live scores
+                const response = await fetch(`${API_BASE_URL}/livescore/all`);
                 const data = await response.json();
                 
-                if (data.events && data.events.length > 0) {
-                    displayMatches(data.events);
+                if (data.livescore && data.livescore.length > 0) {
+                    displayMatches(data.livescore);
                 } else {
-                    // Fallback to sample data if API returns no results
-                    displaySampleMatches();
+                    // If no live scores, try to get upcoming matches
+                    await loadUpcomingMatches();
                 }
             } catch (error) {
                 console.error('Error loading live scores:', error);
-                // Fallback to sample data if API fails
-                displaySampleMatches();
+                showErrorMessage('Failed to load live scores. Please check your connection.');
+            }
+        }
+
+        // Load upcoming matches if no live scores available
+        async function loadUpcomingMatches() {
+            try {
+                // Get next events for popular leagues
+                const popularLeagues = [4328, 4331, 4332, 4335]; // Premier League, Bundesliga, Serie A, La Liga
+                
+                let allEvents = [];
+                
+                for (const leagueId of popularLeagues) {
+                    const response = await fetch(`${API_BASE_URL}/schedule/next/league/${leagueId}`);
+                    const data = await response.json();
+                    
+                    if (data.schedule) {
+                        allEvents = allEvents.concat(data.schedule.slice(0, 3)); // Take 3 events from each league
+                    }
+                }
+                
+                if (allEvents.length > 0) {
+                    displayUpcomingMatches(allEvents);
+                } else {
+                    showNoMatchesMessage();
+                }
+            } catch (error) {
+                console.error('Error loading upcoming matches:', error);
+                showNoMatchesMessage();
             }
         }
 
@@ -530,52 +625,135 @@
         function displayMatches(matches) {
             matchesList.innerHTML = '';
             
-            matches.slice(0, 6).forEach(match => {
-                const matchCard = document.createElement('div');
-                matchCard.className = 'match-card';
-                
-                const isLive = match.strStatus === 'Live';
-                const score = isLive ? `${match.intHomeScore || 0} - ${match.intAwayScore || 0}` : match.strTime;
-                
-                matchCard.innerHTML = `
-                    <div class="match-teams">
-                        <div class="team">
-                            <div class="team-logo">
-                                <i class="fas fa-shield-alt"></i>
-                            </div>
-                            <div class="team-name">${match.strHomeTeam}</div>
-                        </div>
-                        <div class="team">
-                            <div class="team-logo">
-                                <i class="fas fa-shield-alt"></i>
-                            </div>
-                            <div class="team-name">${match.strAwayTeam}</div>
-                        </div>
-                    </div>
-                    <div class="match-time">
-                        <div class="match-status">
-                            ${isLive ? '<span class="live-indicator"></span>LIVE' : match.strTime}
-                        </div>
-                        <div class="match-score">${score}</div>
-                    </div>
-                `;
-                
-                matchesList.appendChild(matchCard);
+            if (matches.length === 0) {
+                showNoMatchesMessage();
+                return;
+            }
+            
+            // Filter by sport (focus on soccer for now)
+            const soccerMatches = matches.filter(match => match.strSport === 'Soccer');
+            const otherMatches = matches.filter(match => match.strSport !== 'Soccer');
+            
+            // Display soccer matches first
+            if (soccerMatches.length > 0) {
+                soccerMatches.slice(0, 10).forEach(match => {
+                    createMatchCard(match);
+                });
+            }
+            
+            // Display other sports if no soccer matches
+            if (soccerMatches.length === 0 && otherMatches.length > 0) {
+                otherMatches.slice(0, 10).forEach(match => {
+                    createMatchCard(match);
+                });
+            }
+        }
+
+        // Display upcoming matches
+        function displayUpcomingMatches(matches) {
+            matchesList.innerHTML = '';
+            
+            if (matches.length === 0) {
+                showNoMatchesMessage();
+                return;
+            }
+            
+            matches.slice(0, 10).forEach(match => {
+                createMatchCard(match, true);
             });
         }
 
-        // Display sample matches if API fails
-        function displaySampleMatches() {
-            const sampleMatches = [
-                { strHomeTeam: "Mgladbach", strAwayTeam: "Bayern München", strTime: "16:30", strStatus: "Not Started" },
-                { strHomeTeam: "Millwall", strAwayTeam: "Leicester", strTime: "17:00", strStatus: "Not Started" },
-                { strHomeTeam: "Brest", strAwayTeam: "PSG", strTime: "18:00", strStatus: "Not Started" },
-                { strHomeTeam: "Dortmund", strAwayTeam: "Köln", strTime: "19:30", strStatus: "Not Started" },
-                { strHomeTeam: "Al Hazem", strAwayTeam: "Al Nassr FC", strTime: "21:00", strStatus: "Not Started" },
-                { strHomeTeam: "Brentford", strAwayTeam: "Liverpool", strTime: "22:00", strStatus: "Not Started" }
-            ];
+        // Create a match card
+        function createMatchCard(match, isUpcoming = false) {
+            const matchCard = document.createElement('div');
+            matchCard.className = 'match-card';
             
-            displayMatches(sampleMatches);
+            const isLive = match.strStatus && (match.strStatus.includes('1H') || match.strStatus.includes('2H') || match.strStatus.includes('HT') || match.strStatus === 'Live');
+            const isFinished = match.strStatus && (match.strStatus === 'FT' || match.strStatus === 'Match Finished');
+            
+            let statusText = '';
+            let score = '';
+            
+            if (isLive) {
+                statusText = `<span class="live-indicator"></span>LIVE ${match.strProgress || ''}`;
+                score = `${match.intHomeScore || 0} - ${match.intAwayScore || 0}`;
+            } else if (isFinished) {
+                statusText = 'FT';
+                score = `${match.intHomeScore || 0} - ${match.intAwayScore || 0}`;
+            } else if (isUpcoming) {
+                // For upcoming matches, show the time
+                const eventDate = new Date(match.dateEvent + 'T' + (match.strTime || '12:00:00'));
+                const now = new Date();
+                
+                if (eventDate.toDateString() === now.toDateString()) {
+                    statusText = 'Today';
+                } else {
+                    statusText = new Date(match.dateEvent).toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric' 
+                    });
+                }
+                
+                // Add time if available
+                if (match.strTime) {
+                    const time = match.strTime.substring(0, 5);
+                    statusText += ` ${time}`;
+                }
+                
+                score = 'VS';
+            } else {
+                statusText = match.strStatus || 'Scheduled';
+                score = 'VS';
+            }
+            
+            matchCard.innerHTML = `
+                <div class="match-teams">
+                    <div class="team">
+                        <div class="team-logo">
+                            ${match.strHomeTeamBadge ? 
+                                `<img src="${match.strHomeTeamBadge}" alt="${match.strHomeTeam}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">` : 
+                                `<i class="fas fa-shield-alt"></i>`
+                            }
+                        </div>
+                        <div class="team-name">${match.strHomeTeam || 'TBD'}</div>
+                    </div>
+                    <div class="team">
+                        <div class="team-logo">
+                            ${match.strAwayTeamBadge ? 
+                                `<img src="${match.strAwayTeamBadge}" alt="${match.strAwayTeam}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">` : 
+                                `<i class="fas fa-shield-alt"></i>`
+                            }
+                        </div>
+                        <div class="team-name">${match.strAwayTeam || 'TBD'}</div>
+                    </div>
+                </div>
+                <div class="match-time">
+                    <div class="match-status">${statusText}</div>
+                    <div class="match-score">${score}</div>
+                </div>
+            `;
+            
+            matchesList.appendChild(matchCard);
+        }
+
+        // Show error message
+        function showErrorMessage(message) {
+            matchesList.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+
+        // Show no matches message
+        function showNoMatchesMessage() {
+            matchesList.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-futbol"></i>
+                    <p>No matches available at the moment</p>
+                </div>
+            `;
         }
 
         // Load top leagues
@@ -586,8 +764,22 @@
                 const response = await fetch(`${API_BASE_URL}/all/leagues`);
                 const data = await response.json();
                 
-                if (data.leagues && data.leagues.length > 0) {
-                    displayLeagues(data.leagues.slice(0, 5));
+                if (data.all && data.all.length > 0) {
+                    // Filter for popular soccer leagues
+                    const popularLeagues = data.all.filter(league => 
+                        league.strSport === 'Soccer' && 
+                        [
+                            'English Premier League', 
+                            'La Liga', 
+                            'Bundesliga', 
+                            'Serie A', 
+                            'Ligue 1',
+                            'Champions League',
+                            'Europa League'
+                        ].includes(league.strLeague)
+                    );
+                    
+                    displayLeagues(popularLeagues.slice(0, 6));
                 } else {
                     displaySampleLeagues();
                 }
@@ -607,23 +799,60 @@
                 
                 leagueItem.innerHTML = `
                     <div class="league-logo">
-                        <i class="fas fa-trophy"></i>
+                        ${league.strBadge ? 
+                            `<img src="${league.strBadge}" alt="${league.strLeague}" style="width: 100%; height: 100%; border-radius: 6px; object-fit: cover;">` : 
+                            `<i class="fas fa-trophy"></i>`
+                        }
                     </div>
                     <div>${league.strLeague}</div>
                 `;
+                
+                // Add click event to load league matches
+                leagueItem.addEventListener('click', () => {
+                    loadLeagueMatches(league.idLeague);
+                });
                 
                 leaguesList.appendChild(leagueItem);
             });
         }
 
+        // Load matches for a specific league
+        async function loadLeagueMatches(leagueId) {
+            try {
+                matchesList.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+                
+                // Try to get live scores for the league first
+                const liveResponse = await fetch(`${API_BASE_URL}/livescore/${leagueId}`);
+                const liveData = await liveResponse.json();
+                
+                if (liveData.livescore && liveData.livescore.length > 0) {
+                    displayMatches(liveData.livescore);
+                } else {
+                    // If no live scores, get upcoming matches
+                    const scheduleResponse = await fetch(`${API_BASE_URL}/schedule/next/league/${leagueId}`);
+                    const scheduleData = await scheduleResponse.json();
+                    
+                    if (scheduleData.schedule && scheduleData.schedule.length > 0) {
+                        displayUpcomingMatches(scheduleData.schedule);
+                    } else {
+                        showNoMatchesMessage();
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading league matches:', error);
+                showErrorMessage('Failed to load league matches.');
+            }
+        }
+
         // Display sample leagues if API fails
         function displaySampleLeagues() {
             const sampleLeagues = [
-                { strLeague: "Premier League" },
-                { strLeague: "La Liga" },
-                { strLeague: "Bundesliga" },
-                { strLeague: "Serie A" },
-                { strLeague: "Ligue 1" }
+                { strLeague: "Premier League", strBadge: null },
+                { strLeague: "La Liga", strBadge: null },
+                { strLeague: "Bundesliga", strBadge: null },
+                { strLeague: "Serie A", strBadge: null },
+                { strLeague: "Ligue 1", strBadge: null },
+                { strLeague: "Champions League", strBadge: null }
             ];
             
             displayLeagues(sampleLeagues);
@@ -637,8 +866,8 @@
                 const response = await fetch(`${API_BASE_URL}/all/sports`);
                 const data = await response.json();
                 
-                if (data.sports && data.sports.length > 0) {
-                    displaySports(data.sports.slice(0, 5));
+                if (data.all && data.all.length > 0) {
+                    displaySports(data.all.slice(0, 6));
                 } else {
                     displaySampleSports();
                 }
@@ -656,15 +885,67 @@
                 const sportItem = document.createElement('div');
                 sportItem.className = 'sport-item';
                 
+                // Get appropriate icon for each sport
+                let sportIcon = 'fas fa-running';
+                if (sport.strSport === 'Soccer') sportIcon = 'fas fa-futbol';
+                else if (sport.strSport === 'Basketball') sportIcon = 'fas fa-basketball-ball';
+                else if (sport.strSport === 'Tennis') sportIcon = 'fas fa-table-tennis';
+                else if (sport.strSport === 'Motorsport') sportIcon = 'fas fa-flag-checkered';
+                else if (sport.strSport === 'American Football') sportIcon = 'fas fa-football-ball';
+                else if (sport.strSport === 'Ice Hockey') sportIcon = 'fas fa-hockey-puck';
+                
                 sportItem.innerHTML = `
                     <div class="sport-icon">
-                        <i class="fas fa-running"></i>
+                        <i class="${sportIcon}"></i>
                     </div>
                     <div>${sport.strSport}</div>
                 `;
                 
+                // Add click event to filter by sport
+                sportItem.addEventListener('click', () => {
+                    filterBySport(sport.strSport);
+                });
+                
                 sportsList.appendChild(sportItem);
             });
+        }
+
+        // Filter matches by sport
+        async function filterBySport(sport) {
+            try {
+                matchesList.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+                
+                // For soccer, use the all livescores endpoint and filter
+                if (sport === 'Soccer') {
+                    const response = await fetch(`${API_BASE_URL}/livescore/all`);
+                    const data = await response.json();
+                    
+                    if (data.livescore && data.livescore.length > 0) {
+                        const filteredMatches = data.livescore.filter(match => match.strSport === sport);
+                        displayMatches(filteredMatches);
+                    } else {
+                        showNoMatchesMessage();
+                    }
+                } else {
+                    // For other sports, try the specific sport endpoint
+                    try {
+                        const response = await fetch(`${API_BASE_URL}/livescore/${sport.toLowerCase()}`);
+                        const data = await response.json();
+                        
+                        if (data.livescore && data.livescore.length > 0) {
+                            displayMatches(data.livescore);
+                        } else {
+                            showNoMatchesMessage();
+                        }
+                    } catch (error) {
+                        console.error(`Error loading ${sport} matches:`, error);
+                        showNoMatchesMessage();
+                    }
+                }
+            } catch (error) {
+                console.error('Error filtering by sport:', error);
+                showErrorMessage('Failed to filter matches by sport.');
+            }
         }
 
         // Display sample sports if API fails
@@ -673,12 +954,20 @@
                 { strSport: "Soccer" },
                 { strSport: "Basketball" },
                 { strSport: "Tennis" },
-                { strSport: "Cricket" },
-                { strSport: "Rugby" }
+                { strSport: "Motorsport" },
+                { strSport: "American Football" },
+                { strSport: "Ice Hockey" }
             ];
             
             displaySports(sampleSports);
         }
+
+        // Clean up on page unload
+        window.addEventListener('beforeunload', function() {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+        });
     </script>
 </body>
 </html>
