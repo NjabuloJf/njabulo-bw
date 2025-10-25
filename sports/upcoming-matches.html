@@ -97,6 +97,35 @@
             cursor: pointer;
         }
 
+        /* API Config */
+        .api-config {
+            background: var(--dark-light);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .api-toggle {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .api-input {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255,255,255,0.1);
+            color: var(--light);
+            width: 200px;
+            margin-right: 10px;
+        }
+
         /* Main Content */
         .main-content {
             display: grid;
@@ -155,6 +184,7 @@
             border-radius: 10px;
             padding: 20px;
             transition: transform 0.3s;
+            cursor: pointer;
         }
 
         .card:hover {
@@ -164,9 +194,10 @@
         .card img {
             width: 100%;
             height: 150px;
-            object-fit: cover;
+            object-fit: contain;
             border-radius: 8px;
             margin-bottom: 10px;
+            background: rgba(255,255,255,0.1);
         }
 
         .card h3 {
@@ -228,6 +259,7 @@
         .details-image img {
             max-width: 100%;
             border-radius: 10px;
+            background: rgba(255,255,255,0.1);
         }
 
         .details-info h2 {
@@ -240,6 +272,13 @@
             padding: 10px;
             background: rgba(255,255,255,0.05);
             border-radius: 5px;
+        }
+
+        /* Error Message */
+        .error-message {
+            text-align: center;
+            padding: 20px;
+            color: var(--danger);
         }
 
         /* Responsive */
@@ -277,9 +316,30 @@
     </header>
 
     <div class="container">
+        <!-- API Configuration -->
+        <div class="api-config" id="apiConfig">
+            <button class="api-toggle" onclick="toggleApiConfig()">
+                <i class="fas fa-cog"></i> Hide API Settings
+            </button>
+            <div>
+                <input type="text" class="api-input" id="apiKeyInput" placeholder="API Key (Optional)">
+                <input type="number" class="api-input" id="apiVersionInput" placeholder="API Version" value="3">
+                <button class="search-btn" onclick="updateApiConfig()">
+                    <i class="fas fa-save"></i> Update API
+                </button>
+            </div>
+            <div style="margin-top: 10px; font-size: 0.8rem; color: var(--gray);">
+                TheSportsDB uses version numbers instead of API keys. Default: version 3
+            </div>
+        </div>
+
         <div class="main-content">
             <!-- Sidebar Navigation -->
             <div class="sidebar">
+                <button class="api-toggle" onclick="toggleApiConfig()" style="width: 100%; margin-bottom: 15px;">
+                    <i class="fas fa-cog"></i> API Settings
+                </button>
+                
                 <div class="category-item active" onclick="loadCategory('leagues')">
                     <i class="fas fa-trophy"></i>Leagues
                 </div>
@@ -327,12 +387,63 @@
     </div>
 
     <script>
-        // API Configuration
-        const API_BASE = 'https://www.thesportsdb.com/api/v1/json/3';
+        // API Configuration with fallback
+        let API_BASE = 'https://www.thesportsdb.com/api/v1/json/3';
         let currentCategory = 'leagues';
+        let apiConfig = {
+            version: '3',
+            key: ''
+        };
+
+        // Load saved API config from localStorage
+        function loadApiConfig() {
+            const savedConfig = localStorage.getItem('frediSportsApiConfig');
+            if (savedConfig) {
+                apiConfig = JSON.parse(savedConfig);
+                API_BASE = `https://www.thesportsdb.com/api/v1/json/${apiConfig.version}`;
+                
+                // Update input fields
+                document.getElementById('apiVersionInput').value = apiConfig.version;
+                document.getElementById('apiKeyInput').value = apiConfig.key || '';
+            }
+        }
+
+        // Save API config to localStorage
+        function saveApiConfig() {
+            localStorage.setItem('frediSportsApiConfig', JSON.stringify(apiConfig));
+        }
+
+        // Update API configuration
+        function updateApiConfig() {
+            const version = document.getElementById('apiVersionInput').value || '3';
+            const key = document.getElementById('apiKeyInput').value;
+            
+            apiConfig.version = version;
+            apiConfig.key = key;
+            
+            // Build API base URL
+            if (key) {
+                API_BASE = `https://www.thesportsdb.com/api/v1/json/${key}`;
+            } else {
+                API_BASE = `https://www.thesportsdb.com/api/v1/json/${version}`;
+            }
+            
+            saveApiConfig();
+            alert('API configuration updated!');
+            
+            // Reload current category
+            loadCategory(currentCategory);
+        }
+
+        // Toggle API config visibility
+        function toggleApiConfig() {
+            const config = document.getElementById('apiConfig');
+            config.style.display = config.style.display === 'none' ? 'block' : 'none';
+        }
 
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
+            loadApiConfig();
             loadCategory('leagues');
             
             // Add enter key support for search
@@ -342,6 +453,27 @@
                 }
             });
         });
+
+        // Enhanced API call function with error handling
+        async function makeApiCall(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                
+                // Check if API returned an error
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                return data;
+            } catch (error) {
+                console.error('API Call failed:', error);
+                throw error;
+            }
+        }
 
         // Load category data
         async function loadCategory(category) {
@@ -382,7 +514,13 @@
                 }
             } catch (error) {
                 console.error('Error loading category:', error);
-                document.getElementById('contentGrid').innerHTML = '<div class="error">Failed to load data</div>';
+                document.getElementById('contentGrid').innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Failed to load data: ${error.message}</p>
+                        <p>Try changing API version in settings</p>
+                    </div>
+                `;
             }
         }
 
@@ -390,72 +528,77 @@
         async function loadLeagues() {
             document.getElementById('sectionTitle').textContent = 'All Leagues';
             
-            const response = await fetch(`${API_BASE}/all_leagues.php`);
-            const data = await response.json();
+            const data = await makeApiCall(`${API_BASE}/all_leagues.php`);
             
             const grid = document.getElementById('contentGrid');
             grid.innerHTML = '';
             
-            data.leagues.slice(0, 20).forEach(league => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.onclick = () => showLeagueDetails(league.idLeague);
-                card.innerHTML = `
-                    ${league.strBadge ? `<img src="${league.strBadge}" alt="${league.strLeague}">` : ''}
-                    <h3>${league.strLeague}</h3>
-                    <p>${league.strSport} • ${league.strCountry || 'International'}</p>
-                `;
-                grid.appendChild(card);
-            });
+            if (data.leagues && data.leagues.length > 0) {
+                data.leagues.slice(0, 20).forEach(league => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.onclick = () => showLeagueDetails(league.idLeague);
+                    card.innerHTML = `
+                        ${league.strBadge ? `<img src="${league.strBadge}" alt="${league.strLeague}">` : '<div style="height: 150px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); border-radius: 8px;"><i class="fas fa-trophy" style="font-size: 3rem; color: var(--gray);"></i></div>'}
+                        <h3>${league.strLeague}</h3>
+                        <p>${league.strSport} • ${league.strCountry || 'International'}</p>
+                    `;
+                    grid.appendChild(card);
+                });
+            } else {
+                grid.innerHTML = '<div class="error-message">No leagues found</div>';
+            }
         }
 
         // Load Teams
         async function loadTeams() {
             document.getElementById('sectionTitle').textContent = 'Popular Teams';
             
-            // Load Premier League teams as example
-            const response = await fetch(`${API_BASE}/search_all_teams.php?l=English_Premier_League`);
-            const data = await response.json();
+            const data = await makeApiCall(`${API_BASE}/search_all_teams.php?l=English_Premier_League`);
             
             const grid = document.getElementById('contentGrid');
             grid.innerHTML = '';
             
-            data.teams.slice(0, 20).forEach(team => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.onclick = () => showTeamDetails(team.idTeam);
-                card.innerHTML = `
-                    ${team.strTeamBadge ? `<img src="${team.strTeamBadge}" alt="${team.strTeam}">` : ''}
-                    <h3>${team.strTeam}</h3>
-                    <p>${team.strLeague} • ${team.strCountry}</p>
-                `;
-                grid.appendChild(card);
-            });
+            if (data.teams && data.teams.length > 0) {
+                data.teams.slice(0, 20).forEach(team => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.onclick = () => showTeamDetails(team.idTeam);
+                    card.innerHTML = `
+                        ${team.strTeamBadge ? `<img src="${team.strTeamBadge}" alt="${team.strTeam}">` : '<div style="height: 150px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); border-radius: 8px;"><i class="fas fa-users" style="font-size: 3rem; color: var(--gray);"></i></div>'}
+                        <h3>${team.strTeam}</h3>
+                        <p>${team.strLeague} • ${team.strCountry}</p>
+                    `;
+                    grid.appendChild(card);
+                });
+            } else {
+                grid.innerHTML = '<div class="error-message">No teams found</div>';
+            }
         }
 
         // Load Players
         async function loadPlayers() {
             document.getElementById('sectionTitle').textContent = 'Top Players';
             
-            // Load Arsenal players as example
-            const response = await fetch(`${API_BASE}/lookup_all_players.php?id=133604`);
-            const data = await response.json();
+            const data = await makeApiCall(`${API_BASE}/lookup_all_players.php?id=133604`);
             
             const grid = document.getElementById('contentGrid');
             grid.innerHTML = '';
             
-            if (data.player) {
+            if (data.player && data.player.length > 0) {
                 data.player.slice(0, 20).forEach(player => {
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.onclick = () => showPlayerDetails(player.idPlayer);
                     card.innerHTML = `
-                        ${player.strThumb ? `<img src="${player.strThumb}" alt="${player.strPlayer}">` : ''}
+                        ${player.strThumb ? `<img src="${player.strThumb}" alt="${player.strPlayer}">` : '<div style="height: 150px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); border-radius: 8px;"><i class="fas fa-user" style="font-size: 3rem; color: var(--gray);"></i></div>'}
                         <h3>${player.strPlayer}</h3>
                         <p>${player.strPosition} • ${player.strNationality}</p>
                     `;
                     grid.appendChild(card);
                 });
+            } else {
+                grid.innerHTML = '<div class="error-message">No players found</div>';
             }
         }
 
@@ -463,39 +606,40 @@
         async function loadMatches() {
             document.getElementById('sectionTitle').textContent = 'Recent Matches';
             
-            const response = await fetch(`${API_BASE}/eventspastleague.php?id=4328`);
-            const data = await response.json();
+            const data = await makeApiCall(`${API_BASE}/eventspastleague.php?id=4328`);
             
             const grid = document.getElementById('contentGrid');
             grid.innerHTML = '';
             
-            data.events.slice(0, 20).forEach(match => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.onclick = () => showMatchDetails(match.idEvent);
-                card.innerHTML = `
-                    <h3>${match.strEvent}</h3>
-                    <p>${match.dateEvent} • ${match.strTime}</p>
-                    <p>${match.intHomeScore} - ${match.intAwayScore}</p>
-                    <p>${match.strVenue}</p>
-                `;
-                grid.appendChild(card);
-            });
+            if (data.events && data.events.length > 0) {
+                data.events.slice(0, 20).forEach(match => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.onclick = () => showMatchDetails(match.idEvent);
+                    card.innerHTML = `
+                        <h3>${match.strEvent}</h3>
+                        <p>${match.dateEvent} • ${match.strTime}</p>
+                        <p><strong>Score:</strong> ${match.intHomeScore} - ${match.intAwayScore}</p>
+                        <p><strong>Venue:</strong> ${match.strVenue}</p>
+                    `;
+                    grid.appendChild(card);
+                });
+            } else {
+                grid.innerHTML = '<div class="error-message">No matches found</div>';
+            }
         }
 
         // Load Live Scores
         async function loadLiveScores() {
             document.getElementById('sectionTitle').textContent = 'Live Scores';
             
-            // Using eventsday with current date as example
             const today = new Date().toISOString().split('T')[0];
-            const response = await fetch(`${API_BASE}/eventsday.php?d=${today}`);
-            const data = await response.json();
+            const data = await makeApiCall(`${API_BASE}/eventsday.php?d=${today}`);
             
             const grid = document.getElementById('contentGrid');
             grid.innerHTML = '';
             
-            if (data.events) {
+            if (data.events && data.events.length > 0) {
                 data.events.slice(0, 20).forEach(event => {
                     const card = document.createElement('div');
                     card.className = 'card';
@@ -507,7 +651,7 @@
                     grid.appendChild(card);
                 });
             } else {
-                grid.innerHTML = '<p>No live matches at the moment</p>';
+                grid.innerHTML = '<div class="error-message">No live matches at the moment</div>';
             }
         }
 
@@ -515,47 +659,52 @@
         async function loadSports() {
             document.getElementById('sectionTitle').textContent = 'All Sports';
             
-            const response = await fetch(`${API_BASE}/all_sports.php`);
-            const data = await response.json();
+            const data = await makeApiCall(`${API_BASE}/all_sports.php`);
             
             const grid = document.getElementById('contentGrid');
             grid.innerHTML = '';
             
-            data.sports.forEach(sport => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `
-                    <h3>${sport.strSport}</h3>
-                    <p>${sport.strFormat}</p>
-                `;
-                grid.appendChild(card);
-            });
+            if (data.sports && data.sports.length > 0) {
+                data.sports.forEach(sport => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <h3>${sport.strSport}</h3>
+                        <p>${sport.strFormat}</p>
+                    `;
+                    grid.appendChild(card);
+                });
+            } else {
+                grid.innerHTML = '<div class="error-message">No sports found</div>';
+            }
         }
 
         // Load Countries
         async function loadCountries() {
             document.getElementById('sectionTitle').textContent = 'All Countries';
             
-            const response = await fetch(`${API_BASE}/all_countries.php`);
-            const data = await response.json();
+            const data = await makeApiCall(`${API_BASE}/all_countries.php`);
             
             const grid = document.getElementById('contentGrid');
             grid.innerHTML = '';
             
-            data.countries.forEach(country => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `
-                    <h3>${country.name_en}</h3>
-                `;
-                grid.appendChild(card);
-            });
+            if (data.countries && data.countries.length > 0) {
+                data.countries.forEach(country => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <h3>${country.name_en}</h3>
+                    `;
+                    grid.appendChild(card);
+                });
+            } else {
+                grid.innerHTML = '<div class="error-message">No countries found</div>';
+            }
         }
 
         // Show League Details
         async function showLeagueDetails(leagueId) {
-            const response = await fetch(`${API_BASE}/lookupleague.php?id=${leagueId}`);
-            const data = await response.json();
+            const data = await makeApiCall(`${API_BASE}/lookupleague.php?id=${leagueId}`);
             
             const league = data.leagues[0];
             const detailsContent = document.getElementById('detailsContent');
@@ -563,7 +712,7 @@
             detailsContent.innerHTML = `
                 <div class="details-content">
                     <div class="details-image">
-                        ${league.strBadge ? `<img src="${league.strBadge}" alt="${league.strLeague}">` : ''}
+                        ${league.strBadge ? `<img src="${league.strBadge}" alt="${league.strLeague}">` : '<div style="height: 200px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); border-radius: 8px;"><i class="fas fa-trophy" style="font-size: 5rem; color: var(--gray);"></i></div>'}
                     </div>
                     <div class="details-info">
                         <h2>${league.strLeague}</h2>
@@ -581,8 +730,7 @@
 
         // Show Team Details
         async function showTeamDetails(teamId) {
-            const response = await fetch(`${API_BASE}/lookupteam.php?id=${teamId}`);
-            const data = await response.json();
+            const data = await makeApiCall(`${API_BASE}/lookupteam.php?id=${teamId}`);
             
             const team = data.teams[0];
             const detailsContent = document.getElementById('detailsContent');
@@ -590,7 +738,7 @@
             detailsContent.innerHTML = `
                 <div class="details-content">
                     <div class="details-image">
-                        ${team.strTeamBadge ? `<img src="${team.strTeamBadge}" alt="${team.strTeam}">` : ''}
+                        ${team.strTeamBadge ? `<img src="${team.strTeamBadge}" alt="${team.strTeam}">` : '<div style="height: 200px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); border-radius: 8px;"><i class="fas fa-users" style="font-size: 5rem; color: var(--gray);"></i></div>'}
                     </div>
                     <div class="details-info">
                         <h2>${team.strTeam}</h2>
@@ -609,8 +757,7 @@
 
         // Show Player Details
         async function showPlayerDetails(playerId) {
-            const response = await fetch(`${API_BASE}/lookupplayer.php?id=${playerId}`);
-            const data = await response.json();
+            const data = await makeApiCall(`${API_BASE}/lookupplayer.php?id=${playerId}`);
             
             const player = data.players[0];
             const detailsContent = document.getElementById('detailsContent');
@@ -618,7 +765,7 @@
             detailsContent.innerHTML = `
                 <div class="details-content">
                     <div class="details-image">
-                        ${player.strThumb ? `<img src="${player.strThumb}" alt="${player.strPlayer}">` : ''}
+                        ${player.strThumb ? `<img src="${player.strThumb}" alt="${player.strPlayer}">` : '<div style="height: 200px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); border-radius: 8px;"><i class="fas fa-user" style="font-size: 5rem; color: var(--gray);"></i></div>'}
                     </div>
                     <div class="details-info">
                         <h2>${player.strPlayer}</h2>
@@ -638,8 +785,7 @@
 
         // Show Match Details
         async function showMatchDetails(matchId) {
-            const response = await fetch(`${API_BASE}/lookupevent.php?id=${matchId}`);
-            const data = await response.json();
+            const data = await makeApiCall(`${API_BASE}/lookupevent.php?id=${matchId}`);
             
             const match = data.events[0];
             const detailsContent = document.getElementById('detailsContent');
