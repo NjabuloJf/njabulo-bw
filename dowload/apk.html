@@ -306,7 +306,7 @@
             
             // Fetch APK data from API
             function fetchAPKData(searchTerm) {
-                fetch(`https://apis-keith.vercel.app/search/apkfab?q=${encodeURIComponent(searchTerm)}`)
+                fetch(`https://apiskeith.vercel.app/search/apkfab?q=${encodeURIComponent(searchTerm)}`)
                     .then(response => {
                         if (!response.ok) throw new Error('Network response was not ok');
                         return response.json();
@@ -365,7 +365,7 @@
                 showLoading();
                 
                 // First fetch the download link
-                fetch(`https://apis-keith.vercel.app/download/apkfab?url=${encodeURIComponent(url)}`)
+                fetch(`https://apiskeith.vercel.app/download/apkfab?url=${encodeURIComponent(url)}`)
                     .then(response => {
                         if (!response.ok) throw new Error('Failed to get download link');
                         return response.json();
