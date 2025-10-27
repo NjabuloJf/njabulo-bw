@@ -557,7 +557,7 @@
             disableButton('search-btn');
             
             try {
-                const response = await fetch(`https://api.giftedtech.co.ke/search/yts?query=${encodeURIComponent(query)}`);
+                const response = await fetch(`https://apiskeith.vercel.app/search/yts?query=${encodeURIComponent(query)}`);
                 const data = await response.json();
                 
                 if (data.status && data.result && data.result.length > 0) {
@@ -652,7 +652,7 @@
             showLoading(loadingElement);
             
             try {
-                const response = await fetch(`https://api.giftedtech.co.ke/download/ytmp3?url=${encodeURIComponent(videoUrl)}`);
+                const response = await fetch(`https://apiskeith.vercel.app/download/ytmp3?url=${encodeURIComponent(videoUrl)}`);
                 const data = await response.json();
                 
                 if (data.status && data.result) {
