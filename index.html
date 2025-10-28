@@ -301,14 +301,19 @@
         .btn-secondary:hover {
             background: rgba(255, 255, 255, 0.15);
             transform: translateY(-3px);
+           } 
         
-    /* Calendar Styles */
-        .calendar-container {
-            background: var(--darker);
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid var(--border);
+    /* Calendar Styles */   
+    .calendar-container {
+         background: var(--card-bg);
+         border: 1px solid var(--glass-border);
+         border-radius: 16px;
+         padding: 25px;
+         margin: 20px 0;
+        }
+
+   .calendar-header {
+        background: linear-gradient(135deg, var(--primary), var(--accent));
         }
 
         .calendar {
@@ -316,15 +321,6 @@
             background: var(--darker);
             border-radius: 0.5rem;
             overflow: hidden;
-        }
-        
-        .calendar-header {
-            background: var(--secondary);
-            color: var(--light);
-            padding: 1rem;
-            text-align: center;
-            margin-bottom: 0.5rem;
-            border-radius: 0.5rem;
         }
         
         .month-year {
@@ -476,6 +472,10 @@
             border: 1px solid var(--gray);
             color: var(--light);
         }
+
+        .modal.show {
+           display: flex;
+       }
 
         .modal-btn.no:hover {
             background: rgba(255,255,255,0.05);
@@ -1700,29 +1700,27 @@
         const donationModal = document.getElementById('donationModal');
         const declineBtn = document.getElementById('declineDonation');
         
-        // Show modal on page load (only once per session)
-        if (!sessionStorage.getItem('donationShown')) {
-            setTimeout(() => {
-                donationModal.style.display = 'flex';
-                document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
-            }, 3000); // Show after 3 seconds
-            
-            sessionStorage.setItem('donationShown', 'true');
-        }
-        
-        // Close modal when No is clicked
-        declineBtn.addEventListener('click', () => {
-            donationModal.style.display = 'none';
-            document.body.style.overflow = 'auto'; // Re-enable scrolling
-        });
+        // Replace the modal display code with this:
+       if (!sessionStorage.getItem('donationShown')) {
+         setTimeout(() => {
+           donationModal.classList.add('show');
+           document.body.style.overflow = 'hidden';
+         }, 3000);
+        sessionStorage.setItem('donationShown', 'true');
+      }
 
-        // Close modal when clicking outside
-        donationModal.addEventListener('click', (e) => {
-            if (e.target === donationModal) {
-                donationModal.style.display = 'none';
-                document.body.style.overflow = 'auto';
-            }
-        });
+     // Close modal functions
+     declineBtn.addEventListener('click', () => {
+         donationModal.classList.remove('show');
+        document.body.style.overflow = 'auto';
+     });
+
+     donationModal.addEventListener('click', (e) => {
+         if (e.target === donationModal) {
+            donationModal.classList.remove('show');
+           document.body.style.overflow = 'auto';
+         }
+     });
 
         // Real-time statistics
         function initRealTimeStats() {
