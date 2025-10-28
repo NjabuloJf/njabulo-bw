@@ -513,6 +513,17 @@
             background-color: #ff4757;
         }
         
+        .error-message {
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            color: #ff6b81;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+            display: none;
+            text-align: center;
+        }
+        
         footer {
             text-align: center;
             margin-top: 60px;
@@ -570,6 +581,7 @@
                     <input type="text" id="facebook-url" placeholder="Paste Facebook video URL here...">
                     <button id="download-btn"><i class="fas fa-cloud-download-alt"></i> Download</button>
                 </div>
+                <div class="error-message" id="error-message"></div>
             </div>
             
             <div class="stats-container">
@@ -631,19 +643,19 @@
                         <div class="download-card">
                             <h4><i class="fas fa-film"></i> HD Quality <span class="quality-badge">720p+</span></h4>
                             <p>Highest quality video available from Facebook. Best for large screens.</p>
-                            <a href="#" id="hd-download" class="download-btn"><i class="fas fa-download"></i> Download HD</a>
+                            <button id="hd-download" class="download-btn"><i class="fas fa-download"></i> Download HD</button>
                         </div>
                         
                         <div class="download-card">
                             <h4><i class="fas fa-film"></i> SD Quality <span class="quality-badge">480p</span></h4>
                             <p>Standard quality video. Smaller file size, faster download.</p>
-                            <a href="#" id="sd-download" class="download-btn"><i class="fas fa-download"></i> Download SD</a>
+                            <button id="sd-download" class="download-btn"><i class="fas fa-download"></i> Download SD</button>
                         </div>
                         
                         <div class="download-card">
                             <h4><i class="fas fa-music"></i> Audio Only <span class="quality-badge">MP3</span></h4>
                             <p>Extract audio from the video. Perfect for music or podcasts.</p>
-                            <a href="#" id="audio-download" class="download-btn"><i class="fas fa-download"></i> Download Audio</a>
+                            <button id="audio-download" class="download-btn"><i class="fas fa-download"></i> Download Audio</button>
                         </div>
                     </div>
                 </div>
@@ -691,20 +703,38 @@
             'https://api.giftedtech.co.ke/api/download/facebook'
         ];
         
+        // Current video data
+        let currentVideoData = null;
+        
         // Download functionality
         document.getElementById('download-btn').addEventListener('click', fetchFacebook);
         document.getElementById('facebook-url').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') fetchFacebook();
         });
 
+        // Download button handlers
+        document.getElementById('hd-download').addEventListener('click', () => downloadVideo('hd'));
+        document.getElementById('sd-download').addEventListener('click', () => downloadVideo('sd'));
+        document.getElementById('audio-download').addEventListener('click', () => downloadVideo('audio'));
+
         async function fetchFacebook() {
             const url = document.getElementById('facebook-url').value.trim();
-            if (!url) return alert('Please enter a Facebook video URL');
+            if (!url) {
+                showError('Please enter a Facebook video URL');
+                return;
+            }
+            
+            // Validate Facebook URL
+            if (!url.includes('facebook.com') && !url.includes('fb.watch')) {
+                showError('Please enter a valid Facebook video URL');
+                return;
+            }
             
             try {
                 // Show loading state
                 document.getElementById('loading').style.display = 'block';
                 document.getElementById('result').style.display = 'none';
+                document.getElementById('error-message').style.display = 'none';
                 document.getElementById('download-btn').disabled = true;
                 document.getElementById('download-btn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
                 
@@ -716,20 +746,38 @@
                 
                 // Try each API endpoint until one works
                 let data = null;
+                let successApi = -1;
+                
                 for (let i = 0; i < apiEndpoints.length; i++) {
                     const indicator = document.getElementById(`api${i+1}`);
                     indicator.classList.add('active');
                     
                     try {
                         const apiUrl = `${apiEndpoints[i]}?url=${encodeURIComponent(url)}`;
-                        const response = await fetch(apiUrl);
+                        console.log(`Trying API ${i+1}: ${apiUrl}`);
+                        
+                        const response = await fetch(apiUrl, {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json',
+                            },
+                            mode: 'cors'
+                        });
                         
                         if (response.ok) {
                             data = await response.json();
-                            indicator.classList.add('active');
-                            break; // Exit loop if successful
+                            console.log(`API ${i+1} success:`, data);
+                            
+                            // Check if data structure is valid
+                            if (isValidData(data)) {
+                                indicator.classList.add('active');
+                                successApi = i+1;
+                                break; // Exit loop if successful
+                            } else {
+                                throw new Error(`API ${i+1} returned invalid data structure`);
+                            }
                         } else {
-                            throw new Error(`API ${i+1} failed`);
+                            throw new Error(`API ${i+1} returned status: ${response.status}`);
                         }
                     } catch (error) {
                         console.error(`API ${i+1} error:`, error);
@@ -738,14 +786,15 @@
                     }
                 }
                 
-                if (data && data.status) {
+                if (successApi !== -1) {
+                    console.log(`Success with API ${successApi}`);
                     displayResult(data);
                     updateStats();
                 } else {
-                    throw new Error('All APIs failed to fetch Facebook video data');
+                    throw new Error('All APIs failed to fetch Facebook video data. Please try a different video URL.');
                 }
             } catch (error) {
-                console.error(error);
+                console.error('Final error:', error);
                 showError(error.message);
             } finally {
                 document.getElementById('loading').style.display = 'none';
@@ -754,29 +803,115 @@
             }
         }
 
+        function isValidData(data) {
+            // Check if data has the expected structure
+            if (!data) return false;
+            
+            // Check for different possible API response structures
+            if (data.BK9 && (data.BK9.hd || data.BK9.sd)) return true;
+            if (data.hd || data.sd) return true;
+            if (data.links && (data.links.hd || data.links.sd)) return true;
+            
+            return false;
+        }
+
         function displayResult(data) {
+            // Extract video data based on API response structure
+            let title, desc, thumb, hdUrl, sdUrl;
+            
+            if (data.BK9) {
+                // Structure from BK9 API
+                title = data.BK9.title || "Facebook Video";
+                desc = data.BK9.desc || "No description available";
+                thumb = data.BK9.thumb || '';
+                hdUrl = data.BK9.hd || '';
+                sdUrl = data.BK9.sd || '';
+            } else if (data.links) {
+                // Structure with links object
+                title = data.title || "Facebook Video";
+                desc = data.desc || "No description available";
+                thumb = data.thumb || '';
+                hdUrl = data.links.hd || '';
+                sdUrl = data.links.sd || '';
+            } else {
+                // Direct structure
+                title = data.title || "Facebook Video";
+                desc = data.desc || "No description available";
+                thumb = data.thumb || '';
+                hdUrl = data.hd || '';
+                sdUrl = data.sd || '';
+            }
+            
             // Set video info
             const videoPlayer = document.getElementById('video-player');
-            const title = data.title || data.BK9?.title || "Facebook Video";
-            const desc = data.desc || data.BK9?.desc || "No description available";
-            const thumb = data.thumb || data.BK9?.thumb || '';
-            const hdUrl = data.hd || data.BK9?.hd || '';
-            const sdUrl = data.sd || data.BK9?.sd || '';
-            
             document.getElementById('video-title').textContent = title;
             document.getElementById('video-desc').textContent = desc;
-            videoPlayer.poster = thumb;
-            videoPlayer.src = hdUrl;
             
-            // Set download links
-            document.getElementById('hd-download').href = hdUrl;
-            document.getElementById('sd-download').href = sdUrl;
-            document.getElementById('audio-download').href = sdUrl; // In a real app, you'd extract audio
+            if (thumb) {
+                videoPlayer.poster = thumb;
+            }
+            
+            if (hdUrl) {
+                videoPlayer.src = hdUrl;
+            } else if (sdUrl) {
+                videoPlayer.src = sdUrl;
+            }
+            
+            // Store current video data for downloads
+            currentVideoData = {
+                title: title,
+                hdUrl: hdUrl,
+                sdUrl: sdUrl
+            };
             
             // Show result with animation
             const resultElement = document.getElementById('result');
             resultElement.style.display = 'block';
             resultElement.style.animation = 'fadeInUp 0.5s forwards';
+        }
+
+        function downloadVideo(quality) {
+            if (!currentVideoData) {
+                showError('No video data available. Please fetch a video first.');
+                return;
+            }
+            
+            let downloadUrl = '';
+            let filename = '';
+            
+            // Determine download URL and filename based on quality
+            if (quality === 'hd' && currentVideoData.hdUrl) {
+                downloadUrl = currentVideoData.hdUrl;
+                filename = `FrediBook_HD_${Date.now()}.mp4`;
+            } else if (quality === 'sd' && currentVideoData.sdUrl) {
+                downloadUrl = currentVideoData.sdUrl;
+                filename = `FrediBook_SD_${Date.now()}.mp4`;
+            } else if (quality === 'audio' && currentVideoData.sdUrl) {
+                // For audio, we'd normally extract audio from video
+                // For now, we'll just download the SD version
+                downloadUrl = currentVideoData.sdUrl;
+                filename = `FrediBook_Audio_${Date.now()}.mp3`;
+            } else {
+                showError(`The selected quality (${quality.toUpperCase()}) is not available for this video.`);
+                return;
+            }
+            
+            if (!downloadUrl) {
+                showError('Download URL not available for this video.');
+                return;
+            }
+            
+            // Create a temporary anchor element to trigger download
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = filename;
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            // Update stats
+            updateStats();
         }
 
         function updateStats() {
@@ -794,8 +929,9 @@
         }
 
         function showError(message) {
-            // You could implement a more elegant error display here
-            alert('Error: ' + message);
+            const errorElement = document.getElementById('error-message');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
         }
 
         // Initialize with some random stats
