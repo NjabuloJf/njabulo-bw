@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FrediBook - Premium Facebook Video Downloader</title>
+    <title>Fredi Premium Facebook Downloader | Save Videos</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -23,19 +23,6 @@
             --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
-
-        .light-theme {
-            --primary: #1877F2;
-            --secondary: #42B72A;
-            --dark: #F0F2F5;
-            --dark-gray: #FFFFFF;
-            --medium-gray: #F8F9FA;
-            --light-gray: #E4E6EB;
-            --text-primary: #050505;
-            --text-secondary: #65676B;
-            --card-bg: #FFFFFF;
-            --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-        }
         
         * {
             margin: 0;
@@ -53,11 +40,10 @@
             background-image: 
                 radial-gradient(circle at 25% 25%, rgba(24, 119, 242, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 75% 75%, rgba(66, 183, 42, 0.1) 0%, transparent 50%);
-            transition: var(--transition);
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 40px auto;
             padding: 0 20px;
         }
@@ -94,46 +80,12 @@
             line-height: 1.7;
         }
         
-        .theme-toggle {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: var(--card-bg);
-            border: 1px solid var(--light-gray);
-            color: var(--text-primary);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
-            box-shadow: var(--box-shadow);
-        }
-        
-        .theme-toggle:hover {
-            transform: scale(1.05);
-        }
-        
-        .dashboard {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-        
-        @media (max-width: 768px) {
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-        }
-        
         .search-container {
             background: var(--dark-gray);
             padding: 30px;
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
             border: 1px solid var(--light-gray);
             transition: var(--transition);
         }
@@ -196,60 +148,6 @@
             margin-right: 10px;
         }
         
-        .stats-container {
-            background: var(--dark-gray);
-            padding: 30px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            border: 1px solid var(--light-gray);
-        }
-        
-        .stats-title {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            color: var(--text-primary);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-        }
-        
-        .stats-title i {
-            margin-right: 10px;
-            color: var(--primary);
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-        
-        .stat-card {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: var(--border-radius);
-            text-align: center;
-            transition: var(--transition);
-            border: 1px solid var(--light-gray);
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-        
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 5px;
-        }
-        
-        .stat-label {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-        
         .result-container {
             background: var(--dark-gray);
             padding: 0;
@@ -261,7 +159,6 @@
             transform: translateY(20px);
             opacity: 0;
             animation: fadeInUp 0.5s forwards;
-            grid-column: 1 / -1;
         }
         
         @keyframes fadeInUp {
@@ -280,8 +177,8 @@
         
         .thumbnail-container {
             width: 100%;
-            max-width: 600px;
-            height: 340px;
+            max-width: 500px;
+            height: 280px;
             border-radius: var(--border-radius);
             overflow: hidden;
             flex-shrink: 0;
@@ -340,7 +237,7 @@
         
         .video-info {
             width: 100%;
-            max-width: 600px;
+            max-width: 500px;
         }
         
         .video-info h2 {
@@ -382,7 +279,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
-            max-width: 700px;
+            max-width: 500px;
             margin: 0 auto;
         }
         
@@ -466,7 +363,6 @@
             box-shadow: var(--box-shadow);
             margin-bottom: 30px;
             border: 1px solid var(--light-gray);
-            grid-column: 1 / -1;
         }
         
         .spinner {
@@ -488,40 +384,6 @@
             color: var(--text-secondary);
             font-size: 1.1rem;
             margin-top: 15px;
-        }
-        
-        .api-status {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        
-        .api-indicator {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background-color: var(--light-gray);
-            transition: var(--transition);
-        }
-        
-        .api-indicator.active {
-            background-color: var(--secondary);
-        }
-        
-        .api-indicator.error {
-            background-color: #ff4757;
-        }
-        
-        .error-message {
-            background: rgba(255, 71, 87, 0.1);
-            border: 1px solid rgba(255, 71, 87, 0.3);
-            color: #ff6b81;
-            padding: 15px;
-            border-radius: var(--border-radius);
-            margin-top: 20px;
-            display: none;
-            text-align: center;
         }
         
         footer {
@@ -555,10 +417,6 @@
             .download-options {
                 grid-template-columns: 1fr;
             }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
@@ -567,234 +425,94 @@
         <header>
             <div class="logo">
                 <i class="fab fa-facebook"></i>
-                <span>FrediBook</span>
+                <span>Fredi FB Video Saver</span>
             </div>
             <p class="subtitle">Download high-quality Facebook videos with our premium service. Save your favorite content in HD or SD quality.</p>
-            <button class="theme-toggle" id="themeToggle">
-                <i class="fas fa-moon"></i>
-            </button>
         </header>
         
-        <div class="dashboard">
-            <div class="search-container">
-                <div class="input-group">
-                    <input type="text" id="facebook-url" placeholder="Paste Facebook video URL here...">
-                    <button id="download-btn"><i class="fas fa-cloud-download-alt"></i> Download</button>
-                </div>
-                <div class="error-message" id="error-message"></div>
+        <div class="search-container">
+            <div class="input-group">
+                <input type="text" id="facebook-url" placeholder="Paste Facebook video URL here...">
+                <button id="download-btn"><i class="fas fa-cloud-download-alt"></i> Download</button>
             </div>
-            
-            <div class="stats-container">
-                <h3 class="stats-title"><i class="fas fa-chart-line"></i> Download Stats</h3>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-value" id="total-downloads">1,247</div>
-                        <div class="stat-label">Total Downloads</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="success-rate">98%</div>
-                        <div class="stat-label">Success Rate</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="today-downloads">24</div>
-                        <div class="stat-label">Today</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="avg-quality">HD</div>
-                        <div class="stat-label">Avg. Quality</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="loading" id="loading">
-                <div class="spinner"></div>
-                <p>Processing your Facebook video...</p>
-                <div class="api-status">
-                    <div class="api-indicator" id="api1"></div>
-                    <div class="api-indicator" id="api2"></div>
-                    <div class="api-indicator" id="api3"></div>
-                    <div class="api-indicator" id="api4"></div>
-                </div>
-            </div>
-            
-            <div class="result-container" id="result">
-                <div class="video-preview">
-                    <div class="thumbnail-container">
-                        <video id="video-player" class="video-player" controls poster="">
-                            Your browser does not support the video tag.
-                        </video>
-                        <div class="play-overlay">
-                            <div class="play-icon">
-                                <i class="fas fa-play" style="color: white; font-size: 1.2rem;"></i>
-                            </div>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Processing your Facebook video...</p>
+        </div>
+        
+        <div class="result-container" id="result">
+            <div class="video-preview">
+                <div class="thumbnail-container">
+                    <video id="video-player" class="video-player" controls poster="">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="play-overlay">
+                        <div class="play-icon">
+                            <i class="fas fa-play" style="color: white; font-size: 1.2rem;"></i>
                         </div>
-                    </div>
-                    
-                    <div class="video-info">
-                        <h2 id="video-title">Facebook Video</h2>
-                        <p class="video-desc" id="video-desc">Video description will appear here</p>
                     </div>
                 </div>
                 
-                <div class="download-section">
-                    <h3><i class="fas fa-download"></i> Download Options</h3>
+                <div class="video-info">
+                    <h2 id="video-title">Facebook Video</h2>
+                    <p class="video-desc" id="video-desc">Video description will appear here</p>
+                </div>
+            </div>
+            
+            <div class="download-section">
+                <h3><i class="fas fa-download"></i> Download Options</h3>
+                
+                <div class="download-options">
+                    <div class="download-card">
+                        <h4><i class="fas fa-film"></i> HD Quality <span class="quality-badge">720p+</span></h4>
+                        <p>Highest quality video available from Facebook. Best for large screens.</p>
+                        <a href="#" id="hd-download" class="download-btn"><i class="fas fa-download"></i> Download HD</a>
+                    </div>
                     
-                    <div class="download-options">
-                        <div class="download-card">
-                            <h4><i class="fas fa-film"></i> HD Quality <span class="quality-badge">720p+</span></h4>
-                            <p>Highest quality video available from Facebook. Best for large screens.</p>
-                            <button id="hd-download" class="download-btn"><i class="fas fa-download"></i> Download HD</button>
-                        </div>
-                        
-                        <div class="download-card">
-                            <h4><i class="fas fa-film"></i> SD Quality <span class="quality-badge">480p</span></h4>
-                            <p>Standard quality video. Smaller file size, faster download.</p>
-                            <button id="sd-download" class="download-btn"><i class="fas fa-download"></i> Download SD</button>
-                        </div>
-                        
-                        <div class="download-card">
-                            <h4><i class="fas fa-music"></i> Audio Only <span class="quality-badge">MP3</span></h4>
-                            <p>Extract audio from the video. Perfect for music or podcasts.</p>
-                            <button id="audio-download" class="download-btn"><i class="fas fa-download"></i> Download Audio</button>
-                        </div>
+                    <div class="download-card">
+                        <h4><i class="fas fa-film"></i> SD Quality <span class="quality-badge">480p</span></h4>
+                        <p>Standard quality video. Smaller file size, faster download.</p>
+                        <a href="#" id="sd-download" class="download-btn"><i class="fas fa-download"></i> Download SD</a>
                     </div>
                 </div>
             </div>
         </div>
         
         <footer>
-            <p>&copy; 2025 FrediBook - Premium Facebook Video Downloader. All rights reserved. Not affiliated with Facebook.</p>
-            <p>Powered by Fredi AI Technology</p>
+            <p>& copy; 2025 Fredi FB Video Saver. All rights reserved. Not affiliated with Facebook.</p>
         </footer>
     </div>
 
     <script>
-        // Theme toggle functionality
-        const themeToggle = document.getElementById('themeToggle');
-        const themeIcon = themeToggle.querySelector('i');
-        
-        // Check for saved theme preference
-        const savedTheme = localStorage.getItem('fredibook-theme') || 'dark';
-        if (savedTheme === 'light') {
-            document.body.classList.add('light-theme');
-            themeIcon.classList.remove('fa-moon');
-            themeIcon.classList.add('fa-sun');
-        }
-        
-        themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('light-theme');
-            
-            if (document.body.classList.contains('light-theme')) {
-                themeIcon.classList.remove('fa-moon');
-                themeIcon.classList.add('fa-sun');
-                localStorage.setItem('fredibook-theme', 'light');
-            } else {
-                themeIcon.classList.remove('fa-sun');
-                themeIcon.classList.add('fa-moon');
-                localStorage.setItem('fredibook-theme', 'dark');
-            }
-        });
-        
-        // API endpoints
-        const apiEndpoints = [
-            'https://apiskeith.vercel.app/download/fbdl',
-            'https://apiskeith.vercel.app/download/fbdown',
-            'https://api.giftedtech.co.ke/api/download/facebookv2',
-            'https://api.giftedtech.co.ke/api/download/facebook'
-        ];
-        
-        // Current video data
-        let currentVideoData = null;
-        
-        // Download functionality
         document.getElementById('download-btn').addEventListener('click', fetchFacebook);
         document.getElementById('facebook-url').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') fetchFacebook();
         });
 
-        // Download button handlers
-        document.getElementById('hd-download').addEventListener('click', () => downloadVideo('hd'));
-        document.getElementById('sd-download').addEventListener('click', () => downloadVideo('sd'));
-        document.getElementById('audio-download').addEventListener('click', () => downloadVideo('audio'));
-
         async function fetchFacebook() {
             const url = document.getElementById('facebook-url').value.trim();
-            if (!url) {
-                showError('Please enter a Facebook video URL');
-                return;
-            }
-            
-            // Validate Facebook URL
-            if (!url.includes('facebook.com') && !url.includes('fb.watch')) {
-                showError('Please enter a valid Facebook video URL');
-                return;
-            }
+            if (!url) return alert('Please enter a Facebook video URL');
             
             try {
                 // Show loading state
                 document.getElementById('loading').style.display = 'block';
                 document.getElementById('result').style.display = 'none';
-                document.getElementById('error-message').style.display = 'none';
                 document.getElementById('download-btn').disabled = true;
                 document.getElementById('download-btn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
                 
-                // Reset API indicators
-                for (let i = 1; i <= 4; i++) {
-                    const indicator = document.getElementById(`api${i}`);
-                    indicator.className = 'api-indicator';
-                }
+                const apiUrl = `https://bk9.fun/download/fb?url=${encodeURIComponent(url)}`;
+                const response = await fetch(apiUrl);
+                const data = await response.json();
                 
-                // Try each API endpoint until one works
-                let data = null;
-                let successApi = -1;
-                
-                for (let i = 0; i < apiEndpoints.length; i++) {
-                    const indicator = document.getElementById(`api${i+1}`);
-                    indicator.classList.add('active');
-                    
-                    try {
-                        const apiUrl = `${apiEndpoints[i]}?url=${encodeURIComponent(url)}`;
-                        console.log(`Trying API ${i+1}: ${apiUrl}`);
-                        
-                        const response = await fetch(apiUrl, {
-                            method: 'GET',
-                            headers: {
-                                'Accept': 'application/json',
-                            },
-                            mode: 'cors'
-                        });
-                        
-                        if (response.ok) {
-                            data = await response.json();
-                            console.log(`API ${i+1} success:`, data);
-                            
-                            // Check if data structure is valid
-                            if (isValidData(data)) {
-                                indicator.classList.add('active');
-                                successApi = i+1;
-                                break; // Exit loop if successful
-                            } else {
-                                throw new Error(`API ${i+1} returned invalid data structure`);
-                            }
-                        } else {
-                            throw new Error(`API ${i+1} returned status: ${response.status}`);
-                        }
-                    } catch (error) {
-                        console.error(`API ${i+1} error:`, error);
-                        indicator.classList.remove('active');
-                        indicator.classList.add('error');
-                    }
-                }
-                
-                if (successApi !== -1) {
-                    console.log(`Success with API ${successApi}`);
+                if (data.status) {
                     displayResult(data);
-                    updateStats();
                 } else {
-                    throw new Error('All APIs failed to fetch Facebook video data. Please try a different video URL.');
+                    throw new Error('Failed to fetch Facebook video data');
                 }
             } catch (error) {
-                console.error('Final error:', error);
+                console.error(error);
                 showError(error.message);
             } finally {
                 document.getElementById('loading').style.display = 'none';
@@ -803,66 +521,20 @@
             }
         }
 
-        function isValidData(data) {
-            // Check if data has the expected structure
-            if (!data) return false;
-            
-            // Check for different possible API response structures
-            if (data.BK9 && (data.BK9.hd || data.BK9.sd)) return true;
-            if (data.hd || data.sd) return true;
-            if (data.links && (data.links.hd || data.links.sd)) return true;
-            
-            return false;
-        }
-
         function displayResult(data) {
-            // Extract video data based on API response structure
-            let title, desc, thumb, hdUrl, sdUrl;
-            
-            if (data.BK9) {
-                // Structure from BK9 API
-                title = data.BK9.title || "Facebook Video";
-                desc = data.BK9.desc || "No description available";
-                thumb = data.BK9.thumb || '';
-                hdUrl = data.BK9.hd || '';
-                sdUrl = data.BK9.sd || '';
-            } else if (data.links) {
-                // Structure with links object
-                title = data.title || "Facebook Video";
-                desc = data.desc || "No description available";
-                thumb = data.thumb || '';
-                hdUrl = data.links.hd || '';
-                sdUrl = data.links.sd || '';
-            } else {
-                // Direct structure
-                title = data.title || "Facebook Video";
-                desc = data.desc || "No description available";
-                thumb = data.thumb || '';
-                hdUrl = data.hd || '';
-                sdUrl = data.sd || '';
-            }
-            
             // Set video info
             const videoPlayer = document.getElementById('video-player');
+            const title = data.BK9.title === "No video title" ? "Facebook Video" : data.BK9.title;
+            const desc = data.BK9.desc === " No video description..." ? "No description available" : data.BK9.desc;
+            
             document.getElementById('video-title').textContent = title;
             document.getElementById('video-desc').textContent = desc;
+            videoPlayer.poster = data.BK9.thumb;
+            videoPlayer.src = data.BK9.hd;
             
-            if (thumb) {
-                videoPlayer.poster = thumb;
-            }
-            
-            if (hdUrl) {
-                videoPlayer.src = hdUrl;
-            } else if (sdUrl) {
-                videoPlayer.src = sdUrl;
-            }
-            
-            // Store current video data for downloads
-            currentVideoData = {
-                title: title,
-                hdUrl: hdUrl,
-                sdUrl: sdUrl
-            };
+            // Set download links
+            document.getElementById('hd-download').href = data.BK9.hd;
+            document.getElementById('sd-download').href = data.BK9.sd;
             
             // Show result with animation
             const resultElement = document.getElementById('result');
@@ -870,82 +542,10 @@
             resultElement.style.animation = 'fadeInUp 0.5s forwards';
         }
 
-        function downloadVideo(quality) {
-            if (!currentVideoData) {
-                showError('No video data available. Please fetch a video first.');
-                return;
-            }
-            
-            let downloadUrl = '';
-            let filename = '';
-            
-            // Determine download URL and filename based on quality
-            if (quality === 'hd' && currentVideoData.hdUrl) {
-                downloadUrl = currentVideoData.hdUrl;
-                filename = `FrediBook_HD_${Date.now()}.mp4`;
-            } else if (quality === 'sd' && currentVideoData.sdUrl) {
-                downloadUrl = currentVideoData.sdUrl;
-                filename = `FrediBook_SD_${Date.now()}.mp4`;
-            } else if (quality === 'audio' && currentVideoData.sdUrl) {
-                // For audio, we'd normally extract audio from video
-                // For now, we'll just download the SD version
-                downloadUrl = currentVideoData.sdUrl;
-                filename = `FrediBook_Audio_${Date.now()}.mp3`;
-            } else {
-                showError(`The selected quality (${quality.toUpperCase()}) is not available for this video.`);
-                return;
-            }
-            
-            if (!downloadUrl) {
-                showError('Download URL not available for this video.');
-                return;
-            }
-            
-            // Create a temporary anchor element to trigger download
-            const a = document.createElement('a');
-            a.href = downloadUrl;
-            a.download = filename;
-            a.style.display = 'none';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            
-            // Update stats
-            updateStats();
-        }
-
-        function updateStats() {
-            // Simulate updating stats
-            const totalDownloads = document.getElementById('total-downloads');
-            const todayDownloads = document.getElementById('today-downloads');
-            
-            // Increment total downloads
-            let currentTotal = parseInt(totalDownloads.textContent.replace(',', ''));
-            totalDownloads.textContent = (currentTotal + 1).toLocaleString();
-            
-            // Increment today's downloads
-            let currentToday = parseInt(todayDownloads.textContent);
-            todayDownloads.textContent = currentToday + 1;
-        }
-
         function showError(message) {
-            const errorElement = document.getElementById('error-message');
-            errorElement.textContent = message;
-            errorElement.style.display = 'block';
+            // You could implement a more elegant error display here
+            alert('Error: ' + message);
         }
-
-        // Initialize with some random stats
-        function initializeStats() {
-            const totalDownloads = document.getElementById('total-downloads');
-            const todayDownloads = document.getElementById('today-downloads');
-            
-            // Set random but realistic values
-            totalDownloads.textContent = Math.floor(Math.random() * 5000 + 1000).toLocaleString();
-            todayDownloads.textContent = Math.floor(Math.random() * 50 + 10);
-        }
-
-        // Initialize the app
-        initializeStats();
     </script>
 </body>
 </html>
