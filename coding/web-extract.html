@@ -3,18 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Website Content Extractor</title>
+    <title>Fredi Website Content Extractor</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #4a6baf;
-            --secondary-color: #3a5a9c;
-            --dark-bg: #1a1a2e;
-            --light-text: #f0f0f0;
-            --code-bg: #282c34;
-            --border-color: #444;
+            --primary: #1877F2;
+            --secondary: #42B72A;
+            --dark: #121212;
+            --dark-gray: #1E1E1E;
+            --medium-gray: #2D2D2D;
+            --light-gray: #3A3A3A;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B3B3B3;
+            --card-bg: #252525;
+            --border-radius: 12px;
+            --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             --success-color: #4CAF50;
             --error-color: #f44336;
+            --warning-color: #ff9800;
         }
         
         * {
@@ -25,10 +33,13 @@
         }
         
         body {
-            background-color: var(--dark-bg);
-            color: var(--light-text);
+            background-color: var(--dark);
+            color: var(--text-primary);
             min-height: 100vh;
             padding: 20px;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(24, 119, 242, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(66, 183, 42, 0.1) 0%, transparent 50%);
         }
         
         .container {
@@ -36,129 +47,222 @@
             margin: 0 auto;
         }
         
-        h1 {
+        header {
             text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .logo {
+            display: inline-flex;
+            align-items: center;
             margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .logo i {
+            margin-right: 12px;
+            font-size: 2.2rem;
+        }
+        
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.7;
         }
         
         .input-section {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
+            background: var(--dark-gray);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border: 1px solid var(--light-gray);
         }
         
         input[type="url"] {
             flex: 1;
-            padding: 10px 15px;
-            border-radius: 5px;
-            border: 1px solid var(--border-color);
-            background-color: rgba(255, 255, 255, 0.1);
-            color: var(--light-text);
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--light-gray);
+            background-color: var(--card-bg);
+            color: var(--text-primary);
             font-size: 16px;
+            transition: var(--transition);
+        }
+        
+        input[type="url"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.3);
         }
         
         button {
-            padding: 10px 20px;
-            background-color: var(--primary-color);
+            padding: 15px 30px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: var(--border-radius);
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         button:hover {
-            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(24, 119, 242, 0.3);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
         
         .status {
             margin-bottom: 20px;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 15px;
+            border-radius: var(--border-radius);
             text-align: center;
+            display: none;
+            transition: var(--transition);
         }
         
         .success {
             background-color: rgba(76, 175, 80, 0.2);
             color: var(--success-color);
+            border: 1px solid rgba(76, 175, 80, 0.3);
         }
         
         .error {
             background-color: rgba(244, 67, 54, 0.2);
             color: var(--error-color);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+        
+        .warning {
+            background-color: rgba(255, 152, 0, 0.2);
+            color: var(--warning-color);
+            border: 1px solid rgba(255, 152, 0, 0.3);
         }
         
         .results {
             display: grid;
             grid-template-columns: 1fr;
             gap: 20px;
+            display: none;
         }
         
         .result-section {
-            background-color: rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-            padding: 15px;
+            background-color: var(--dark-gray);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--box-shadow);
+            border: 1px solid var(--light-gray);
+            transition: var(--transition);
+        }
+        
+        .result-section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
         }
         
         .result-section h2 {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            color: var(--text-primary);
+            font-size: 1.4rem;
         }
         
         .content {
-            margin-top: 10px;
-            max-height: 300px;
+            margin-top: 15px;
+            max-height: 400px;
             overflow-y: auto;
         }
         
         pre {
-            background-color: var(--code-bg);
-            padding: 15px;
-            border-radius: 5px;
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--border-radius);
             color: #abb2bf;
-            font-family: monospace;
+            font-family: 'Consolas', monospace;
             white-space: pre-wrap;
             position: relative;
+            border: 1px solid var(--light-gray);
+            font-size: 0.9rem;
+            line-height: 1.5;
         }
         
         .copy-btn {
-            position: absolute;
-            top: 5px;
-            right: 5px;
             background: rgba(0, 0, 0, 0.5);
             color: white;
             border: none;
-            padding: 3px 8px;
-            border-radius: 3px;
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
             cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(0, 0, 0, 0.7);
         }
         
         .media-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
         }
         
         .media-item {
-            background-color: rgba(0, 0, 0, 0.3);
-            padding: 10px;
-            border-radius: 5px;
+            background-color: var(--card-bg);
+            padding: 15px;
+            border-radius: var(--border-radius);
             word-break: break-all;
             position: relative;
+            border: 1px solid var(--light-gray);
+            transition: var(--transition);
+        }
+        
+        .media-item:hover {
+            border-color: var(--primary);
         }
         
         .media-copy {
             position: absolute;
-            top: 5px;
-            right: 5px;
+            top: 10px;
+            right: 10px;
             background: rgba(0, 0, 0, 0.5);
             color: white;
             border: none;
-            padding: 2px 5px;
-            border-radius: 3px;
+            padding: 5px 10px;
+            border-radius: var(--border-radius);
             cursor: pointer;
-            font-size: 0.7em;
+            font-size: 0.8rem;
+            transition: var(--transition);
+        }
+        
+        .media-copy:hover {
+            background: rgba(0, 0, 0, 0.7);
         }
         
         .loading {
@@ -174,24 +278,132 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            background: var(--dark-gray);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border: 1px solid var(--light-gray);
+        }
+        
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .file-count {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid var(--light-gray);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .input-section {
+                flex-direction: column;
+            }
+            
+            .media-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .result-section h2 {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Website Content Extractor</h1>
+        <header>
+            <div class="logo">
+                <i class="fas fa-code"></i>
+                <span>Fredi Extractor</span>
+            </div>
+            <p class="subtitle">Extract HTML, CSS, JavaScript, and media files from any website with our powerful content extraction tool.</p>
+        </header>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="total-extractions">0</div>
+                <div class="stat-label">Total Extractions</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="success-rate">100%</div>
+                <div class="stat-label">Success Rate</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="today-extractions">0</div>
+                <div class="stat-label">Today</div>
+            </div>
+        </div>
         
         <div class="input-section">
             <input type="url" id="url-input" placeholder="Enter website URL (e.g., https://example.com)" required>
-            <button id="extract-btn">Extract Content</button>
+            <button id="extract-btn">
+                <i class="fas fa-download"></i>
+                Extract Content
+            </button>
         </div>
         
-        <div id="status" class="status" style="display: none;"></div>
+        <div id="status" class="status"></div>
         
-        <div id="results" class="results" style="display: none;">
+        <div id="results" class="results">
             <div class="result-section" id="html-section">
                 <h2>
-                    <span>HTML Content</span>
-                    <button onclick="copyElementContent('html-content')">Copy</button>
+                    <span>HTML Content <span class="file-count" id="html-count">0</span></span>
+                    <button class="copy-btn" onclick="copyElementContent('html-content')">
+                        <i class="fas fa-copy"></i>
+                        Copy HTML
+                    </button>
                 </h2>
                 <div class="content">
                     <pre id="html-content"></pre>
@@ -200,24 +412,33 @@
             
             <div class="result-section" id="css-section">
                 <h2>
-                    <span>CSS Files</span>
-                    <button onclick="copyElementContent('css-content')">Copy All</button>
+                    <span>CSS Files <span class="file-count" id="css-count">0</span></span>
+                    <button class="copy-btn" onclick="copyElementContent('css-content')">
+                        <i class="fas fa-copy"></i>
+                        Copy All URLs
+                    </button>
                 </h2>
                 <div class="content" id="css-content"></div>
             </div>
             
             <div class="result-section" id="js-section">
                 <h2>
-                    <span>JavaScript Files</span>
-                    <button onclick="copyElementContent('js-content')">Copy All</button>
+                    <span>JavaScript Files <span class="file-count" id="js-count">0</span></span>
+                    <button class="copy-btn" onclick="copyElementContent('js-content')">
+                        <i class="fas fa-copy"></i>
+                        Copy All URLs
+                    </button>
                 </h2>
                 <div class="content" id="js-content"></div>
             </div>
             
             <div class="result-section" id="media-section">
                 <h2>
-                    <span>Media Files</span>
-                    <button onclick="copyElementContent('media-content')">Copy All</button>
+                    <span>Media Files <span class="file-count" id="media-count">0</span></span>
+                    <button class="copy-btn" onclick="copyElementContent('media-content')">
+                        <i class="fas fa-copy"></i>
+                        Copy All URLs
+                    </button>
                 </h2>
                 <div class="content">
                     <div class="media-list" id="media-content"></div>
@@ -227,6 +448,20 @@
     </div>
 
     <script>
+        // Initialize stats
+        let totalExtractions = parseInt(localStorage.getItem('totalExtractions')) || 0;
+        let todayExtractions = parseInt(localStorage.getItem('todayExtractions')) || 0;
+        let successCount = parseInt(localStorage.getItem('successCount')) || 0;
+        
+        // Update stats display
+        function updateStats() {
+            document.getElementById('total-extractions').textContent = totalExtractions;
+            document.getElementById('today-extractions').textContent = todayExtractions;
+            
+            const successRate = totalExtractions > 0 ? Math.round((successCount / totalExtractions) * 100) : 100;
+            document.getElementById('success-rate').textContent = `${successRate}%`;
+        }
+        
         // Simple copy function that works without Clipboard API
         function copyElementContent(elementId) {
             const element = document.getElementById(elementId);
@@ -238,7 +473,7 @@
             try {
                 const successful = document.execCommand('copy');
                 if (successful) {
-                    showStatus('Content copied to clipboard!');
+                    showStatus('Content copied to clipboard!', false);
                 } else {
                     showStatus('Failed to copy content', true);
                 }
@@ -249,11 +484,26 @@
             window.getSelection().removeAllRanges();
         }
 
-        function showStatus(message, isError = false) {
+        function showStatus(message, isError = false, isWarning = false) {
             const status = document.getElementById('status');
             status.textContent = message;
-            status.className = isError ? 'status error' : 'status success';
+            
+            if (isError) {
+                status.className = 'status error';
+            } else if (isWarning) {
+                status.className = 'status warning';
+            } else {
+                status.className = 'status success';
+            }
+            
             status.style.display = 'block';
+            
+            // Auto-hide success messages after 5 seconds
+            if (!isError && !isWarning) {
+                setTimeout(() => {
+                    status.style.display = 'none';
+                }, 5000);
+            }
         }
         
         function isValidUrl(url) {
@@ -291,14 +541,26 @@
             try {
                 extractBtn.disabled = true;
                 extractBtn.innerHTML = '<span class="loading"></span> Extracting...';
-                showStatus('Fetching website content...');
+                showStatus('Fetching website content...', false, true);
                 
                 document.getElementById('results').style.display = 'none';
                 
-                const response = await axios.get(`https://api.allorigins.win/get?url=${encodeURIComponent(urlInput)}`);
-                const html = response.data.contents;
+                // Update extraction stats
+                totalExtractions++;
+                todayExtractions++;
+                localStorage.setItem('totalExtractions', totalExtractions);
+                localStorage.setItem('todayExtractions', todayExtractions);
+                updateStats();
                 
-                if (!html) throw new Error('No content received from the website');
+                // Use CORS proxy to bypass restrictions
+                const proxyUrl = 'https://api.allorigins.win/get?url=';
+                const response = await axios.get(`${proxyUrl}${encodeURIComponent(urlInput)}`);
+                
+                if (!response.data || !response.data.contents) {
+                    throw new Error('No content received from the website. The site might be blocking our requests.');
+                }
+                
+                const html = response.data.contents;
                 
                 document.getElementById('html-content').textContent = html;
                 
@@ -326,24 +588,52 @@
                     return src ? makeAbsoluteUrl(src, urlInput) : null;
                 }).filter(Boolean);
                 
+                // Update file counts
+                document.getElementById('html-count').textContent = '1';
+                document.getElementById('css-count').textContent = cssFiles.length;
+                document.getElementById('js-count').textContent = jsFiles.length;
+                document.getElementById('media-count').textContent = mediaFiles.length;
+                
                 // Process CSS files
                 const cssContentDiv = document.getElementById('css-content');
-                cssContentDiv.innerHTML = cssFiles.length > 0 ? '' : '<p>No external CSS files found.</p>';
+                cssContentDiv.innerHTML = '';
                 
-                for (const cssFile of cssFiles) {
-                    const cssFileDiv = document.createElement('div');
-                    cssFileDiv.innerHTML = `<h3>${cssFile}</h3><pre>${cssFile}</pre>`;
-                    cssContentDiv.appendChild(cssFileDiv);
+                if (cssFiles.length > 0) {
+                    cssFiles.forEach(cssFile => {
+                        const cssFileDiv = document.createElement('div');
+                        cssFileDiv.className = 'media-item';
+                        cssFileDiv.innerHTML = `
+                            <strong>CSS File:</strong><br>
+                            ${cssFile}
+                            <button class="media-copy" onclick="copyText('${cssFile.replace(/'/g, "\\'")}')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        `;
+                        cssContentDiv.appendChild(cssFileDiv);
+                    });
+                } else {
+                    cssContentDiv.innerHTML = '<div class="empty-state"><i class="fas fa-file-code"></i><p>No external CSS files found.</p></div>';
                 }
                 
                 // Process JS files
                 const jsContentDiv = document.getElementById('js-content');
-                jsContentDiv.innerHTML = jsFiles.length > 0 ? '' : '<p>No external JavaScript files found.</p>';
+                jsContentDiv.innerHTML = '';
                 
-                for (const jsFile of jsFiles) {
-                    const jsFileDiv = document.createElement('div');
-                    jsFileDiv.innerHTML = `<h3>${jsFile}</h3><pre>${jsFile}</pre>`;
-                    jsContentDiv.appendChild(jsFileDiv);
+                if (jsFiles.length > 0) {
+                    jsFiles.forEach(jsFile => {
+                        const jsFileDiv = document.createElement('div');
+                        jsFileDiv.className = 'media-item';
+                        jsFileDiv.innerHTML = `
+                            <strong>JavaScript File:</strong><br>
+                            ${jsFile}
+                            <button class="media-copy" onclick="copyText('${jsFile.replace(/'/g, "\\'")}')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        `;
+                        jsContentDiv.appendChild(jsFileDiv);
+                    });
+                } else {
+                    jsContentDiv.innerHTML = '<div class="empty-state"><i class="fas fa-file-code"></i><p>No external JavaScript files found.</p></div>';
                 }
                 
                 // Process media files
@@ -355,24 +645,42 @@
                         const mediaItem = document.createElement('div');
                         mediaItem.className = 'media-item';
                         mediaItem.innerHTML = `
+                            <strong>Media File:</strong><br>
                             ${mediaUrl}
-                            <button class="media-copy" onclick="copyText('${mediaUrl}')">Copy</button>
+                            <button class="media-copy" onclick="copyText('${mediaUrl.replace(/'/g, "\\'")}')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
                         `;
                         mediaContentDiv.appendChild(mediaItem);
                     });
                 } else {
-                    mediaContentDiv.innerHTML = '<p>No media files found.</p>';
+                    mediaContentDiv.innerHTML = '<div class="empty-state"><i class="fas fa-images"></i><p>No media files found.</p></div>';
                 }
                 
                 document.getElementById('results').style.display = 'grid';
-                showStatus('Website content extracted successfully!');
+                showStatus(`Successfully extracted content from ${urlInput}! Found ${cssFiles.length} CSS files, ${jsFiles.length} JS files, and ${mediaFiles.length} media files.`);
+                
+                // Update success count
+                successCount++;
+                localStorage.setItem('successCount', successCount);
+                updateStats();
                 
             } catch (error) {
                 console.error('Extraction error:', error);
-                showStatus(`Error: ${error.message}`, true);
+                
+                if (error.response) {
+                    // Server responded with error status
+                    showStatus(`Error: Server responded with status ${error.response.status}`, true);
+                } else if (error.request) {
+                    // Request was made but no response received
+                    showStatus('Error: No response received from server. Check your internet connection.', true);
+                } else {
+                    // Something else happened
+                    showStatus(`Error: ${error.message}`, true);
+                }
             } finally {
                 extractBtn.disabled = false;
-                extractBtn.textContent = 'Extract Content';
+                extractBtn.innerHTML = '<i class="fas fa-download"></i> Extract Content';
             }
         }
         
@@ -391,6 +699,11 @@
         document.getElementById('extract-btn').addEventListener('click', extractWebsiteContent);
         document.getElementById('url-input').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') extractWebsiteContent();
+        });
+        
+        // Initialize the dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStats();
         });
     </script>
 </body>
