@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fredi Lyrics AI - Modern Lyrics Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root {
             --primary: #6c63ff;
@@ -233,6 +234,7 @@
             border-radius: 8px;
             line-height: 1.6;
             white-space: pre-line;
+            margin-bottom: 15px;
         }
 
         .lyrics-container::-webkit-scrollbar {
@@ -275,6 +277,41 @@
 
         .song-details p {
             color: rgba(255, 255, 255, 0.7);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .action-btn.copy {
+            background: var(--success);
+        }
+
+        .action-btn.download {
+            background: var(--secondary);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         .contact-info {
@@ -356,9 +393,29 @@
             border-radius: 0 8px 8px 0;
             margin-bottom: 20px;
         }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: var(--success);
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
     </style>
 </head>
 <body>
+    <div class="notification" id="notification"></div>
+    
     <div class="container">
         <header>
             <div class="logo">
@@ -367,9 +424,9 @@
             </div>
             <div class="social-links">
                 <a href="https://wa.me/255752593977" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                <a href="www.instagram.com/@frediezra" title="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="www.facebook.com/@FrediEzra" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                <a href="www.tiktok.com/@frederico1" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                <a href="https://www.instagram.com/frediezra" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.facebook.com/FrediEzra" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.tiktok.com/@frederico1" title="TikTok"><i class="fab fa-tiktok"></i></a>
                 <a href="mailto:frediezra360@gmail.com" title="Email"><i class="fas fa-envelope"></i></a>
             </div>
         </header>
@@ -394,7 +451,7 @@
                 
                 <div class="api-status">
                     <div class="status-indicator"></div>
-                    <span>Genius API is connected and ready</span>
+                    <span>Fredi is connected and ready</span>
                 </div>
                 
                 <div id="results">
@@ -453,7 +510,7 @@
                         </div>
                         <div class="contact-details">
                             <h3>APIs Supported</h3>
-                            <p>Genius & Audius</p>
+                            <p>Fredi & Audius</p>
                         </div>
                     </div>
                 </div>
@@ -468,7 +525,7 @@
         </div>
         
         <footer>
-            <p>&copy; 2023 Fredi Lyrics AI. All rights reserved. | Designed with <i class="fas fa-heart" style="color: var(--secondary);"></i> by Fredi Ezra</p>
+            <p>&copy; 2025 Fredi Lyrics AI. All rights reserved. | Designed with <i class="fas fa-heart" style="color: var(--secondary);"></i> by Fredi Ezra</p>
         </footer>
     </div>
 
@@ -479,11 +536,12 @@
             const toggleBtns = document.querySelectorAll('.toggle-btn');
             const apiStatus = document.querySelector('.api-status span');
             const resultsDiv = document.getElementById('results');
-            const lyricsContainer = document.querySelector('.lyrics-container');
-            const songDetails = document.querySelector('.song-details');
-            const albumArt = document.querySelector('.album-art');
+            const notification = document.getElementById('notification');
             
             let currentApi = 'genius';
+            let currentSongTitle = '';
+            let currentArtist = '';
+            let currentLyrics = '';
             
             // Toggle between APIs
             toggleBtns.forEach(btn => {
@@ -493,9 +551,9 @@
                     currentApi = this.getAttribute('data-api');
                     
                     if (currentApi === 'genius') {
-                        apiStatus.textContent = 'Genius API is connected and ready';
+                        apiStatus.textContent = 'Fredi is connected and ready';
                     } else {
-                        apiStatus.textContent = 'Audius API is connected and ready';
+                        apiStatus.textContent = 'Fredi Audius is connected and ready';
                     }
                 });
             });
@@ -510,7 +568,10 @@
             
             function performSearch() {
                 const query = searchInput.value.trim();
-                if (!query) return;
+                if (!query) {
+                    showNotification('Please enter a song or artist name', 'error');
+                    return;
+                }
                 
                 // Show loading state
                 resultsDiv.innerHTML = `
@@ -519,72 +580,188 @@
                     </div>
                 `;
                 
-                // Simulate API call (in a real app, you would make actual API requests)
-                setTimeout(() => {
-                    if (currentApi === 'genius') {
-                        // Mock Genius API response
-                        displayResults(
-                            'Blinding Lights', 
-                            'The Weeknd', 
-                            `[Intro]
-                            (Yeah)
-                            
-                            [Verse 1]
-                            I been tryna call
-                            I been on my own for long enough
-                            Maybe you can show me how to love, maybe
-                            I'm going through withdrawals
-                            You don't have to make it right, but you could try
-                            If I'm unbelievable, tell me, do I look in control?
-                            
-                            [Chorus]
-                            I'm blinded by the lights
-                            No, I can't sleep until I feel your touch
-                            I said, "Oh, I'm drowning in the night"
-                            Oh, when I'm like this, you're the one I trust
-                            (Hey, hey, hey)
-                            
-                            [Verse 2]
-                            I'm running out of time
-                            'Cause I can see the sun light up the sky
-                            So I hit the road in overdrive, baby
-                            
-                            [Chorus]
-                            Oh, I'm blinded by the lights
-                            No, I can't sleep until I feel your touch
-                            I said, "Oh, I'm drowning in the night"
-                            Oh, when I'm like this, you're the one I trust`
-                        );
-                    } else {
-                        // Mock Audius API response
-                        displayResults(
-                            'Save Your Tears', 
-                            'The Weeknd', 
-                            `[Intro]
-                            Ooh
-                            Na-na, yeah
-                            
-                            [Verse 1]
-                            I saw you dancing in a crowded room (In a crowded room)
-                            You look so happy when I'm not with you
-                            But then you saw me, caught you by surprise
-                            A single teardrop falling from your eye
-                            
-                            [Chorus]
-                            I don't know why I run away
-                            I'll make you cry when I run away
-                            You could've asked me why I broke your heart
-                            You could've told me that you fell apart
-                            But you walked past me like I wasn't there
-                            And just pretended like you didn't care
-                            I saw you dancing in a crowded room (In a crowded room)
-                            
-                            [Verse 2]
-                            Take me back 'cause I wanna stay
-                            Save your tears for another`
-                        );
+                // Use Genius API for real lyrics
+                fetchGeniusLyrics(query);
+            }
+            
+            function fetchGeniusLyrics(query) {
+                // Using a CORS proxy to avoid CORS issues
+                const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+                const apiUrl = `https://api.genius.com/search?q=${encodeURIComponent(query)}`;
+                const accessToken = 'YOUR_GENIUS_ACCESS_TOKEN'; // You need to get this from Genius
+                
+                fetch(proxyUrl + apiUrl, {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
                     }
-                }, 1500);
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.response.hits.length === 0) {
+                        displayError('No songs found. Please try a different search.');
+                        return;
+                    }
+                    
+                    const song = data.response.hits[0].result;
+                    currentSongTitle = song.title;
+                    currentArtist = song.primary_artist.name;
+                    
+                    // Fetch the lyrics from the song URL
+                    return fetch(proxyUrl + song.url);
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Could not fetch lyrics page');
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    // Parse the HTML to extract lyrics
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    
+                    // Try to find lyrics in the page (this is a simplified approach)
+                    let lyrics = '';
+                    const lyricsDiv = doc.querySelector('[data-lyrics-container="true"]');
+                    
+                    if (lyricsDiv) {
+                        lyrics = lyricsDiv.innerText;
+                    } else {
+                        // Fallback: try other common selectors
+                        const fallbackSelectors = [
+                            '.lyrics',
+                            '[class*="lyrics"]',
+                            '.song_body-lyrics'
+                        ];
+                        
+                        for (const selector of fallbackSelectors) {
+                            const element = doc.querySelector(selector);
+                            if (element) {
+                                lyrics = element.innerText;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if (!lyrics) {
+                        lyrics = "Lyrics not available for this song. Please try another song.";
+                    }
+                    
+                    currentLyrics = lyrics;
+                    displayResults(currentSongTitle, currentArtist, lyrics);
+                    showNotification('Lyrics loaded successfully!', 'success');
+                })
+                .catch(error => {
+                    console.error('Error fetching lyrics:', error);
+                    // Fallback to mock data if API fails
+                    useMockData(query);
+                });
+            }
+            
+            function useMockData(query) {
+                // Mock data for demonstration
+                const mockSongs = {
+                    'blinding lights': {
+                        title: 'Blinding Lights',
+                        artist: 'The Weeknd',
+                        lyrics: `[Intro]
+(Yeah)
+
+[Verse 1]
+I been tryna call
+I been on my own for long enough
+Maybe you can show me how to love, maybe
+I'm going through withdrawals
+You don't have to make it right, but you could try
+If I'm unbelievable, tell me, do I look in control?
+
+[Chorus]
+I'm blinded by the lights
+No, I can't sleep until I feel your touch
+I said, "Oh, I'm drowning in the night"
+Oh, when I'm like this, you're the one I trust
+(Hey, hey, hey)
+
+[Verse 2]
+I'm running out of time
+'Cause I can see the sun light up the sky
+So I hit the road in overdrive, baby
+
+[Chorus]
+Oh, I'm blinded by the lights
+No, I can't sleep until I feel your touch
+I said, "Oh, I'm drowning in the night"
+Oh, when I'm like this, you're the one I trust`
+                    },
+                    'save your tears': {
+                        title: 'Save Your Tears',
+                        artist: 'The Weeknd',
+                        lyrics: `[Intro]
+Ooh
+Na-na, yeah
+
+[Verse 1]
+I saw you dancing in a crowded room (In a crowded room)
+You look so happy when I'm not with you
+But then you saw me, caught you by surprise
+A single teardrop falling from your eye
+
+[Chorus]
+I don't know why I run away
+I'll make you cry when I run away
+You could've asked me why I broke your heart
+You could've told me that you fell apart
+But you walked past me like I wasn't there
+And just pretended like you didn't care
+I saw you dancing in a crowded room (In a crowded room)
+
+[Verse 2]
+Take me back 'cause I wanna stay
+Save your tears for another`
+                    },
+                    'shape of you': {
+                        title: 'Shape of You',
+                        artist: 'Ed Sheeran',
+                        lyrics: `[Intro]
+The club isn't the best place to find a lover
+So the bar is where I go
+Me and my friends at the table doing shots
+Drinking fast and then we talk slow
+
+[Chorus]
+Come over and start up a conversation with just me
+And trust me I'll give it a chance now
+Take my hand, stop, put Van the Man on the jukebox
+And then we start to dance, and now I'm singing like`
+                    }
+                };
+                
+                const queryLower = query.toLowerCase();
+                let foundSong = null;
+                
+                for (const key in mockSongs) {
+                    if (queryLower.includes(key)) {
+                        foundSong = mockSongs[key];
+                        break;
+                    }
+                }
+                
+                if (!foundSong) {
+                    // Default to first song if no match
+                    foundSong = mockSongs['blinding lights'];
+                }
+                
+                currentSongTitle = foundSong.title;
+                currentArtist = foundSong.artist;
+                currentLyrics = foundSong.lyrics;
+                
+                displayResults(currentSongTitle, currentArtist, currentLyrics);
+                showNotification('Using demo data. For real lyrics, add a Genius API token.', 'warning');
             }
             
             function displayResults(title, artist, lyrics) {
@@ -599,32 +776,92 @@
                         </div>
                     </div>
                     <div class="lyrics-container">${lyrics}</div>
+                    <div class="action-buttons">
+                        <button class="action-btn copy" id="copyBtn">
+                            <i class="fas fa-copy"></i> Copy Lyrics
+                        </button>
+                        <button class="action-btn download" id="downloadBtn">
+                            <i class="fas fa-download"></i> Download PDF
+                        </button>
+                    </div>
                 `;
+                
+                // Add event listeners to the new buttons
+                document.getElementById('copyBtn').addEventListener('click', copyLyrics);
+                document.getElementById('downloadBtn').addEventListener('click', downloadPDF);
+            }
+            
+            function displayError(message) {
+                resultsDiv.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle"></i> ${message}
+                    </div>
+                `;
+            }
+            
+            function copyLyrics() {
+                navigator.clipboard.writeText(currentLyrics)
+                    .then(() => {
+                        showNotification('Lyrics copied to clipboard!', 'success');
+                    })
+                    .catch(err => {
+                        showNotification('Failed to copy lyrics', 'error');
+                        console.error('Could not copy text: ', err);
+                    });
+            }
+            
+            function downloadPDF() {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Add title
+                doc.setFontSize(20);
+                doc.setTextColor(108, 99, 255);
+                doc.text(`Fredi Lyrics AI - ${currentSongTitle}`, 105, 20, { align: 'center' });
+                
+                // Add artist
+                doc.setFontSize(16);
+                doc.setTextColor(0, 0, 0);
+                doc.text(`By: ${currentArtist}`, 105, 30, { align: 'center' });
+                
+                // Add lyrics
+                doc.setFontSize(12);
+                const lines = doc.splitTextToSize(currentLyrics, 180);
+                doc.text(lines, 20, 50);
+                
+                // Add footer
+                doc.setFontSize(10);
+                doc.setTextColor(150, 150, 150);
+                doc.text('Downloaded from Fredi Lyrics AI - https://fredilyrics.com', 105, 280, { align: 'center' });
+                
+                // Save the PDF
+                doc.save(`Fredi Lyrics AI - ${currentSongTitle}.pdf`);
+                showNotification('PDF downloaded successfully!', 'success');
+            }
+            
+            function showNotification(message, type) {
+                notification.textContent = message;
+                notification.className = 'notification';
+                
+                if (type === 'success') {
+                    notification.style.background = 'var(--success)';
+                } else if (type === 'error') {
+                    notification.style.background = 'var(--secondary)';
+                } else if (type === 'warning') {
+                    notification.style.background = 'var(--warning)';
+                    notification.style.color = 'var(--dark)';
+                }
+                
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
             }
             
             // Add some sample data on load to make the dashboard look active
             setTimeout(() => {
-                displayResults(
-                    'Blinding Lights', 
-                    'The Weeknd', 
-                    `[Intro]
-                    (Yeah)
-                    
-                    [Verse 1]
-                    I been tryna call
-                    I been on my own for long enough
-                    Maybe you can show me how to love, maybe
-                    I'm going through withdrawals
-                    You don't have to make it right, but you could try
-                    If I'm unbelievable, tell me, do I look in control?
-                    
-                    [Chorus]
-                    I'm blinded by the lights
-                    No, I can't sleep until I feel your touch
-                    I said, "Oh, I'm drowning in the night"
-                    Oh, when I'm like this, you're the one I trust
-                    (Hey, hey, hey)`
-                );
+                useMockData('blinding lights');
             }, 1000);
         });
     </script>
