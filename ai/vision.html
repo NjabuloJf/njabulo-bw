@@ -733,7 +733,7 @@
                 const question = document.getElementById('question').value.trim() || "What's in this image?";
                 
                 // Call the API
-                const apiUrl = `https://apis-keith.vercel.app/ai/gemini-vision?image=${encodeURIComponent(imageUrl)}&q=${encodeURIComponent(question)}`;
+                const apiUrl = `https://apiskeith.vercel.app/ai/gemini-vision?image=${encodeURIComponent(imageUrl)}&q=${encodeURIComponent(question)}`;
                 
                 const response = await fetch(apiUrl);
                 
