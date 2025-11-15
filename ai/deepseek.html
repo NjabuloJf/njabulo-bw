@@ -738,7 +738,7 @@
                 try {
                     // Call the DeepSeek API
                     const model = modelSelect.value;
-                    const apiUrl = `https://apiskeith.vercel.app/ai/deepseek?q=${encodeURIComponent(message)}&model=${model}`;
+                    const apiUrl = `https://apiskeith.vercel.app/ai/deepseekV3?q=${encodeURIComponent(message)}&model=${model}`;
                     const response = await fetch(apiUrl);
                     
                     if (!response.ok) {
