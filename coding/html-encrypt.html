@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureCode - HTML Encryption Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --dark: #1a1a2e;
+            --darker: #0f0f1a;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --card-bg: #252540;
+            --border: #37375a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--primary);
+        }
+
+        .editor-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        textarea {
+            width: 100%;
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            color: var(--light);
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: none;
+            margin-bottom: 15px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            gap: 15px;
+            border: 1px solid var(--border);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            background: rgba(67, 97, 238, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .feature-icon i {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .feature-content h3 {
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .feature-content p {
+            color: var(--gray);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(76, 201, 240, 0.1);
+            color: var(--success);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 10px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--success);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.error {
+            border-left-color: var(--warning);
+        }
+
+        .encryption-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .option {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option:hover {
+            background: rgba(67, 97, 238, 0.1);
+            border-color: var(--primary);
+        }
+
+        .option.active {
+            background: rgba(67, 97, 238, 0.2);
+            border-color: var(--primary);
+        }
+
+        .option i {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .option p {
+            font-size: 0.9rem;
+            margin-top: 5px;
+            color: var(--gray);
+        }
+
+        .view-switcher {
+            display: flex;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 5px;
+            margin-bottom: 15px;
+        }
+
+        .view-option {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .view-option.active {
+            background: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-lock"></i>
+                <h1>SecureCode</h1>
+            </div>
+            <div class="controls">
+                <button class="btn btn-secondary">
+                    <i class="fas fa-history"></i> History
+                </button>
+                <button class="btn btn-primary">
+                    <i class="fas fa-download"></i> Export
+                </button>
+            </div>
+        </header>
+
+        <div class="dashboard">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-code"></i> HTML Code</h2>
+                    <div class="view-switcher">
+                        <div class="view-option active">Code</div>
+                        <div class="view-option">Preview</div>
+                    </div>
+                </div>
+                <div class="editor-container">
+                    <textarea id="html-input" placeholder="Paste your HTML code here...">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;My Secure Page&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #4a6baf;
+            border-bottom: 2px solid #4a6baf;
+            padding-bottom: 10px;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="container"&gt;
+        &lt;h1&gt;Welcome to My Secure Page&lt;/h1&gt;
+        &lt;p&gt;This HTML code is protected with encryption.&lt;/p&gt;
+        &lt;button id="demo-btn"&gt;Click Me&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;script&gt;
+        document.getElementById('demo-btn').addEventListener('click', function() {
+            alert('Button clicked! This code is encrypted.');
+        });
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+                    <div class="stats">
+                        <span id="char-count">0 characters</span>
+                        <span id="line-count">0 lines</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-shield-alt"></i> Encrypted Output</h2>
+                    <div class="security-badge">
+                        <i class="fas fa-lock"></i> SECURED
+                    </div>
+                </div>
+                <div class="editor-container">
+                    <textarea id="encrypted-output" placeholder="Encrypted code will appear here..." readonly></textarea>
+                    <div class="encryption-options">
+                        <div class="option active">
+                            <i class="fas fa-user-secret"></i>
+                            <h4>Basic Obfuscation</h4>
+                            <p>Light protection</p>
+                        </div>
+                        <div class="option">
+                            <i class="fas fa-user-shield"></i>
+                            <h4>Advanced Encryption</h4>
+                            <p>Medium protection</p>
+                        </div>
+                        <div class="option">
+                            <i class="fas fa-user-lock"></i>
+                            <h4>Military Grade</h4>
+                            <p>Maximum protection</p>
+                        </div>
+                    </div>
+                    <div class="controls" style="margin-top: 20px;">
+                        <button class="btn btn-secondary" id="decrypt-btn">
+                            <i class="fas fa-unlock"></i> Decrypt
+                        </button>
+                        <button class="btn btn-primary" id="encrypt-btn">
+                            <i class="fas fa-lock"></i> Encrypt Code
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 style="margin: 30px 0 20px; font-size: 1.5rem;">Security Features</h2>
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <div class="feature-content">
+                    <h3>Code Obfuscation</h3>
+                    <p>Transform your code into a difficult-to-understand format while maintaining functionality.</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-key"></i>
+                </div>
+                <div class="feature-content">
+                    <h3>Encryption</h3>
+                    <p>Protect your source code with advanced encryption algorithms.</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-eye-slash"></i>
+                </div>
+                <div class="feature-content">
+                    <h3>Anti-Reverse Engineering</h3>
+                    <p>Prevent others from easily understanding or modifying your code.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-message">Code encrypted successfully!</span>
+    </div>
+
+    <script>
+        // DOM elements
+        const htmlInput = document.getElementById('html-input');
+        const encryptedOutput = document.getElementById('encrypted-output');
+        const encryptBtn = document.getElementById('encrypt-btn');
+        const decryptBtn = document.getElementById('decrypt-btn');
+        const charCount = document.getElementById('char-count');
+        const lineCount = document.getElementById('line-count');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
+        const options = document.querySelectorAll('.option');
+        const viewOptions = document.querySelectorAll('.view-option');
+
+        // Update character and line count
+        function updateStats() {
+            const text = htmlInput.value;
+            charCount.textContent = `${text.length} characters`;
+            lineCount.textContent = `${text.split('\n').length} lines`;
+        }
+
+        // Show toast notification
+        function showToast(message, isError = false) {
+            toastMessage.textContent = message;
+            toast.className = 'toast';
+            if (isError) {
+                toast.classList.add('error');
+            }
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Simple encryption function (for demonstration)
+        function encryptHTML(html) {
+            // This is a simple obfuscation for demonstration
+            // In a real application, you would use a more secure method
+            let encrypted = btoa(html); // Base64 encoding
+            encrypted = encrypted.split('').reverse().join(''); // Reverse string
+            
+            // Add some random characters to make it harder to decode
+            const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < encrypted.length; i++) {
+                result += encrypted[i];
+                if (i % 5 === 0 && i > 0) {
+                    result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+                }
+            }
+            
+            return result;
+        }
+
+        // Simple decryption function
+        function decryptHTML(encrypted) {
+            try {
+                // Remove random characters
+                let cleaned = '';
+                for (let i = 0; i < encrypted.length; i++) {
+                    if (i % 6 !== 0 || i === 0) {
+                        cleaned += encrypted[i];
+                    }
+                }
+                
+                // Reverse and decode
+                let decoded = cleaned.split('').reverse().join('');
+                return atob(decoded);
+            } catch (e) {
+                throw new Error('Invalid encrypted code');
+            }
+        }
+
+        // Set up option selection
+        options.forEach(option => {
+            option.addEventListener('click', () => {
+                options.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+            });
+        });
+
+        // Set up view option selection
+        viewOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                viewOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+            });
+        });
+
+        // Encrypt button event
+        encryptBtn.addEventListener('click', () => {
+            if (!htmlInput.value.trim()) {
+                showToast('Please enter some HTML code to encrypt', true);
+                return;
+            }
+            
+            try {
+                const encrypted = encryptHTML(htmlInput.value);
+                encryptedOutput.value = encrypted;
+                showToast('Code encrypted successfully!');
+            } catch (error) {
+                showToast('Error encrypting code: ' + error.message, true);
+            }
+        });
+
+        // Decrypt button event
+        decryptBtn.addEventListener('click', () => {
+            if (!encryptedOutput.value.trim()) {
+                showToast('No encrypted code to decrypt', true);
+                return;
+            }
+            
+            try {
+                const decrypted = decryptHTML(encryptedOutput.value);
+                htmlInput.value = decrypted;
+                updateStats();
+                showToast('Code decrypted successfully!');
+            } catch (error) {
+                showToast('Error decrypting code: ' + error.message, true);
+            }
+        });
+
+        // Update stats when input changes
+        htmlInput.addEventListener('input', updateStats);
+
+        // Initialize stats
+        updateStats();
+    </script>
+</body>
+</html>
