@@ -9,31 +9,36 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
-            --primary-color: #4a6baf;
-            --primary-dark: #3a5a9f;
-            --dark-bg: #1a1a2e;
-            --darker-bg: #12121e;
-            --light-text: #f0f0f0;
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #8b5cf6;
+            --dark-bg: #0f172a;
+            --darker-bg: #0a0f1c;
+            --card-bg: #1e293b;
+            --light-text: #f8fafc;
             --lighter-text: #ffffff;
-            --editor-bg: #282c34;
+            --editor-bg: #1e1e2e;
             --editor-line-bg: #2d313a;
             --preview-bg: #ffffff;
-            --border-color: #444;
-            --success-color: #2ecc71;
-            --error-color: #e74c3c;
-            --header-height: 60px;
-            --toolbar-height: 40px;
+            --border-color: #334155;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --warning-color: #f59e0b;
+            --header-height: 70px;
+            --toolbar-height: 50px;
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Fira Code', 'Consolas', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', 'Fira Code', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            background-color: var(--dark-bg);
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
             color: var(--light-text);
             min-height: 100vh;
             overflow: hidden;
@@ -43,34 +48,50 @@
             display: grid;
             grid-template-rows: auto 1fr;
             height: 100vh;
+            gap: 16px;
+            padding: 16px;
         }
         
         .header {
-            background-color: var(--darker-bg);
-            padding: 0 20px;
+            background-color: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 0 24px;
             height: var(--header-height);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
             z-index: 10;
+            border: 1px solid var(--border-color);
         }
         
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+        }
+        
+        .logo-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
         }
         
         .logo i {
-            color: var(--primary-color);
-            font-size: 1.5rem;
+            color: white;
+            font-size: 1.2rem;
         }
         
         .logo h1 {
-            font-size: 1.3rem;
-            font-weight: 600;
-            background: linear-gradient(90deg, var(--primary-color), #6a8bcf);
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -78,26 +99,32 @@
         
         .controls {
             display: flex;
-            gap: 10px;
+            gap: 12px;
         }
         
         .control-btn {
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
             color: white;
             border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
+            padding: 10px 18px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 0.9rem;
+            font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 5px;
-            transition: all 0.2s;
+            gap: 8px;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
         .control-btn:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .control-btn:active {
+            transform: translateY(0);
         }
         
         .control-btn i {
@@ -107,9 +134,8 @@
         .editor-preview-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            padding: 10px;
-            height: calc(100vh - var(--header-height));
+            gap: 16px;
+            height: calc(100vh - var(--header-height) - 32px);
         }
         
         @media (max-width: 768px) {
@@ -122,14 +148,15 @@
         .editor-wrapper {
             display: grid;
             grid-template-rows: auto 1fr;
-            background-color: var(--editor-bg);
-            border-radius: 8px;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
         }
         
         .editor-header {
-            padding: 10px 15px;
+            padding: 14px 20px;
             background-color: rgba(0, 0, 0, 0.2);
             font-weight: 600;
             display: flex;
@@ -141,7 +168,7 @@
         .editor-header .file-info {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
         
         .editor-header .file-info i {
@@ -150,45 +177,61 @@
         
         .editor-tools {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             align-items: center;
         }
         
         .editor-status {
-            font-size: 0.8rem;
-            padding: 3px 8px;
-            border-radius: 10px;
-            background-color: rgba(46, 204, 113, 0.2);
+            font-size: 0.75rem;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background-color: rgba(16, 185, 129, 0.15);
             color: var(--success-color);
+            font-weight: 600;
+            border: 1px solid rgba(16, 185, 129, 0.3);
         }
         
         .editor-status.error {
-            background-color: rgba(231, 76, 60, 0.2);
+            background-color: rgba(239, 68, 68, 0.15);
             color: var(--error-color);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .editor-status.warning {
+            background-color: rgba(245, 158, 11, 0.15);
+            color: var(--warning-color);
+            border: 1px solid rgba(245, 158, 11, 0.3);
         }
         
         .editor-action {
-            background: none;
-            border: none;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
             color: var(--light-text);
             cursor: pointer;
             font-size: 0.8rem;
-            padding: 3px 6px;
-            border-radius: 4px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            transition: var(--transition);
         }
         
         .editor-action:hover {
             background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
         }
         
         .theme-selector {
             background-color: rgba(0, 0, 0, 0.3);
             color: var(--light-text);
             border: 1px solid var(--border-color);
-            border-radius: 4px;
-            padding: 3px 6px;
+            border-radius: 6px;
+            padding: 6px 10px;
             font-size: 0.8rem;
             cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .theme-selector:hover {
+            background-color: rgba(0, 0, 0, 0.4);
         }
         
         .CodeMirror {
@@ -216,43 +259,46 @@
             display: grid;
             grid-template-rows: auto 1fr;
             background-color: var(--preview-bg);
-            border-radius: 8px;
+            border-radius: var(--border-radius);
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
         }
         
         .preview-header {
-            padding: 10px 15px;
+            padding: 14px 20px;
             background-color: #f8f9fa;
             color: #333;
             font-weight: 600;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #e2e8f0;
         }
         
         .preview-actions {
             display: flex;
-            gap: 8px;
+            gap: 10px;
         }
         
         .preview-btn {
-            background-color: #e9ecef;
-            color: #495057;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
+            background-color: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            padding: 6px 12px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 0.8rem;
+            font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 5px;
-            transition: all 0.2s;
+            gap: 6px;
+            transition: var(--transition);
         }
         
         .preview-btn:hover {
-            background-color: #dee2e6;
+            background-color: #e2e8f0;
+            transform: translateY(-1px);
         }
         
         .preview-btn i {
@@ -260,12 +306,14 @@
         }
         
         .preview-btn.primary {
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
             color: white;
+            border: none;
         }
         
         .preview-btn.primary:hover {
-            background-color: var(--primary-dark);
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+            box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
         }
         
         .preview-frame {
@@ -275,15 +323,17 @@
             background-color: white;
         }
         
-        .resize-handle {
-            width: 10px;
-            background-color: rgba(0, 0, 0, 0.1);
-            cursor: col-resize;
-            transition: background-color 0.2s;
+        .device-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: #64748b;
+            font-weight: 500;
         }
         
-        .resize-handle:hover {
-            background-color: rgba(74, 107, 175, 0.5);
+        .device-indicator i {
+            color: var(--primary-color);
         }
         
         /* Loading animation */
@@ -311,18 +361,88 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        /* Stats bar */
+        .stats-bar {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+            font-size: 0.8rem;
+        }
+        
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #94a3b8;
+        }
+        
+        .stat-value {
+            color: var(--light-text);
+            font-weight: 600;
+        }
+        
+        /* Resize handle */
+        .resize-handle {
+            width: 10px;
+            background-color: rgba(0, 0, 0, 0.1);
+            cursor: col-resize;
+            transition: background-color 0.2s;
+            border-radius: 4px;
+        }
+        
+        .resize-handle:hover {
+            background-color: rgba(99, 102, 241, 0.5);
+        }
+        
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            background-color: var(--card-bg);
+            color: var(--light-text);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border-left: 4px solid var(--success-color);
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .toast.error {
+            border-left-color: var(--error-color);
+        }
+        
+        .toast.warning {
+            border-left-color: var(--warning-color);
+        }
+        
+        .toast i {
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <div class="logo">
-                <i class="fas fa-code"></i>
-                <h1>Fredi HTML Runner Pro</h1>
+                <div class="logo-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h1>HTML Runner Pro</h1>
             </div>
             <div class="controls">
                 <button class="control-btn" id="run-btn">
-                    <i class="fas fa-play"></i> Run
+                    <i class="fas fa-play"></i> Run Code
                 </button>
                 <button class="control-btn" id="save-btn">
                     <i class="fas fa-save"></i> Save
@@ -363,10 +483,11 @@
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background-color: #f5f5f5;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             margin: 0;
             padding: 20px;
             color: #333;
+            min-height: 100vh;
         }
         
         .container {
@@ -374,54 +495,111 @@
             margin: 0 auto;
             background: white;
             padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
         
         h1 {
             color: #4a6baf;
             border-bottom: 2px solid #4a6baf;
             padding-bottom: 10px;
+            margin-bottom: 20px;
         }
         
         .features {
             margin: 20px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
         }
         
         .feature {
             background: #f8f9fa;
-            padding: 15px;
-            margin-bottom: 10px;
+            padding: 20px;
+            border-radius: 8px;
             border-left: 4px solid #4a6baf;
+            transition: transform 0.3s ease;
+        }
+        
+        .feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .feature h3 {
+            color: #4a6baf;
+            margin-bottom: 10px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #4a6baf;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #3a5a9f;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Welcome to HTML Runner Pro</h1>
-        <p>Edit this HTML to see live changes in the preview panel.</p>
+        <p>Edit this HTML to see live changes in the preview panel. Try changing colors, content, or layout!</p>
         
         <div class="features">
             <div class="feature">
                 <h3>Real-time Preview</h3>
-                <p>See your changes instantly as you type.</p>
+                <p>See your changes instantly as you type with live preview.</p>
             </div>
             <div class="feature">
                 <h3>Syntax Highlighting</h3>
-                <p>Professional code coloring for better readability.</p>
+                <p>Professional code coloring for better readability and productivity.</p>
             </div>
             <div class="feature">
-                <h3>Line Numbers</h3>
-                <p>Easily navigate your code with visible line numbers.</p>
+                <h3>Multiple Themes</h3>
+                <p>Choose from various editor themes to match your preference.</p>
             </div>
+            <div class="feature">
+                <h3>Responsive Preview</h3>
+                <p>Test your design on different screen sizes with device preview modes.</p>
+            </div>
+        </div>
+        
+        <div style="margin-top: 30px; text-align: center;">
+            <a href="#" class="btn">Get Started</a>
         </div>
     </div>
 </body>
 </html></textarea>
+                <div class="stats-bar">
+                    <div class="stat">
+                        <i class="fas fa-code"></i>
+                        <span>Lines: <span class="stat-value" id="line-count">0</span></span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-font"></i>
+                        <span>Chars: <span class="stat-value" id="char-count">0</span></span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-clock"></i>
+                        <span>Last run: <span class="stat-value" id="last-run">Never</span></span>
+                    </div>
+                </div>
             </div>
             <div class="preview-wrapper">
                 <div class="preview-header">
-                    <span>Live Preview</span>
+                    <div class="device-indicator">
+                        <i class="fas fa-desktop"></i>
+                        <span id="device-indicator-text">Desktop View</span>
+                    </div>
                     <div class="preview-actions">
                         <button class="preview-btn" id="mobile-preview-btn" title="Mobile View">
                             <i class="fas fa-mobile-alt"></i>
@@ -437,6 +615,11 @@
                 <iframe id="preview-frame" class="preview-frame"></iframe>
             </div>
         </div>
+    </div>
+    
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-message">Operation completed successfully</span>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
@@ -487,9 +670,16 @@
         const themeSelector = document.getElementById('theme-selector');
         const selectAllBtn = document.getElementById('select-all-btn');
         const cutBtn = document.getElementById('cut-btn');
+        const deviceIndicatorText = document.getElementById('device-indicator-text');
+        const lineCountElement = document.getElementById('line-count');
+        const charCountElement = document.getElementById('char-count');
+        const lastRunElement = document.getElementById('last-run');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
         
         let updateTimer;
         let isRunning = false;
+        let currentDevice = 'desktop';
         
         // Update preview function
         function updatePreview() {
@@ -500,18 +690,64 @@
             editorStatus.classList.add('loading');
             
             try {
-                previewFrame.srcdoc = editor.getValue();
+                const code = editor.getValue();
+                previewFrame.srcdoc = code;
+                
+                // Update stats
+                updateStats(code);
+                
                 editorStatus.textContent = "Success";
                 editorStatus.classList.remove('error');
                 editorStatus.classList.remove('loading');
+                
+                // Update last run time
+                const now = new Date();
+                lastRunElement.textContent = now.toLocaleTimeString();
+                
+                // Show success toast
+                showToast("Code executed successfully", "success");
             } catch (error) {
                 editorStatus.textContent = "Error";
                 editorStatus.classList.add('error');
                 editorStatus.classList.remove('loading');
                 console.error("Preview error:", error);
+                
+                // Show error toast
+                showToast("Error executing code", "error");
             } finally {
                 isRunning = false;
             }
+        }
+        
+        // Update stats
+        function updateStats(code) {
+            const lines = code.split('\n').length;
+            const chars = code.length;
+            
+            lineCountElement.textContent = lines;
+            charCountElement.textContent = chars;
+        }
+        
+        // Show toast notification
+        function showToast(message, type = "success") {
+            toastMessage.textContent = message;
+            toast.className = "toast";
+            
+            if (type === "error") {
+                toast.classList.add("error");
+                toast.querySelector("i").className = "fas fa-exclamation-circle";
+            } else if (type === "warning") {
+                toast.classList.add("warning");
+                toast.querySelector("i").className = "fas fa-exclamation-triangle";
+            } else {
+                toast.querySelector("i").className = "fas fa-check-circle";
+            }
+            
+            toast.classList.add("show");
+            
+            setTimeout(() => {
+                toast.classList.remove("show");
+            }, 3000);
         }
         
         // Run code function
@@ -534,10 +770,7 @@
             URL.revokeObjectURL(url);
             
             // Show save confirmation
-            editorStatus.textContent = "Saved";
-            setTimeout(() => {
-                editorStatus.textContent = "Ready";
-            }, 2000);
+            showToast("File saved successfully", "success");
         }
         
         // Open docs
@@ -547,32 +780,45 @@
         
         // Set device preview
         function setDevicePreview(device) {
+            currentDevice = device;
+            
             switch(device) {
                 case 'mobile':
                     previewFrame.style.width = '375px';
                     previewFrame.style.margin = '0 auto';
                     previewFrame.style.border = '1px solid #ddd';
+                    deviceIndicatorText.innerHTML = '<i class="fas fa-mobile-alt"></i> Mobile View';
+                    mobilePreviewBtn.classList.add('primary');
+                    tabletPreviewBtn.classList.remove('primary');
                     break;
                 case 'tablet':
                     previewFrame.style.width = '768px';
                     previewFrame.style.margin = '0 auto';
                     previewFrame.style.border = '1px solid #ddd';
+                    deviceIndicatorText.innerHTML = '<i class="fas fa-tablet-alt"></i> Tablet View';
+                    tabletPreviewBtn.classList.add('primary');
+                    mobilePreviewBtn.classList.remove('primary');
                     break;
                 default:
                     previewFrame.style.width = '100%';
                     previewFrame.style.margin = '0';
                     previewFrame.style.border = 'none';
+                    deviceIndicatorText.innerHTML = '<i class="fas fa-desktop"></i> Desktop View';
+                    mobilePreviewBtn.classList.remove('primary');
+                    tabletPreviewBtn.classList.remove('primary');
             }
         }
         
         // Change editor theme
         function changeTheme(theme) {
             editor.setOption('theme', theme);
+            showToast(`Theme changed to ${theme}`, "success");
         }
         
         // Select all code
         function selectAllCode() {
             editor.execCommand('selectAll');
+            showToast("All code selected", "success");
         }
         
         // Cut code
@@ -582,17 +828,11 @@
                 navigator.clipboard.writeText(selection)
                     .then(() => {
                         editor.replaceSelection('');
-                        editorStatus.textContent = "Cut to clipboard";
-                        setTimeout(() => {
-                            editorStatus.textContent = "Ready";
-                        }, 2000);
+                        showToast("Code cut to clipboard", "success");
                     })
                     .catch(err => {
                         console.error('Failed to cut text: ', err);
-                        editorStatus.textContent = "Cut failed";
-                        setTimeout(() => {
-                            editorStatus.textContent = "Ready";
-                        }, 2000);
+                        showToast("Failed to cut code", "error");
                     });
             }
         }
@@ -602,6 +842,9 @@
             clearTimeout(updateTimer);
             updateTimer = setTimeout(updatePreview, 1000);
             editorStatus.textContent = "Editing...";
+            
+            // Update stats on change
+            updateStats(editor.getValue());
         });
         
         refreshBtn.addEventListener('click', runCode);
@@ -611,25 +854,19 @@
         
         mobilePreviewBtn.addEventListener('click', () => {
             setDevicePreview('mobile');
-            mobilePreviewBtn.classList.add('primary');
-            tabletPreviewBtn.classList.remove('primary');
         });
         
         tabletPreviewBtn.addEventListener('click', () => {
             setDevicePreview('tablet');
-            tabletPreviewBtn.classList.add('primary');
-            mobilePreviewBtn.classList.remove('primary');
         });
         
         // Double click device buttons to reset
         mobilePreviewBtn.addEventListener('dblclick', () => {
             setDevicePreview('desktop');
-            mobilePreviewBtn.classList.remove('primary');
         });
         
         tabletPreviewBtn.addEventListener('dblclick', () => {
             setDevicePreview('desktop');
-            tabletPreviewBtn.classList.remove('primary');
         });
         
         // Theme selector change
@@ -641,8 +878,9 @@
         selectAllBtn.addEventListener('click', selectAllCode);
         cutBtn.addEventListener('click', cutCode);
         
-        // Initial preview
+        // Initial preview and stats
         updatePreview();
+        updateStats(editor.getValue());
         
         // Focus the editor on load
         editor.focus();
