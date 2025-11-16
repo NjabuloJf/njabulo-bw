@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fredi AI - Profile</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <div class="logo-icon">F</div>
+                <div class="logo-text">FREDI AI</div>
+            </div>
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item">Dashboard</a>
+                <a href="profile.html" class="nav-item active">Profile</a>
+                <a href="payment.html" class="nav-item">Upgrade</a>
+            </nav>
+        </div>
+        <div class="header-right">
+            <div class="user-menu" id="userMenu">
+                <div class="user-avatar" id="userAvatar"></div>
+                <span class="user-name" id="userName">User</span>
+                <div class="user-dropdown">
+                    <a href="dashboard.html" class="dropdown-item">
+                        <i class="fas fa-home"></i>
+                        Dashboard
+                    </a>
+                    <a href="profile.html" class="dropdown-item">
+                        <i class="fas fa-user"></i>
+                        Profile
+                    </a>
+                    <a href="payment.html" class="dropdown-item">
+                        <i class="fas fa-crown"></i>
+                        Upgrade to Pro
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                </div>
+            </div>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="profile-section">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="profile-avatar" id="profileAvatar">
+                    <!-- Avatar will be loaded dynamically -->
+                    <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+                    <label for="avatarUpload" class="avatar-upload">
+                        <i class="fas fa-camera"></i>
+                    </label>
+                </div>
+                <div class="profile-info">
+                    <h1 class="profile-name" id="profileName">Loading...</h1>
+                    <div class="profile-username" id="profileUsername">@username</div>
+                    <div class="profile-badges">
+                        <span class="badge" id="subscriptionBadge">Free Plan</span>
+                        <span class="badge" id="verificationBadge">Verified</span>
+                        <span class="badge" id="memberSince">Member since 2024</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Stats -->
+            <div class="profile-stats">
+                <div class="profile-stat">
+                    <span class="number" id="projectsCount">0</span>
+                    <span class="label">Projects Created</span>
+                </div>
+                <div class="profile-stat">
+                    <span class="number" id="apiCalls">0</span>
+                    <span class="label">API Calls</span>
+                </div>
+                <div class="profile-stat">
+                    <span class="number" id="storageUsed">0 MB</span>
+                    <span class="label">Storage Used</span>
+                </div>
+                <div class="profile-stat">
+                    <span class="number" id="daysActive">0</span>
+                    <span class="label">Days Active</span>
+                </div>
+            </div>
+
+            <!-- Profile Tabs -->
+            <div class="profile-tabs">
+                <button class="profile-tab active" data-tab="profile">Profile Settings</button>
+                <button class="profile-tab" data-tab="security">Security</button>
+                <button class="profile-tab" data-tab="subscription">Subscription</button>
+                <button class="profile-tab" data-tab="activity">Activity</button>
+            </div>
+
+            <!-- Profile Tab Content -->
+            <div class="profile-tab-content active" id="profile-tab">
+                <form class="settings-form" id="profileForm">
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            <i class="fas fa-user"></i>
+                            Personal Information
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label for="editFullName" class="form-label">Full Name</label>
+                            <input type="text" id="editFullName" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editUsername" class="form-label">Username</label>
+                            <input type="text" id="editUsername" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editEmail" class="form-label">Email Address</label>
+                            <input type="email" id="editEmail" class="form-input" required>
+                            <div class="success-message" id="emailStatus"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editPhone" class="form-label">Phone Number</label>
+                            <input type="tel" id="editPhone" class="form-input" required>
+                            <div class="success-message" id="phoneStatus"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editBio" class="form-label">Bio</label>
+                            <textarea id="editBio" class="form-input" rows="4" placeholder="Tell us about yourself..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Location Information
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label for="editCountry" class="form-label">Country</label>
+                            <select id="editCountry" class="form-input">
+                                <option value="">Select Country</option>
+                                <option value="TZ">Tanzania</option>
+                                <option value="KE">Kenya</option>
+                                <option value="UG">Uganda</option>
+                                <option value="RW">Rwanda</option>
+                                <option value="BI">Burundi</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editCity" class="form-label">City</label>
+                            <input type="text" id="editCity" class="form-input" placeholder="Enter your city">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editTimezone" class="form-label">Timezone</label>
+                            <select id="editTimezone" class="form-input">
+                                <option value="Africa/Dar_es_Salaam">East Africa Time (EAT)</option>
+                                <option value="Africa/Nairobi">East Africa Time (EAT)</option>
+                                <option value="UTC">UTC</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            <i class="fas fa-bell"></i>
+                            Notification Preferences
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label class="remember-me">
+                                <input type="checkbox" id="emailNotifications" checked>
+                                <span>Email notifications</span>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="remember-me">
+                                <input type="checkbox" id="smsNotifications">
+                                <span>SMS notifications</span>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="remember-me">
+                                <input type="checkbox" id="productUpdates" checked>
+                                <span>Product updates</span>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="remember-me">
+                                <input type="checkbox" id="marketingEmails">
+                                <span>Marketing emails</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="auth-btn" style="grid-column: 1 / -1;">
+                        <i class="fas fa-save"></i>
+                        Save Changes
+                    </button>
+                </form>
+            </div>
+
+            <!-- Security Tab Content -->
+            <div class="profile-tab-content" id="security-tab">
+                <div class="settings-form">
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            <i class="fas fa-lock"></i>
+                            Password Settings
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label for="currentPassword" class="form-label">Current Password</label>
+                            <input type="password" id="currentPassword" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="newPassword" class="form-label">New Password</label>
+                            <input type="password" id="newPassword" class="form-input" required>
+                            <div class="error-message" id="passwordStrength"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
+                            <input type="password" id="confirmNewPassword" class="form-input" required>
+                            <div class="error-message" id="passwordMatch"></div>
+                        </div>
+
+                        <button type="button" class="auth-btn" id="changePasswordBtn">
+                            <i class="fas fa-key"></i>
+                            Change Password
+                        </button>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            <i class="fas fa-shield-alt"></i>
+                            Two-Factor Authentication
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label class="remember-me">
+                                <input type="checkbox" id="enable2FA">
+                                <span>Enable Two-Factor Authentication</span>
+                            </label>
+                            <p style="color: var(--gray-light); font-size: 0.9rem; margin-top: 8px;">
+                                Add an extra layer of security to your account
+                            </p>
+                        </div>
+
+                        <div class="form-group" id="2faSettings" style="display: none;">
+                            <label class="form-label">Verification Method</label>
+                            <select class="form-input" id="2faMethod">
+                                <option value="sms">SMS</option>
+                                <option value="email">Email</option>
+                                <option value="authenticator">Authenticator App</option>
+                            </select>
+                        </div>
+
+                        <button type="button" class="auth-btn" id="setup2FABtn" style="display: none;">
+                            <i class="fas fa-mobile-alt"></i>
+                            Setup 2FA
+                        </button>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            <i class="fas fa-desktop"></i>
+                            Active Sessions
+                        </h3>
+                        
+                        <div id="sessionsList">
+                            <!-- Sessions will be loaded here -->
+                        </div>
+
+                        <button type="button" class="auth-btn btn-secondary" id="logoutAllBtn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout From All Devices
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subscription Tab Content -->
+            <div class="profile-tab-content" id="subscription-tab">
+                <div class="settings-form">
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            <i class="fas fa-crown"></i>
+                            Current Plan
+                        </h3>
+                        
+                        <div class="subscription-card" id="currentSubscription">
+                            <!-- Subscription details will be loaded here -->
+                        </div>
+
+                        <div class="subscription-features">
+                            <h4>Plan Features</h4>
+                            <div class="features-list" id="featuresList">
+                                <!-- Features will be loaded here -->
+                            </div>
+                        </div>
+
+                        <div class="subscription-actions">
+                            <a href="payment.html" class="auth-btn">
+                                <i class="fas fa-rocket"></i>
+                                Upgrade to Pro
+                            </a>
+                            <button class="auth-btn btn-secondary" id="cancelSubscriptionBtn" style="display: none;">
+                                <i class="fas fa-times"></i>
+                                Cancel Subscription
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            <i class="fas fa-history"></i>
+                            Billing History
+                        </h3>
+                        
+                        <div id="billingHistory">
+                            <!-- Billing history will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Tab Content -->
+            <div class="profile-tab-content" id="activity-tab">
+                <div class="settings-form">
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            <i class="fas fa-chart-line"></i>
+                            Usage Statistics
+                        </h3>
+                        
+                        <div class="activity-stats">
+                            <div class="activity-stat">
+                                <div class="stat-chart" id="apiUsageChart">
+                                    <!-- Chart will be rendered here -->
+                                </div>
+                                <div class="stat-info">
+                                    <h4>API Usage</h4>
+                                    <p>Last 30 days</p>
+                                </div>
+                            </div>
+                            
+                            <div class="activity-stat">
+                                <div class="stat-chart" id="storageChart">
+                                    <!-- Chart will be rendered here -->
+                                </div>
+                                <div class="stat-info">
+                                    <h4>Storage Usage</h4>
+                                    <p>Project files and data</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            <i class="fas fa-clock"></i>
+                            Recent Activity
+                        </h3>
+                        
+                        <div id="recentActivity">
+                            <!-- Recent activity will be loaded here -->
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            <i class="fas fa-download"></i>
+                            Data Export
+                        </h3>
+                        
+                        <p style="color: var(--gray-light); margin-bottom: 20px;">
+                            Download your personal data and activity history.
+                        </p>
+
+                        <div class="export-options">
+                            <button class="auth-btn btn-secondary" id="exportDataBtn">
+                                <i class="fas fa-file-export"></i>
+                                Export All Data
+                            </button>
+                            <button class="auth-btn btn-secondary" id="exportActivityBtn">
+                                <i class="fas fa-history"></i>
+                                Export Activity Log
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 2FA Setup Modal -->
+    <div class="modal" id="2faModal">
+        <div class="modal-content">
+            <div class="verification-container">
+                <h3>Setup Two-Factor Authentication</h3>
+                <p id="2faInstructions">Scan the QR code with your authenticator app</p>
+                
+                <div id="qrcodeContainer" style="text-align: center; margin: 20px 0;">
+                    <!-- QR code will be generated here -->
+                    <div id="qrcode"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="2faCode" class="form-label">Enter verification code</label>
+                    <input type="text" id="2faCode" class="form-input" placeholder="000000" maxlength="6">
+                </div>
+                
+                <button class="auth-btn" id="verify2FABtn">
+                    <i class="fas fa-check"></i>
+                    Verify & Enable
+                </button>
+                
+                <button class="modal-btn no" id="cancel2FABtn">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="dashboard.js"></script>
+    <script src="profile.js"></script>
+</body>
+</html>
