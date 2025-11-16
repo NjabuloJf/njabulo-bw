@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fredi AI - Upgrade to Pro</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <div class="logo-icon">F</div>
+                <div class="logo-text">FREDI AI</div>
+            </div>
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item">Dashboard</a>
+                <a href="profile.html" class="nav-item">Profile</a>
+                <a href="payment.html" class="nav-item active">Upgrade</a>
+            </nav>
+        </div>
+        <div class="header-right">
+            <div class="user-menu" id="userMenu">
+                <div class="user-avatar" id="userAvatar"></div>
+                <span class="user-name" id="userName">User</span>
+                <div class="user-dropdown">
+                    <a href="dashboard.html" class="dropdown-item">
+                        <i class="fas fa-home"></i>
+                        Dashboard
+                    </a>
+                    <a href="profile.html" class="dropdown-item">
+                        <i class="fas fa-user"></i>
+                        Profile
+                    </a>
+                    <a href="payment.html" class="dropdown-item">
+                        <i class="fas fa-crown"></i>
+                        Upgrade to Pro
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                </div>
+            </div>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="payment-section">
+            <div class="section-header">
+                <h1 class="section-title">Upgrade to Fredi AI Pro</h1>
+                <p class="section-subtitle">Unlock premium features and supercharge your AI experience</p>
+            </div>
+
+            <!-- Pricing Plans -->
+            <div class="pricing-plans">
+                <div class="pricing-card free">
+                    <div class="plan-header">
+                        <h3>Free Plan</h3>
+                        <div class="plan-price">
+                            <span class="price">TZS 0</span>
+                            <span class="period">forever</span>
+                        </div>
+                    </div>
+                    <div class="plan-features">
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Basic AI Models</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>100 API calls/month</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>500MB Storage</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Community Support</span>
+                        </div>
+                        <div class="feature disabled">
+                            <i class="fas fa-times"></i>
+                            <span>Advanced AI Models</span>
+                        </div>
+                        <div class="feature disabled">
+                            <i class="fas fa-times"></i>
+                            <span>Priority Support</span>
+                        </div>
+                    </div>
+                    <button class="auth-btn btn-secondary" disabled>Current Plan</button>
+                </div>
+
+                <div class="pricing-card pro featured">
+                    <div class="plan-badge">Most Popular</div>
+                    <div class="plan-header">
+                        <h3>Pro Plan</h3>
+                        <div class="plan-price">
+                            <span class="price">TZS 9,999</span>
+                            <span class="period">per month</span>
+                        </div>
+                    </div>
+                    <div class="plan-features">
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>All Free Features</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>10,000 API calls/month</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>10GB Storage</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Advanced AI Models</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Priority Support</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Early Access to New Features</span>
+                        </div>
+                    </div>
+                    <button class="auth-btn" id="selectProBtn">
+                        <i class="fas fa-crown"></i>
+                        Upgrade to Pro
+                    </button>
+                </div>
+
+                <div class="pricing-card enterprise">
+                    <div class="plan-header">
+                        <h3>Enterprise</h3>
+                        <div class="plan-price">
+                            <span class="price">Custom</span>
+                            <span class="period">tailored</span>
+                        </div>
+                    </div>
+                    <div class="plan-features">
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>All Pro Features</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Unlimited API calls</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>100GB+ Storage</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Custom AI Models</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Dedicated Support</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>SLA Guarantee</span>
+                        </div>
+                    </div>
+                    <button class="auth-btn btn-secondary" id="contactEnterpriseBtn">
+                        <i class="fas fa-headset"></i>
+                        Contact Sales
+                    </button>
+                </div>
+            </div>
+
+            <!-- Payment Method Selection -->
+            <div class="payment-method-section" id="paymentMethodSection" style="display: none;">
+                <h2 class="section-title">Choose Payment Method</h2>
+                
+                <div class="payment-options">
+                    <div class="payment-option" data-method="vodacom">
+                        <div class="payment-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div class="payment-name">Vodacom M-Pesa</div>
+                        <div class="payment-desc">Pay with your Vodacom number</div>
+                    </div>
+
+                    <div class="payment-option" data-method="airtel">
+                        <div class="payment-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div class="payment-name">Airtel Money</div>
+                        <div class="payment-desc">Pay with your Airtel number</div>
+                    </div>
+
+                    <div class="payment-option" data-method="halotel">
+                        <div class="payment-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div class="payment-name">Halotel</div>
+                        <div class="payment-desc">Pay with your Halotel number</div>
+                    </div>
+
+                    <div class="payment-option" data-method="card">
+                        <div class="payment-icon">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <div class="payment-name">Credit/Debit Card</div>
+                        <div class="payment-desc">Pay with Visa, Mastercard</div>
+                    </div>
+                </div>
+
+                <!-- Payment Form -->
+                <form class="payment-form" id="paymentForm" style="display: none;">
+                    <div class="form-section">
+                        <h3 class="form-section-title" id="paymentFormTitle">Payment Details</h3>
+                        
+                        <!-- Mobile Payment Form -->
+                        <div id="mobilePaymentForm">
+                            <div class="form-group">
+                                <label for="paymentPhone" class="form-label">Phone Number</label>
+                                <input type="tel" id="paymentPhone" class="form-input" required placeholder="255 XXX XXX XXX">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Payment Amount</label>
+                                <div class="payment-amount">
+                                    <div class="amount-option selected" data-amount="9999">
+                                        <span class="amount-value">TZS 9,999</span>
+                                        <span class="amount-label">1 Month</span>
+                                    </div>
+                                    <div class="amount-option" data-amount="49999">
+                                        <span class="amount-value">TZS 49,999</span>
+                                        <span class="amount-label">6 Months (Save 17%)</span>
+                                    </div>
+                                    <div class="amount-option" data-amount="89999">
+                                        <span class="amount-value">TZS 89,999</span>
+                                        <span class="amount-label">1 Year (Save 25%)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Payment Form -->
+                        <div id="cardPaymentForm" style="display: none;">
+                            <div class="form-group">
+                                <label for="cardNumber" class="form-label">Card Number</label>
+                                <input type="text" id="cardNumber" class="form-input" placeholder="1234 5678 9012 3456">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="expiryDate" class="form-label">Expiry Date</label>
+                                    <input type="text" id="expiryDate" class="form-input" placeholder="MM/YY">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cvv" class="form-label">CVV</label>
+                                    <input type="text" id="cvv" class="form-input" placeholder="123">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cardName" class="form-label">Name on Card</label>
+                                <input type="text" id="cardName" class="form-input" placeholder="John Doe">
+                            </div>
+                        </div>
+
+                        <div class="payment-summary">
+                            <div class="summary-item">
+                                <span>Plan:</span>
+                                <span id="summaryPlan">Pro Plan - 1 Month</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Amount:</span>
+                                <span id="summaryAmount">TZS 9,999</span>
+                            </div>
+                            <div class="summary-item total">
+                                <span>Total:</span>
+                                <span id="summaryTotal">TZS 9,999</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="auth-btn" id="processPaymentBtn">
+                            <i class="fas fa-lock"></i>
+                            Complete Payment
+                        </button>
+
+                        <p style="text-align: center; color: var(--gray-light); font-size: 0.9rem; margin-top: 15px;">
+                            <i class="fas fa-shield-alt"></i>
+                            Your payment is secure and encrypted
+                        </p>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Free Trial Section -->
+            <div class="trial-section">
+                <div class="trial-card">
+                    <div class="trial-content">
+                        <h3>Try Pro Features Free for 7 Days</h3>
+                        <p>Experience all Pro features without any commitment. No credit card required.</p>
+                        <button class="auth-btn" id="startTrialBtn">
+                            <i class="fas fa-rocket"></i>
+                            Start Free Trial
+                        </button>
+                    </div>
+                    <div class="trial-features">
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Full access to all Pro features</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>10,000 API calls</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Cancel anytime</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <div class="faq-section">
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                <div class="faq-grid">
+                    <div class="faq-item">
+                        <h4>How does the free trial work?</h4>
+                        <p>Start your 7-day free trial immediately. You'll get full access to all Pro features. No payment required until the trial ends.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h4>Can I cancel anytime?</h4>
+                        <p>Yes, you can cancel your subscription at any time. You'll continue to have access until the end of your billing period.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h4>What payment methods do you accept?</h4>
+                        <p>We accept Vodacom M-Pesa, Airtel Money, Halotel, and major credit/debit cards (Visa, Mastercard).</p>
+                    </div>
+                    <div class="faq-item">
+                        <h4>Is there a discount for annual plans?</h4>
+                        <p>Yes! Save 25% when you choose annual billing compared to monthly payments.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h4>How do I upgrade from Free to Pro?</h4>
+                        <p>Simply select your preferred plan, choose payment method, and complete the payment. Your account will be upgraded immediately.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h4>What happens after my free trial ends?</h4>
+                        <p>After 7 days, your account will automatically revert to the Free plan unless you choose to upgrade to Pro.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Payment Processing Modal -->
+    <div class="modal" id="paymentProcessingModal">
+        <div class="modal-content">
+            <div class="processing-container">
+                <div class="processing-spinner">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <h3>Processing Payment</h3>
+                <p id="processingMessage">Please wait while we process your payment...</p>
+                <div class="processing-steps">
+                    <div class="step active">Initializing</div>
+                    <div class="step">Connecting</div>
+                    <div class="step">Processing</div>
+                    <div class="step">Completing</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Success Modal -->
+    <div class="modal" id="paymentSuccessModal">
+        <div class="modal-content">
+            <div class="success-container">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>Payment Successful!</h3>
+                <p>Your Fredi AI Pro subscription has been activated.</p>
+                <div class="success-details">
+                    <div class="detail-item">
+                        <span>Plan:</span>
+                        <span id="successPlan">Pro Plan</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>Amount:</span>
+                        <span id="successAmount">TZS 9,999</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>Expires:</span>
+                        <span id="successExpiry">30 days from now</span>
+                    </div>
+                </div>
+                <div class="success-actions">
+                    <a href="dashboard.html" class="auth-btn">
+                        <i class="fas fa-rocket"></i>
+                        Go to Dashboard
+                    </a>
+                    <button class="auth-btn btn-secondary" id="closeSuccessModal">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="dashboard.js"></script>
+    <script src="payment.js"></script>
+</body>
+</html>
