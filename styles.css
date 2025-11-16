@@ -2168,3 +2168,96 @@ body.light-mode {
         text-align: center;
     }
 }
+
+/* Greeting Styles */
+.greeting-container {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.greeting-message {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 10px;
+}
+
+.greeting-subtitle {
+    color: var(--gray-light);
+    font-size: 1.1rem;
+}
+
+/* Update Notification Styles */
+.update-notification {
+    animation: slideInRight 0.5s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Enhanced Verification Modal */
+.verification-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.verification-code {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 25px 0;
+}
+
+.verification-input {
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: bold;
+    border: 2px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    color: var(--light);
+    transition: var(--transition);
+}
+
+.verification-input:focus {
+    border-color: var(--primary);
+    background: rgba(255, 255, 255, 0.12);
+    transform: scale(1.05);
+}
+
+/* Loading States */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-top: 2px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
