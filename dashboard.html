@@ -36,6 +36,61 @@
             </nav>
         </div>
         <div class="header-right">
+            <!-- Quick Settings Toggle -->
+            <div class="quick-settings-toggle" id="quickSettingsToggle">
+                <i class="fas fa-sliders-h"></i>
+            </div>
+
+            <!-- Quick Settings Panel -->
+            <div class="quick-settings-panel" id="quickSettingsPanel">
+                <div class="settings-header">
+                    <h4>Quick Settings</h4>
+                    <button class="close-settings" id="closeSettings">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="settings-content">
+                    <div class="setting-item">
+                        <span>Dark Mode</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="darkModeToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <span>Notifications</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="notificationsToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <span>Auto Updates</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="autoUpdateToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <span>Sound Effects</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="soundToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="settings-actions">
+                        <a href="settings.html" class="btn btn-primary btn-sm">
+                            <i class="fas fa-cog"></i>
+                            Full Settings
+                        </a>
+                        <button class="btn btn-secondary btn-sm" id="resetSettings">
+                            <i class="fas fa-redo"></i>
+                            Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <div class="user-menu" id="userMenu">
                 <div class="user-avatar" id="userAvatar">
                     <!-- Avatar will be loaded dynamically -->
@@ -50,7 +105,7 @@
                         <i class="fas fa-crown"></i>
                         Upgrade to Pro
                     </a>
-                    <a href="#" class="dropdown-item">
+                    <a href="settings.html" class="dropdown-item">
                         <i class="fas fa-cog"></i>
                         Settings
                     </a>
@@ -74,6 +129,7 @@
             <h2 id="greetingMessage" class="greeting-message">Welcome back!</h2>
             <p class="greeting-subtitle" id="greetingSubtitle">Ready to create something amazing today?</p>
         </div>
+
         <section id="home" class="hero-section fade-in-up">
             <h1 class="hero-title">Welcome to Fredi AI</h1>
             <p class="hero-subtitle">
@@ -93,6 +149,32 @@
                 <div class="stat-item">
                     <span class="stat-number" id="updatesCount">Daily</span>
                     <span class="stat-label">Updates</span>
+                </div>
+            </div>
+
+            <!-- System Status Widget -->
+            <div class="system-status-widget">
+                <h3 class="widget-title">
+                    <i class="fas fa-server"></i>
+                    System Status
+                </h3>
+                <div class="status-grid">
+                    <div class="status-item online">
+                        <i class="fas fa-circle"></i>
+                        <span>Web Services</span>
+                    </div>
+                    <div class="status-item online">
+                        <i class="fas fa-circle"></i>
+                        <span>API Gateway</span>
+                    </div>
+                    <div class="status-item online">
+                        <i class="fas fa-circle"></i>
+                        <span>Database</span>
+                    </div>
+                    <div class="status-item warning">
+                        <i class="fas fa-circle"></i>
+                        <span>CDN Network</span>
+                    </div>
                 </div>
             </div>
 
@@ -126,14 +208,18 @@
                     <i class="fas fa-rocket"></i>
                     Explore Menu
                 </a>
-                <a href="payment.html" class="btn btn-secondary">
+                <a href="settings.html" class="btn btn-secondary">
+                    <i class="fas fa-cog"></i>
+                    App Settings
+                </a>
+                <a href="payment.html" class="btn btn-accent">
                     <i class="fas fa-crown"></i>
                     Go Pro
                 </a>
             </div>
         </section>
 
-        <!-- Main Menu Section -->
+        <!-- Quick Menu Section -->
         <section id="menu" class="menu-section fade-in-up">
             <h2 class="menu-section-title">Quick Access Menu</h2>
             
@@ -465,12 +551,7 @@
             </div>
         </div>
     </div>
-<!-- Add EmailJS for real email functionality -->
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-<script>
-    // Initialize EmailJS with your public key
-    emailjs.init('YOUR_EMAILJS_PUBLIC_KEY');
-</script>
+
     <script src="auth.js"></script>
     <script src="dashboard.js"></script>
 </body>
