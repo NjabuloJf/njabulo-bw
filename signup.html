@@ -76,28 +76,25 @@
         </div>
     </div>
 
-    <div class="modal" id="verificationModal">
+    <!-- Brain Verification Modal -->
+    <div class="modal" id="brainVerificationModal">
         <div class="modal-content">
-            <div class="verification-container">
-                <h3>Verify Your Account</h3>
-                <p>We've sent a verification code to your email and phone number</p>
-                
-                <div class="verification-code">
-                    <input type="text" class="verification-input" maxlength="1" data-index="0">
-                    <input type="text" class="verification-input" maxlength="1" data-index="1">
-                    <input type="text" class="verification-input" maxlength="1" data-index="2">
-                    <input type="text" class="verification-input" maxlength="1" data-index="3">
-                    <input type="text" class="verification-input" maxlength="1" data-index="4">
-                    <input type="text" class="verification-input" maxlength="1" data-index="5">
+            <div class="brain-verification-container">
+                <div class="verification-header">
+                    <h3>🤖 Human Verification</h3>
+                    <p>Complete this challenge to verify you're human</p>
                 </div>
-                
-                <button class="auth-btn" id="verifyBtn" style="margin-top: 20px;">
-                    <i class="fas fa-check"></i>
-                    Verify Account
-                </button>
-                
-                <div class="resend-code" id="resendCode">
-                    Didn't receive code? Resend in <span id="countdown">60</span>s
+                <div class="game-container" id="gameContainer">
+                    <!-- Game will be rendered here dynamically -->
+                </div>
+                <div class="verification-footer">
+                    <div class="attempts-info" id="attemptsInfo">
+                        Attempts: <span id="attemptsCount">0</span>/3
+                    </div>
+                    <button class="auth-btn" id="verifyGameBtn">
+                        <i class="fas fa-check"></i>
+                        Verify
+                    </button>
                 </div>
             </div>
         </div>
