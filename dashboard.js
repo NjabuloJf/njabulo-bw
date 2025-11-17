@@ -283,3 +283,181 @@ document.addEventListener('DOMContentLoaded', function() {
         window.frediDashboard = new FrediDashboard();
     }
 });
+
+// Add this to your existing dashboard.js file
+
+class QuickSettings {
+    constructor() {
+        this.settings = JSON.parse(localStorage.getItem('frediSettings')) || {};
+        this.init();
+    }
+
+    init() {
+        this.initQuickSettings();
+        this.loadQuickSettings();
+    }
+
+    initQuickSettings() {
+        const toggle = document.getElementById('quickSettingsToggle');
+        const panel = document.getElementById('quickSettingsPanel');
+        const closeBtn = document.getElementById('closeSettings');
+
+        if (toggle && panel) {
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                panel.classList.toggle('show');
+            });
+
+            closeBtn.addEventListener('click', () => {
+                panel.classList.remove('show');
+            });
+
+            // Close panel when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!panel.contains(e.target) && !toggle.contains(e.target)) {
+                    panel.classList.remove('show');
+                }
+            });
+
+            // Initialize toggle switches
+            this.initToggleSwitches();
+        }
+    }
+
+    initToggleSwitches() {
+        const toggles = document.querySelectorAll('#quickSettingsPanel .toggle-switch input');
+        toggles.forEach(toggle => {
+            toggle.addEventListener('change', (e) => {
+                this.handleQuickSettingChange(e.target.id, e.target.checked);
+            });
+        });
+
+        // Reset settings button
+        const resetBtn = document.getElementById('resetSettings');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                this.resetQuickSettings();
+            });
+        }
+    }
+
+    loadQuickSettings() {
+        const settings = this.settings;
+        
+        // Dark mode
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        if (darkModeToggle) {
+            darkModeToggle.checked = settings.appearance?.theme === 'dark';
+        }
+
+        // Notifications
+        const notificationsToggle = document.getElementById('notificationsToggle');
+        if (notificationsToggle) {
+            notificationsToggle.checked = settings.notifications?.push !== false;
+        }
+
+        // Auto updates
+        const autoUpdateToggle = document.getElementById('autoUpdateToggle');
+        if (autoUpdateToggle) {
+            autoUpdateToggle.checked = settings.system?.autoUpdates !== false;
+        }
+
+        // Sound effects
+        const soundToggle = document.getElementById('soundToggle');
+        if (soundToggle) {
+            soundToggle.checked = settings.notifications?.sound !== false;
+        }
+    }
+
+    handleQuickSettingChange(settingId, value) {
+        switch(settingId) {
+            case 'darkModeToggle':
+                this.toggleDarkMode(value);
+                break;
+            case 'notificationsToggle':
+                this.toggleNotifications(value);
+                break;
+            case 'autoUpdateToggle':
+                this.toggleAutoUpdates(value);
+                break;
+            case 'soundToggle':
+                this.toggleSoundEffects(value);
+                break;
+        }
+        
+        this.saveQuickSettings();
+    }
+
+    toggleDarkMode(enabled) {
+        const theme = enabled ? 'dark' : 'light';
+        document.body.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        
+        if (this.settings.appearance) {
+            this.settings.appearance.theme = theme;
+        }
+    }
+
+    toggleNotifications(enabled) {
+        if (this.settings.notifications) {
+            this.settings.notifications.push = enabled;
+        }
+        
+        if (enabled) {
+            this.requestNotificationPermission();
+        }
+    }
+
+    toggleAutoUpdates(enabled) {
+        if (this.settings.system) {
+            this.settings.system.autoUpdates = enabled;
+        }
+    }
+
+    toggleSoundEffects(enabled) {
+        if (this.settings.notifications) {
+            this.settings.notifications.sound = enabled;
+        }
+    }
+
+    requestNotificationPermission() {
+        if ("Notification" in window && Notification.permission === "default") {
+            Notification.requestPermission();
+        }
+    }
+
+    saveQuickSettings() {
+        localStorage.setItem('frediSettings', JSON.stringify(this.settings));
+    }
+
+    resetQuickSettings() {
+        if (confirm('Reset quick settings to default?')) {
+            // Reset to default values
+            document.getElementById('darkModeToggle').checked = true;
+            document.getElementById('notificationsToggle').checked = true;
+            document.getElementById('autoUpdateToggle').checked = false;
+            document.getElementById('soundToggle').checked = true;
+            
+            // Apply changes
+            this.toggleDarkMode(true);
+            this.toggleNotifications(true);
+            this.toggleAutoUpdates(false);
+            this.toggleSoundEffects(true);
+            
+            this.showMessage('Quick settings reset', 'success');
+        }
+    }
+
+    showMessage(message, type) {
+        if (window.frediAuth && window.frediAuth.showMessage) {
+            window.frediAuth.showMessage(message, type);
+        }
+    }
+}
+
+// Initialize quick settings when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.location.pathname.includes('dashboard.html')) {
+        window.quickSettings = new QuickSettings();
+    }
+});
