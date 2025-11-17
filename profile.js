@@ -39,22 +39,25 @@ class FrediProfile {
         document.getElementById('editPhone').value = this.currentUser.phone;
         document.getElementById('editBio').value = this.currentUser.bio || '';
 
-        // Update badges
-        const subscriptionBadge = document.getElementById('subscriptionBadge');
+        // Update verification badge with brain game info
         const verificationBadge = document.getElementById('verificationBadge');
-        
+        if (verificationBadge) {
+            if (this.currentUser.isVerified) {
+                verificationBadge.textContent = 'Verified 🤖';
+                verificationBadge.style.background = 'rgba(16, 185, 129, 0.2)';
+            } else {
+                verificationBadge.textContent = 'Not Verified';
+                verificationBadge.style.background = 'rgba(239, 68, 68, 0.2)';
+            }
+        }
+
+        // Update subscription badge
+        const subscriptionBadge = document.getElementById('subscriptionBadge');
         if (subscriptionBadge) {
-            subscriptionBadge.textContent = this.currentUser.subscription === 'pro' ? 'Pro Plan' : 'Free Plan';
+            subscriptionBadge.textContent = this.currentUser.subscription === 'pro' ? 'Pro Plan 👑' : 'Free Plan';
             subscriptionBadge.style.background = this.currentUser.subscription === 'pro' 
                 ? 'rgba(245, 158, 11, 0.2)' 
                 : 'rgba(99, 102, 241, 0.2)';
-        }
-
-        if (verificationBadge) {
-            verificationBadge.textContent = this.currentUser.isVerified ? 'Verified' : 'Not Verified';
-            verificationBadge.style.background = this.currentUser.isVerified 
-                ? 'rgba(16, 185, 129, 0.2)' 
-                : 'rgba(239, 68, 68, 0.2)';
         }
 
         // Update member since
@@ -372,6 +375,7 @@ class FrediProfile {
             { action: 'Logged in', time: '2 hours ago', icon: 'fas fa-sign-in-alt' },
             { action: 'Created new project', time: '5 hours ago', icon: 'fas fa-plus' },
             { action: 'Updated profile', time: '1 day ago', icon: 'fas fa-user-edit' },
+            { action: 'Completed brain verification', time: '1 day ago', icon: 'fas fa-brain' },
             { action: 'Downloaded resources', time: '2 days ago', icon: 'fas fa-download' }
         ];
 
