@@ -1,9 +1,9 @@
-// Fredi AI Authentication System with Real Email SMTP
+// Fredi AI Authentication System with Brain Game Verification
 class FrediAuth {
     constructor() {
         this.users = JSON.parse(localStorage.getItem('frediUsers')) || [];
         this.currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
-        this.verificationCodes = JSON.parse(localStorage.getItem('verificationCodes')) || {};
+        this.verificationGames = JSON.parse(localStorage.getItem('verificationGames')) || {};
         this.smtpConfig = {
             host: 'smtp.gmail.com',
             port: 587,
@@ -41,12 +41,669 @@ class FrediAuth {
         this.showTimeBasedGreeting();
     }
 
-    // === NEW EMAIL FUNCTIONALITY METHODS ===
+    // === BRAIN GAME VERIFICATION SYSTEM ===
 
-    // Real Email SMTP Function
+    // Create Brain Verification Game
+    createVerificationGame(email) {
+        const gameId = this.generateId();
+        const gameType = this.getRandomGameType();
+        const gameData = this.generateGameData(gameType);
+        const expiry = Date.now() + 10 * 60 * 1000; // 10 minutes
+        
+        this.verificationGames[email] = {
+            id: gameId,
+            type: gameType,
+            data: gameData,
+            expiry: expiry,
+            attempts: 0,
+            maxAttempts: 3
+        };
+        
+        localStorage.setItem('verificationGames', JSON.stringify(this.verificationGames));
+        return { gameId, gameType, gameData };
+    }
+
+    // Get Random Game Type
+    getRandomGameType() {
+        const games = [
+            'pattern_match',
+            'memory_sequence', 
+            'color_match',
+            'shape_rotation',
+            'number_sequence'
+        ];
+        return games[Math.floor(Math.random() * games.length)];
+    }
+
+    // Generate Game Data Based on Type
+    generateGameData(gameType) {
+        switch(gameType) {
+            case 'pattern_match':
+                return this.generatePatternMatchGame();
+            case 'memory_sequence':
+                return this.generateMemorySequenceGame();
+            case 'color_match':
+                return this.generateColorMatchGame();
+            case 'shape_rotation':
+                return this.generateShapeRotationGame();
+            case 'number_sequence':
+                return this.generateNumberSequenceGame();
+            default:
+                return this.generatePatternMatchGame();
+        }
+    }
+
+    // Pattern Match Game
+    generatePatternMatchGame() {
+        const patterns = ['▲▲▼▼', '◀◀▶▶', '◆◆●●', '⬟⬟⬠⬠'];
+        const correctPattern = patterns[Math.floor(Math.random() * patterns.length)];
+        const options = this.shuffleArray([...patterns, '▲▼▲▼', '◀▶◀▶', '◆●◆●', '⬟⬠⬟⬠']);
+        
+        return {
+            question: "Select the pattern that matches the sequence:",
+            pattern: correctPattern,
+            options: options,
+            correctAnswer: correctPattern,
+            difficulty: 'easy'
+        };
+    }
+
+    // Memory Sequence Game
+    generateMemorySequenceGame() {
+        const sequences = [
+            { sequence: [2, 4, 6, 8], answer: 10 },
+            { sequence: [1, 3, 5, 7], answer: 9 },
+            { sequence: [5, 10, 15, 20], answer: 25 },
+            { sequence: [3, 6, 9, 12], answer: 15 }
+        ];
+        return sequences[Math.floor(Math.random() * sequences.length)];
+    }
+
+    // Color Match Game
+    generateColorMatchGame() {
+        const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7'];
+        const targetColor = colors[Math.floor(Math.random() * colors.length)];
+        const options = this.shuffleArray([...colors]);
+        
+        return {
+            question: "Select the color that matches the target:",
+            targetColor: targetColor,
+            options: options,
+            correctAnswer: targetColor,
+            difficulty: 'easy'
+        };
+    }
+
+    // Shape Rotation Game
+    generateShapeRotationGame() {
+        const shapes = ['▲', '◀', '▶', '▼', '◆', '●'];
+        const targetShape = shapes[Math.floor(Math.random() * shapes.length)];
+        const rotations = ['0deg', '90deg', '180deg', '270deg'];
+        const correctRotation = rotations[Math.floor(Math.random() * rotations.length)];
+        
+        return {
+            question: "Select the shape that matches after rotation:",
+            targetShape: targetShape,
+            rotation: correctRotation,
+            options: rotations,
+            correctAnswer: correctRotation,
+            difficulty: 'medium'
+        };
+    }
+
+    // Number Sequence Game
+    generateNumberSequenceGame() {
+        const sequences = [
+            { numbers: [2, 4, 8, 16], answer: 32 },
+            { numbers: [1, 1, 2, 3, 5], answer: 8 },
+            { numbers: [10, 20, 30, 40], answer: 50 },
+            { numbers: [3, 9, 27, 81], answer: 243 }
+        ];
+        return sequences[Math.floor(Math.random() * sequences.length)];
+    }
+
+    // Verify Game Solution
+    verifyGameSolution(email, userAnswer) {
+        const game = this.verificationGames[email];
+        
+        if (!game || game.expiry < Date.now()) {
+            return { success: false, error: 'Game expired' };
+        }
+
+        if (game.attempts >= game.maxAttempts) {
+            return { success: false, error: 'Maximum attempts exceeded' };
+        }
+
+        game.attempts++;
+        localStorage.setItem('verificationGames', JSON.stringify(this.verificationGames));
+
+        let isCorrect = false;
+        
+        switch(game.type) {
+            case 'pattern_match':
+            case 'color_match':
+            case 'shape_rotation':
+                isCorrect = userAnswer === game.data.correctAnswer;
+                break;
+            case 'memory_sequence':
+            case 'number_sequence':
+                isCorrect = parseInt(userAnswer) === game.data.answer;
+                break;
+        }
+
+        if (isCorrect) {
+            delete this.verificationGames[email];
+            localStorage.setItem('verificationGames', JSON.stringify(this.verificationGames));
+            return { success: true };
+        } else {
+            return { 
+                success: false, 
+                error: 'Incorrect answer',
+                attemptsLeft: game.maxAttempts - game.attempts
+            };
+        }
+    }
+
+    // Show Brain Verification Game
+    async showBrainVerificationGame(email) {
+        const game = this.createVerificationGame(email);
+        const modal = document.getElementById('brainVerificationModal');
+        
+        if (!modal) {
+            this.createBrainVerificationModal();
+            // Wait for modal to be created
+            setTimeout(() => this.renderGame(game, email), 100);
+        } else {
+            this.renderGame(game, email);
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    // Create Brain Verification Modal
+    createBrainVerificationModal() {
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.id = 'brainVerificationModal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="brain-verification-container">
+                    <div class="verification-header">
+                        <h3>🤖 Human Verification</h3>
+                        <p>Complete this challenge to verify you're human</p>
+                    </div>
+                    <div class="game-container" id="gameContainer">
+                        <!-- Game will be rendered here -->
+                    </div>
+                    <div class="verification-footer">
+                        <div class="attempts-info" id="attemptsInfo">
+                            Attempts: <span id="attemptsCount">0</span>/3
+                        </div>
+                        <button class="auth-btn" id="verifyGameBtn">
+                            <i class="fas fa-check"></i>
+                            Verify
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        this.addBrainGameStyles();
+    }
+
+    // Render Game Based on Type
+    renderGame(game, email) {
+        const container = document.getElementById('gameContainer');
+        if (!container) return;
+
+        let gameHTML = '';
+        
+        switch(game.gameType) {
+            case 'pattern_match':
+                gameHTML = this.renderPatternMatchGame(game.gameData);
+                break;
+            case 'memory_sequence':
+                gameHTML = this.renderMemorySequenceGame(game.gameData);
+                break;
+            case 'color_match':
+                gameHTML = this.renderColorMatchGame(game.gameData);
+                break;
+            case 'shape_rotation':
+                gameHTML = this.renderShapeRotationGame(game.gameData);
+                break;
+            case 'number_sequence':
+                gameHTML = this.renderNumberSequenceGame(game.gameData);
+                break;
+        }
+
+        container.innerHTML = gameHTML;
+        this.setupGameEventListeners(game.gameType, email);
+    }
+
+    // Render Pattern Match Game
+    renderPatternMatchGame(gameData) {
+        return `
+            <div class="game-content">
+                <div class="game-question">${gameData.question}</div>
+                <div class="target-pattern">${gameData.pattern}</div>
+                <div class="game-options">
+                    ${gameData.options.map((option, index) => `
+                        <label class="game-option">
+                            <input type="radio" name="pattern" value="${option}">
+                            <span class="option-content">${option}</span>
+                        </label>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    // Render Memory Sequence Game
+    renderMemorySequenceGame(gameData) {
+        return `
+            <div class="game-content">
+                <div class="game-question">Complete the number sequence:</div>
+                <div class="number-sequence">${gameData.sequence.join(' → ')} → ?</div>
+                <div class="game-input">
+                    <input type="number" id="sequenceAnswer" placeholder="Enter the next number">
+                </div>
+            </div>
+        `;
+    }
+
+    // Render Color Match Game
+    renderColorMatchGame(gameData) {
+        return `
+            <div class="game-content">
+                <div class="game-question">${gameData.question}</div>
+                <div class="target-color" style="background: ${gameData.targetColor}"></div>
+                <div class="color-options">
+                    ${gameData.options.map((color, index) => `
+                        <div class="color-option" data-color="${color}" style="background: ${color}"></div>
+                    `).join('')}
+                </div>
+                <input type="hidden" id="selectedColor" value="">
+            </div>
+        `;
+    }
+
+    // Render Shape Rotation Game
+    renderShapeRotationGame(gameData) {
+        return `
+            <div class="game-content">
+                <div class="game-question">${gameData.question}</div>
+                <div class="shape-preview">
+                    <div class="shape" data-shape="${gameData.targetShape}" style="transform: rotate(${gameData.rotation})">
+                        ${gameData.targetShape}
+                    </div>
+                </div>
+                <div class="rotation-options">
+                    ${gameData.options.map(rotation => `
+                        <label class="rotation-option">
+                            <input type="radio" name="rotation" value="${rotation}">
+                            <span>${rotation}</span>
+                        </label>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    // Render Number Sequence Game
+    renderNumberSequenceGame(gameData) {
+        return `
+            <div class="game-content">
+                <div class="game-question">What comes next in this sequence?</div>
+                <div class="number-display">${gameData.numbers.join(', ')}</div>
+                <div class="game-input">
+                    <input type="number" id="numberSequenceAnswer" placeholder="Enter the next number">
+                </div>
+            </div>
+        `;
+    }
+
+    // Setup Game Event Listeners
+    setupGameEventListeners(gameType, email) {
+        const verifyBtn = document.getElementById('verifyGameBtn');
+        const attemptsInfo = document.getElementById('attemptsInfo');
+        const attemptsCount = document.getElementById('attemptsCount');
+
+        if (gameType === 'color_match') {
+            const colorOptions = document.querySelectorAll('.color-option');
+            colorOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    colorOptions.forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    document.getElementById('selectedColor').value = option.dataset.color;
+                });
+            });
+        }
+
+        if (verifyBtn) {
+            verifyBtn.onclick = () => {
+                this.handleGameVerification(gameType, email);
+            };
+        }
+
+        // Update attempts count
+        const game = this.verificationGames[email];
+        if (game && attemptsCount) {
+            attemptsCount.textContent = game.attempts;
+        }
+    }
+
+    // Handle Game Verification
+    handleGameVerification(gameType, email) {
+        let userAnswer = '';
+
+        switch(gameType) {
+            case 'pattern_match':
+            case 'shape_rotation':
+                const selectedOption = document.querySelector('input[name="pattern"], input[name="rotation"]:checked');
+                userAnswer = selectedOption ? selectedOption.value : '';
+                break;
+            case 'memory_sequence':
+                userAnswer = document.getElementById('sequenceAnswer').value;
+                break;
+            case 'color_match':
+                userAnswer = document.getElementById('selectedColor').value;
+                break;
+            case 'number_sequence':
+                userAnswer = document.getElementById('numberSequenceAnswer').value;
+                break;
+        }
+
+        if (!userAnswer) {
+            this.showMessage('Please complete the verification challenge', 'error');
+            return;
+        }
+
+        const result = this.verifyGameSolution(email, userAnswer);
+        
+        if (result.success) {
+            this.showMessage('Verification successful!', 'success');
+            this.completeSignup();
+        } else {
+            if (result.attemptsLeft > 0) {
+                this.showMessage(`Incorrect answer. ${result.attemptsLeft} attempts remaining.`, 'error');
+                // Refresh game
+                this.showBrainVerificationGame(email);
+            } else {
+                this.showMessage('Too many failed attempts. Please try again later.', 'error');
+                this.closeBrainVerificationModal();
+            }
+        }
+    }
+
+    // Complete Signup After Verification
+    completeSignup() {
+        const pendingUser = JSON.parse(sessionStorage.getItem('pendingUser'));
+        
+        if (!pendingUser) {
+            this.showMessage('Verification session expired', 'error');
+            return;
+        }
+
+        // Add user to database
+        pendingUser.isVerified = true;
+        pendingUser.verificationMethod = 'brain_game';
+        this.users.push(pendingUser);
+        localStorage.setItem('frediUsers', JSON.stringify(this.users));
+
+        // Set as current user
+        this.currentUser = pendingUser;
+        localStorage.setItem('currentUser', JSON.stringify(pendingUser));
+
+        // Clear pending user
+        sessionStorage.removeItem('pendingUser');
+        this.closeBrainVerificationModal();
+
+        this.showMessage('Account created successfully! Redirecting...', 'success');
+        
+        setTimeout(() => {
+            window.location.href = 'dashboard.html';
+        }, 1500);
+    }
+
+    // Close Brain Verification Modal
+    closeBrainVerificationModal() {
+        const modal = document.getElementById('brainVerificationModal');
+        if (modal) {
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+    }
+
+    // Add Brain Game Styles
+    addBrainGameStyles() {
+        if (!document.querySelector('#brain-game-styles')) {
+            const styles = document.createElement('style');
+            styles.id = 'brain-game-styles';
+            styles.textContent = `
+                .brain-verification-container {
+                    max-width: 500px;
+                    margin: 0 auto;
+                }
+                .verification-header {
+                    text-align: center;
+                    margin-bottom: 30px;
+                }
+                .verification-header h3 {
+                    color: var(--light);
+                    margin-bottom: 10px;
+                }
+                .game-container {
+                    background: var(--darker);
+                    border: 1px solid var(--glass-border);
+                    border-radius: 15px;
+                    padding: 30px;
+                    margin-bottom: 20px;
+                }
+                .game-question {
+                    color: var(--light);
+                    font-size: 1.1rem;
+                    margin-bottom: 20px;
+                    text-align: center;
+                }
+                .target-pattern {
+                    font-size: 2rem;
+                    text-align: center;
+                    margin: 20px 0;
+                    color: var(--primary);
+                }
+                .game-options {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 15px;
+                    margin-top: 20px;
+                }
+                .game-option {
+                    display: flex;
+                    align-items: center;
+                    padding: 15px;
+                    border: 2px solid var(--glass-border);
+                    border-radius: 10px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                }
+                .game-option:hover {
+                    border-color: var(--primary);
+                }
+                .game-option input[type="radio"] {
+                    display: none;
+                }
+                .game-option input[type="radio"]:checked + .option-content {
+                    background: var(--primary);
+                    color: white;
+                }
+                .option-content {
+                    padding: 10px 15px;
+                    border-radius: 8px;
+                    background: var(--dark);
+                    transition: all 0.3s ease;
+                    width: 100%;
+                    text-align: center;
+                    font-size: 1.2rem;
+                }
+                .target-color {
+                    width: 80px;
+                    height: 80px;
+                    border-radius: 50%;
+                    margin: 20px auto;
+                    border: 3px solid var(--glass-border);
+                }
+                .color-options {
+                    display: flex;
+                    justify-content: center;
+                    gap: 15px;
+                    margin-top: 20px;
+                }
+                .color-option {
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    border: 3px solid transparent;
+                    transition: all 0.3s ease;
+                }
+                .color-option.selected {
+                    border-color: var(--primary);
+                    transform: scale(1.1);
+                }
+                .shape-preview {
+                    text-align: center;
+                    margin: 20px 0;
+                }
+                .shape {
+                    font-size: 3rem;
+                    display: inline-block;
+                    transition: transform 0.3s ease;
+                }
+                .rotation-options {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 15px;
+                    margin-top: 20px;
+                }
+                .rotation-option {
+                    display: flex;
+                    align-items: center;
+                    padding: 15px;
+                    border: 2px solid var(--glass-border);
+                    border-radius: 10px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                }
+                .rotation-option:hover {
+                    border-color: var(--primary);
+                }
+                .rotation-option input[type="radio"] {
+                    display: none;
+                }
+                .rotation-option input[type="radio"]:checked + span {
+                    color: var(--primary);
+                    font-weight: 600;
+                }
+                .number-sequence, .number-display {
+                    font-size: 1.5rem;
+                    text-align: center;
+                    margin: 20px 0;
+                    color: var(--primary);
+                    font-weight: 600;
+                }
+                .game-input {
+                    text-align: center;
+                    margin-top: 20px;
+                }
+                .game-input input {
+                    width: 200px;
+                    padding: 12px;
+                    border: 2px solid var(--glass-border);
+                    border-radius: 8px;
+                    background: var(--dark);
+                    color: var(--light);
+                    font-size: 1.1rem;
+                    text-align: center;
+                }
+                .verification-footer {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+                .attempts-info {
+                    color: var(--gray-light);
+                    font-size: 0.9rem;
+                }
+            `;
+            document.head.appendChild(styles);
+        }
+    }
+
+    // Utility function to shuffle array
+    shuffleArray(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+    }
+
+    // === UPDATED SIGNUP METHOD ===
+    async handleSignup() {
+        const fullName = document.getElementById('fullName').value;
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        // Validate inputs
+        if (!this.validateSignup(fullName, username, email, phone, password, confirmPassword)) {
+            return;
+        }
+
+        // Check if user already exists
+        if (this.userExists(username, email)) {
+            this.showMessage('Username or email already exists', 'error');
+            return;
+        }
+
+        // Create new user
+        const newUser = {
+            id: this.generateId(),
+            fullName,
+            username,
+            email,
+            phone,
+            password: this.hashPassword(password),
+            avatar: this.generateAvatar(fullName),
+            joinDate: new Date().toISOString(),
+            isVerified: false,
+            subscription: 'free',
+            lastLogin: null,
+            notifications: {
+                email: true,
+                sms: false,
+                productUpdates: true,
+                marketing: false
+            }
+        };
+
+        // Store user temporarily for verification
+        sessionStorage.setItem('pendingUser', JSON.stringify(newUser));
+
+        // Send welcome email
+        await this.sendWelcomeEmail(newUser);
+
+        // Show brain verification game instead of code verification
+        await this.showBrainVerificationGame(email);
+    }
+
+    // === EMAIL FUNCTIONALITY METHODS ===
+
     async sendEmail(to, subject, htmlContent) {
         try {
-            // Using EmailJS service for SMTP (free tier available)
             if (typeof emailjs !== 'undefined') {
                 const templateParams = {
                     to_email: to,
@@ -59,12 +716,10 @@ class FrediAuth {
                 console.log('Email sent successfully via EmailJS');
                 return true;
             } else {
-                // Fallback to direct SMTP using your credentials
                 return await this.sendSMTPEmail(to, subject, htmlContent);
             }
         } catch (error) {
             console.error('Email sending failed:', error);
-            // Fallback to console for demo purposes
             console.log(`Email to: ${to}`);
             console.log(`Subject: ${subject}`);
             console.log(`Content: ${htmlContent}`);
@@ -72,7 +727,6 @@ class FrediAuth {
         }
     }
 
-    // Direct SMTP Implementation (Client-side fallback)
     async sendSMTPEmail(to, subject, htmlContent) {
         const emailData = {
             to: to,
@@ -100,351 +754,6 @@ class FrediAuth {
             console.error('SMTP email failed:', error);
             return false;
         }
-    }
-
-    // Send Verification Code with Real Email
-    async sendVerificationCode(email, phone) {
-        const code = Math.floor(100000 + Math.random() * 900000).toString();
-        const expiry = Date.now() + 10 * 60 * 1000; // 10 minutes
-        
-        this.verificationCodes[email] = { code, expiry };
-        localStorage.setItem('verificationCodes', JSON.stringify(this.verificationCodes));
-
-        // Send email
-        const emailSubject = 'Fredi AI - Email Verification Code';
-        const emailHtml = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <style>
-                    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
-                    .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; }
-                    .header { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0; }
-                    .code { font-size: 32px; font-weight: bold; text-align: center; color: #6366f1; margin: 30px 0; }
-                    .footer { text-align: center; color: #666; font-size: 12px; margin-top: 30px; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="header">
-                        <h1>Fredi AI</h1>
-                        <p>Email Verification</p>
-                    </div>
-                    <h2>Hello!</h2>
-                    <p>Thank you for registering with Fredi AI. Use the verification code below to complete your registration:</p>
-                    <div class="code">${code}</div>
-                    <p>This code will expire in 10 minutes.</p>
-                    <p>If you didn't request this code, please ignore this email.</p>
-                    <div class="footer">
-                        <p>&copy; 2024 Fredi AI. All rights reserved.</p>
-                    </div>
-                </div>
-            </body>
-            </html>
-        `;
-
-        const emailSent = await this.sendEmail(email, emailSubject, emailHtml);
-        
-        if (emailSent) {
-            this.showMessage('Verification code sent to your email!', 'success');
-        } else {
-            this.showMessage('Verification code: ' + code + ' (Email service unavailable)', 'info');
-        }
-
-        // Start countdown
-        this.startVerificationCountdown();
-    }
-
-    // Greeting System
-    showTimeBasedGreeting() {
-        const hour = new Date().getHours();
-        let greeting = '';
-        
-        if (hour >= 5 && hour < 12) {
-            greeting = 'Good morning';
-        } else if (hour >= 12 && hour < 17) {
-            greeting = 'Good afternoon';
-        } else if (hour >= 17 && hour < 21) {
-            greeting = 'Good evening';
-        } else {
-            greeting = 'Good night';
-        }
-
-        // Update greeting in dashboard if available
-        const greetingElement = document.getElementById('greetingMessage');
-        if (greetingElement) {
-            greetingElement.textContent = `${greeting}, ${this.currentUser?.fullName || 'Guest'}!`;
-        }
-
-        return greeting;
-    }
-
-    // Auto-detect Updates and Notify Users
-    initUpdateNotifications() {
-        const lastUpdateCheck = localStorage.getItem('lastUpdateCheck');
-        const currentTime = Date.now();
-        
-        // Check for updates every 24 hours
-        if (!lastUpdateCheck || (currentTime - parseInt(lastUpdateCheck)) > 24 * 60 * 60 * 1000) {
-            this.checkForUpdates();
-            localStorage.setItem('lastUpdateCheck', currentTime.toString());
-        }
-
-        // Check for updates on page load (can be removed in production)
-        this.checkForUpdates();
-    }
-
-    async checkForUpdates() {
-        try {
-            // Simulate checking for updates
-            const updates = await this.fetchUpdates();
-            
-            if (updates && updates.length > 0) {
-                this.showUpdateNotification(updates);
-                
-                // Send email notification to users about updates
-                if (this.currentUser && this.currentUser.notifications?.productUpdates) {
-                    this.sendUpdateEmail(updates);
-                }
-            }
-        } catch (error) {
-            console.error('Update check failed:', error);
-        }
-    }
-
-    async fetchUpdates() {
-        // Simulate fetching updates from server
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const updates = [
-                    {
-                        title: 'New AI Features Available',
-                        description: 'We\'ve added new AI models and improved processing speed.',
-                        date: new Date().toISOString(),
-                        type: 'feature'
-                    },
-                    {
-                        title: 'Mobile App Update',
-                        description: 'Our mobile app now supports offline mode and faster downloads.',
-                        date: new Date().toISOString(),
-                        type: 'improvement'
-                    }
-                ];
-                resolve(updates);
-            }, 1000);
-        });
-    }
-
-    showUpdateNotification(updates) {
-        const notification = document.createElement('div');
-        notification.className = 'update-notification';
-        notification.innerHTML = `
-            <div class="update-header">
-                <i class="fas fa-sync-alt"></i>
-                <span>New Updates Available</span>
-                <button class="close-update">&times;</button>
-            </div>
-            <div class="update-content">
-                ${updates.map(update => `
-                    <div class="update-item">
-                        <strong>${update.title}</strong>
-                        <p>${update.description}</p>
-                        <small>${new Date(update.date).toLocaleDateString()}</small>
-                    </div>
-                `).join('')}
-            </div>
-        `;
-
-        // Add styles
-        if (!document.querySelector('#update-styles')) {
-            const styles = document.createElement('style');
-            styles.id = 'update-styles';
-            styles.textContent = `
-                .update-notification {
-                    position: fixed;
-                    top: 100px;
-                    right: 20px;
-                    background: var(--card-bg);
-                    border: 1px solid var(--primary);
-                    border-radius: 10px;
-                    padding: 0;
-                    z-index: 10001;
-                    max-width: 350px;
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-                    backdrop-filter: blur(20px);
-                }
-                .update-header {
-                    background: var(--primary);
-                    color: white;
-                    padding: 15px 20px;
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    border-radius: 10px 10px 0 0;
-                }
-                .update-header span {
-                    flex: 1;
-                    font-weight: 600;
-                }
-                .close-update {
-                    background: none;
-                    border: none;
-                    color: white;
-                    font-size: 1.2rem;
-                    cursor: pointer;
-                }
-                .update-content {
-                    padding: 20px;
-                    max-height: 300px;
-                    overflow-y: auto;
-                }
-                .update-item {
-                    margin-bottom: 15px;
-                    padding-bottom: 15px;
-                    border-bottom: 1px solid var(--glass-border);
-                }
-                .update-item:last-child {
-                    margin-bottom: 0;
-                    padding-bottom: 0;
-                    border-bottom: none;
-                }
-                .update-item strong {
-                    color: var(--light);
-                    display: block;
-                    margin-bottom: 5px;
-                }
-                .update-item p {
-                    color: var(--gray-light);
-                    margin: 0 0 8px 0;
-                    font-size: 0.9rem;
-                }
-                .update-item small {
-                    color: var(--gray);
-                    font-size: 0.8rem;
-                }
-            `;
-            document.head.appendChild(styles);
-        }
-
-        document.body.appendChild(notification);
-
-        // Close button functionality
-        const closeBtn = notification.querySelector('.close-update');
-        closeBtn.addEventListener('click', () => {
-            notification.remove();
-        });
-
-        // Auto-remove after 10 seconds
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.remove();
-            }
-        }, 10000);
-    }
-
-    async sendUpdateEmail(updates) {
-        const emailSubject = 'Fredi AI - New Updates Available!';
-        const emailHtml = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <style>
-                    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
-                    .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; }
-                    .header { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0; }
-                    .update { background: #f8f9fa; padding: 15px; margin: 15px 0; border-radius: 8px; border-left: 4px solid #6366f1; }
-                    .footer { text-align: center; color: #666; font-size: 12px; margin-top: 30px; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="header">
-                        <h1>Fredi AI Updates</h1>
-                        <p>Exciting New Features Available</p>
-                    </div>
-                    <h2>Hello ${this.currentUser.fullName}!</h2>
-                    <p>We're excited to share some new updates with you:</p>
-                    
-                    ${updates.map(update => `
-                        <div class="update">
-                            <h3>${update.title}</h3>
-                            <p>${update.description}</p>
-                            <small>Posted on ${new Date(update.date).toLocaleDateString()}</small>
-                        </div>
-                    `).join('')}
-                    
-                    <p>Log in to your dashboard to explore these new features!</p>
-                    <div class="footer">
-                        <p>&copy; 2024 Fredi AI. All rights reserved.</p>
-                    </div>
-                </div>
-            </body>
-            </html>
-        `;
-
-        await this.sendEmail(this.currentUser.email, emailSubject, emailHtml);
-    }
-
-    // Daily Greeting Email System
-    initGreetingSystem() {
-        const lastGreeting = localStorage.getItem('lastGreetingDate');
-        const today = new Date().toDateString();
-        
-        if (lastGreeting !== today) {
-            this.sendDailyGreeting();
-            localStorage.setItem('lastGreetingDate', today);
-        }
-    }
-
-    async sendDailyGreeting() {
-        if (!this.currentUser || !this.currentUser.notifications?.email) return;
-
-        const greeting = this.showTimeBasedGreeting();
-        const emailSubject = `Fredi AI - ${greeting} Greeting`;
-        const emailHtml = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <style>
-                    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
-                    .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; }
-                    .header { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0; }
-                    .greeting { font-size: 24px; text-align: center; margin: 30px 0; color: #6366f1; }
-                    .stats { background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; }
-                    .footer { text-align: center; color: #666; font-size: 12px; margin-top: 30px; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="header">
-                        <h1>Fredi AI</h1>
-                        <p>${greeting} Greeting</p>
-                    </div>
-                    <div class="greeting">
-                        ${greeting}, ${this.currentUser.fullName}!
-                    </div>
-                    <p>We hope you're having a wonderful day! Here's what's happening with Fredi AI:</p>
-                    
-                    <div class="stats">
-                        <h3>Your Daily Stats</h3>
-                        <p>• 25+ AI Projects Available</p>
-                        <p>• 10,000+ Active Users</p>
-                        <p>• Daily Feature Updates</p>
-                    </div>
-                    
-                    <p>Ready to create something amazing today?</p>
-                    <p><a href="${window.location.origin}/dashboard.html" style="background: #6366f1; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">Go to Dashboard</a></p>
-                    
-                    <div class="footer">
-                        <p>&copy; 2024 Fredi AI. All rights reserved.</p>
-                        <p><a href="${window.location.origin}/profile.html" style="color: #6366f1;">Manage your email preferences</a></p>
-                    </div>
-                </div>
-            </body>
-            </html>
-        `;
-
-        await this.sendEmail(this.currentUser.email, emailSubject, emailHtml);
     }
 
     async sendWelcomeEmail(user) {
@@ -493,7 +802,7 @@ class FrediAuth {
                         </div>
                     </div>
                     
-                    <p>Get started by exploring your dashboard and don't forget to verify your email address to unlock all features!</p>
+                    <p>Get started by exploring your dashboard!</p>
                     
                     <div class="footer">
                         <p>&copy; 2024 Fredi AI. All rights reserved.</p>
@@ -506,76 +815,8 @@ class FrediAuth {
         await this.sendEmail(user.email, emailSubject, emailHtml);
     }
 
-    updateUserInDatabase(user) {
-        const users = JSON.parse(localStorage.getItem('frediUsers')) || [];
-        const userIndex = users.findIndex(u => u.id === user.id);
-        if (userIndex !== -1) {
-            users[userIndex] = user;
-            localStorage.setItem('frediUsers', JSON.stringify(users));
-        }
-    }
+    // === EXISTING AUTH METHODS ===
 
-    // === YOUR EXISTING METHODS (UPDATED) ===
-
-    // Handle user signup (UPDATED)
-    async handleSignup() {
-        const fullName = document.getElementById('fullName').value;
-        const username = document.getElementById('username').value;
-        const email = document.getElementById('email').value;
-        const phone = document.getElementById('phone').value;
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
-
-        // Validate inputs
-        if (!this.validateSignup(fullName, username, email, phone, password, confirmPassword)) {
-            return;
-        }
-
-        // Check if user already exists
-        if (this.userExists(username, email)) {
-            this.showMessage('Username or email already exists', 'error');
-            return;
-        }
-
-        // Create new user
-        const newUser = {
-            id: this.generateId(),
-            fullName,
-            username,
-            email,
-            phone,
-            password: this.hashPassword(password),
-            avatar: this.generateAvatar(fullName),
-            joinDate: new Date().toISOString(),
-            isVerified: false,
-            subscription: 'free',
-            lastLogin: null,
-            notifications: {
-                email: true,
-                sms: false,
-                productUpdates: true,
-                marketing: false
-            }
-        };
-
-        // Store user temporarily for verification
-        sessionStorage.setItem('pendingUser', JSON.stringify(newUser));
-
-        // Send verification code with real email
-        await this.sendVerificationCode(email, phone);
-
-        // Send welcome email
-        await this.sendWelcomeEmail(newUser);
-
-        // Show verification modal
-        const verificationModal = document.getElementById('verificationModal');
-        if (verificationModal) {
-            verificationModal.classList.add('show');
-            document.body.style.overflow = 'hidden';
-        }
-    }
-
-    // Handle user login (UPDATED)
     handleLogin() {
         const username = document.getElementById('loginUsername').value;
         const password = document.getElementById('loginPassword').value;
@@ -586,7 +827,6 @@ class FrediAuth {
         loginBtn.disabled = true;
         loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing In...';
 
-        // Simulate API call
         setTimeout(async () => {
             const user = this.authenticateUser(username, password);
             
@@ -617,8 +857,6 @@ class FrediAuth {
         }, 1500);
     }
 
-    // === YOUR EXISTING METHODS (UNCHANGED) ===
-
     // Login functionality
     initLogin() {
         const loginForm = document.getElementById('loginForm');
@@ -635,9 +873,6 @@ class FrediAuth {
     // Signup functionality
     initSignup() {
         const signupForm = document.getElementById('signupForm');
-        const verificationModal = document.getElementById('verificationModal');
-        const verifyBtn = document.getElementById('verifyBtn');
-        const resendCode = document.getElementById('resendCode');
 
         if (signupForm) {
             signupForm.addEventListener('submit', (e) => {
@@ -645,23 +880,6 @@ class FrediAuth {
                 this.handleSignup();
             });
         }
-
-        if (verifyBtn) {
-            verifyBtn.addEventListener('click', () => {
-                this.handleVerification();
-            });
-        }
-
-        if (resendCode) {
-            resendCode.addEventListener('click', () => {
-                if (!resendCode.classList.contains('disabled')) {
-                    this.resendVerificationCode();
-                }
-            });
-        }
-
-        // Initialize verification code inputs
-        this.initVerificationInputs();
     }
 
     // Dashboard functionality
@@ -691,36 +909,6 @@ class FrediAuth {
                 this.handleLogout();
             });
         }
-
-        // Show donation modal after 3 seconds if not shown before
-        if (!sessionStorage.getItem('donationShown')) {
-            setTimeout(() => {
-                const donationModal = document.getElementById('donationModal');
-                if (donationModal) {
-                    donationModal.classList.add('show');
-                    document.body.style.overflow = 'hidden';
-                }
-                sessionStorage.setItem('donationShown', 'true');
-            }, 3000);
-        }
-
-        // Close donation modal
-        const declineDonation = document.getElementById('declineDonation');
-        const donationModal = document.getElementById('donationModal');
-
-        if (declineDonation && donationModal) {
-            declineDonation.addEventListener('click', () => {
-                donationModal.classList.remove('show');
-                document.body.style.overflow = 'auto';
-            });
-
-            donationModal.addEventListener('click', (e) => {
-                if (e.target === donationModal) {
-                    donationModal.classList.remove('show');
-                    document.body.style.overflow = 'auto';
-                }
-            });
-        }
     }
 
     // Profile functionality
@@ -734,40 +922,6 @@ class FrediAuth {
     initPayment() {
         this.initPaymentOptions();
         this.initPaymentForm();
-    }
-
-    // Handle verification
-    handleVerification() {
-        const codeInputs = document.querySelectorAll('.verification-input');
-        const enteredCode = Array.from(codeInputs).map(input => input.value).join('');
-        const pendingUser = JSON.parse(sessionStorage.getItem('pendingUser'));
-
-        if (!pendingUser) {
-            this.showMessage('Verification session expired', 'error');
-            return;
-        }
-
-        if (this.verifyCode(pendingUser.email, enteredCode)) {
-            // Add user to database
-            pendingUser.isVerified = true;
-            this.users.push(pendingUser);
-            localStorage.setItem('frediUsers', JSON.stringify(this.users));
-
-            // Set as current user
-            this.currentUser = pendingUser;
-            localStorage.setItem('currentUser', JSON.stringify(pendingUser));
-
-            // Clear pending user
-            sessionStorage.removeItem('pendingUser');
-
-            this.showMessage('Account created successfully! Redirecting...', 'success');
-            
-            setTimeout(() => {
-                window.location.href = 'dashboard.html';
-            }, 1500);
-        } else {
-            this.showMessage('Invalid verification code', 'error');
-        }
     }
 
     // Handle logout
@@ -902,8 +1056,6 @@ class FrediAuth {
         if (file) {
             const reader = new FileReader();
             reader.onload = (e) => {
-                // In a real app, you would upload to server
-                // For demo, we'll just update the avatar display
                 const profileAvatar = document.getElementById('profileAvatar');
                 const userAvatar = document.getElementById('userAvatar');
                 
@@ -975,18 +1127,13 @@ class FrediAuth {
         this.showMessage('Processing payment...', 'info');
         
         setTimeout(() => {
-            // In a real app, you would integrate with payment gateway
-            // For demo, we'll simulate successful payment
-            
-            // Update user subscription
             const userIndex = this.users.findIndex(u => u.id === this.currentUser.id);
             if (userIndex !== -1) {
                 this.users[userIndex].subscription = 'pro';
-                this.users[userIndex].subscriptionExpiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // 30 days
+                this.users[userIndex].subscriptionExpiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
                 
                 localStorage.setItem('frediUsers', JSON.stringify(this.users));
                 
-                // Update current user
                 this.currentUser = this.users[userIndex];
                 localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
                 
@@ -997,6 +1144,80 @@ class FrediAuth {
                 }, 2000);
             }
         }, 3000);
+    }
+
+    // Greeting System
+    showTimeBasedGreeting() {
+        const hour = new Date().getHours();
+        let greeting = '';
+        
+        if (hour >= 5 && hour < 12) {
+            greeting = 'Good morning';
+        } else if (hour >= 12 && hour < 17) {
+            greeting = 'Good afternoon';
+        } else if (hour >= 17 && hour < 21) {
+            greeting = 'Good evening';
+        } else {
+            greeting = 'Good night';
+        }
+
+        const greetingElement = document.getElementById('greetingMessage');
+        if (greetingElement) {
+            greetingElement.textContent = `${greeting}, ${this.currentUser?.fullName || 'Guest'}!`;
+        }
+
+        return greeting;
+    }
+
+    // Update notifications
+    initUpdateNotifications() {
+        const lastUpdateCheck = localStorage.getItem('lastUpdateCheck');
+        const currentTime = Date.now();
+        
+        if (!lastUpdateCheck || (currentTime - parseInt(lastUpdateCheck)) > 24 * 60 * 60 * 1000) {
+            this.checkForUpdates();
+            localStorage.setItem('lastUpdateCheck', currentTime.toString());
+        }
+
+        this.checkForUpdates();
+    }
+
+    async checkForUpdates() {
+        try {
+            const updates = await this.fetchUpdates();
+            
+            if (updates && updates.length > 0) {
+                this.showUpdateNotification(updates);
+                
+                if (this.currentUser && this.currentUser.notifications?.productUpdates) {
+                    this.sendUpdateEmail(updates);
+                }
+            }
+        } catch (error) {
+            console.error('Update check failed:', error);
+        }
+    }
+
+    async fetchUpdates() {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                const updates = [
+                    {
+                        title: 'New AI Features Available',
+                        description: 'We\'ve added new AI models and improved processing speed.',
+                        date: new Date().toISOString(),
+                        type: 'feature'
+                    },
+                    {
+                        title: 'Brain Verification System',
+                        description: 'New human verification system with fun games.',
+                        date: new Date().toISOString(),
+                        type: 'security'
+                    }
+                ];
+                resolve(updates);
+            }, 1000);
+        });
     }
 
     // Utility methods
@@ -1014,7 +1235,6 @@ class FrediAuth {
     }
 
     validateSignup(fullName, username, email, phone, password, confirmPassword) {
-        // Basic validation
         if (!fullName || !username || !email || !phone || !password) {
             this.showMessage('Please fill in all fields', 'error');
             return false;
@@ -1054,8 +1274,6 @@ class FrediAuth {
     }
 
     hashPassword(password) {
-        // In a real app, use proper hashing like bcrypt
-        // For demo, we'll use a simple hash
         return btoa(password);
     }
 
@@ -1068,66 +1286,16 @@ class FrediAuth {
         return `<span>${initials}</span>`;
     }
 
-    verifyCode(email, code) {
-        const storedCode = this.verificationCodes[email];
-        
-        if (!storedCode || storedCode.expiry < Date.now()) {
-            return false;
+    updateUserInDatabase(user) {
+        const users = JSON.parse(localStorage.getItem('frediUsers')) || [];
+        const userIndex = users.findIndex(u => u.id === user.id);
+        if (userIndex !== -1) {
+            users[userIndex] = user;
+            localStorage.setItem('frediUsers', JSON.stringify(users));
         }
-
-        return storedCode.code === code;
-    }
-
-    resendVerificationCode() {
-        const pendingUser = JSON.parse(sessionStorage.getItem('pendingUser'));
-        if (pendingUser) {
-            this.sendVerificationCode(pendingUser.email, pendingUser.phone);
-            this.showMessage('Verification code sent!', 'success');
-        }
-    }
-
-    startVerificationCountdown() {
-        const resendCode = document.getElementById('resendCode');
-        const countdownElement = document.getElementById('countdown');
-        
-        if (!resendCode || !countdownElement) return;
-
-        let timeLeft = 60;
-        resendCode.classList.add('disabled');
-
-        const countdown = setInterval(() => {
-            timeLeft--;
-            countdownElement.textContent = timeLeft;
-
-            if (timeLeft <= 0) {
-                clearInterval(countdown);
-                resendCode.classList.remove('disabled');
-                countdownElement.textContent = '60';
-                resendCode.innerHTML = 'Didn\'t receive code? <span>Resend</span>';
-            }
-        }, 1000);
-    }
-
-    initVerificationInputs() {
-        const inputs = document.querySelectorAll('.verification-input');
-        
-        inputs.forEach((input, index) => {
-            input.addEventListener('input', (e) => {
-                if (e.target.value.length === 1 && index < inputs.length - 1) {
-                    inputs[index + 1].focus();
-                }
-            });
-
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Backspace' && !e.target.value && index > 0) {
-                    inputs[index - 1].focus();
-                }
-            });
-        });
     }
 
     showMessage(message, type) {
-        // Create message element
         const messageEl = document.createElement('div');
         messageEl.className = `message ${type}`;
         messageEl.innerHTML = `
@@ -1137,7 +1305,6 @@ class FrediAuth {
             </div>
         `;
 
-        // Add styles if not already added
         if (!document.querySelector('#message-styles')) {
             const styles = document.createElement('style');
             styles.id = 'message-styles';
@@ -1191,12 +1358,10 @@ class FrediAuth {
 
         document.body.appendChild(messageEl);
 
-        // Show message
         setTimeout(() => {
             messageEl.classList.add('show');
         }, 100);
 
-        // Hide message after 5 seconds
         setTimeout(() => {
             messageEl.classList.remove('show');
             setTimeout(() => {
