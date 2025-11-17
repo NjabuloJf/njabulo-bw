@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fredi AI - Settings</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <div class="logo-icon">F</div>
+                <div class="logo-text">FREDI AI</div>
+            </div>
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item">Dashboard</a>
+                <a href="profile.html" class="nav-item">Profile</a>
+                <a href="settings.html" class="nav-item active">Settings</a>
+                <a href="payment.html" class="nav-item">Upgrade</a>
+            </nav>
+        </div>
+        <div class="header-right">
+            <div class="user-menu" id="userMenu">
+                <div class="user-avatar" id="userAvatar"></div>
+                <span class="user-name" id="userName">User</span>
+                <div class="user-dropdown">
+                    <a href="dashboard.html" class="dropdown-item">
+                        <i class="fas fa-home"></i>
+                        Dashboard
+                    </a>
+                    <a href="profile.html" class="dropdown-item">
+                        <i class="fas fa-user"></i>
+                        Profile
+                    </a>
+                    <a href="settings.html" class="dropdown-item">
+                        <i class="fas fa-cog"></i>
+                        Settings
+                    </a>
+                    <a href="payment.html" class="dropdown-item">
+                        <i class="fas fa-crown"></i>
+                        Upgrade to Pro
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                </div>
+            </div>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="settings-section">
+            <!-- Settings Header -->
+            <div class="settings-header">
+                <h1 class="settings-title">
+                    <i class="fas fa-cog"></i>
+                    Web App Controller & Settings
+                </h1>
+                <p class="settings-subtitle">Manage your Fredi AI experience and application preferences</p>
+            </div>
+
+            <!-- Settings Tabs -->
+            <div class="settings-tabs">
+                <button class="settings-tab active" data-tab="general">
+                    <i class="fas fa-sliders-h"></i>
+                    General
+                </button>
+                <button class="settings-tab" data-tab="appearance">
+                    <i class="fas fa-palette"></i>
+                    Appearance
+                </button>
+                <button class="settings-tab" data-tab="notifications">
+                    <i class="fas fa-bell"></i>
+                    Notifications
+                </button>
+                <button class="settings-tab" data-tab="privacy">
+                    <i class="fas fa-shield-alt"></i>
+                    Privacy & Security
+                </button>
+                <button class="settings-tab" data-tab="advanced">
+                    <i class="fas fa-code"></i>
+                    Advanced
+                </button>
+                <button class="settings-tab" data-tab="system">
+                    <i class="fas fa-microchip"></i>
+                    System
+                </button>
+            </div>
+
+            <!-- Settings Content -->
+            <div class="settings-content">
+                <!-- General Settings -->
+                <div class="settings-tab-content active" id="general-tab">
+                    <div class="settings-group">
+                        <h3 class="settings-group-title">
+                            <i class="fas fa-user"></i>
+                            Account Settings
+                        </h3>
+                        <div class="settings-items">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Language</h4>
+                                    <p>Choose your preferred language</p>
+                                </div>
+                                <select class="setting-control" id="languageSelect">
+                                    <option value="en">English</option>
+                                    <option value="sw">Swahili</option>
+                                    <option value="fr">French</option>
+                                    <option value="es">Spanish</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Timezone</h4>
+                                    <p>Set your local timezone</p>
+                                </div>
+                                <select class="setting-control" id="timezoneSelect">
+                                    <option value="Africa/Dar_es_Salaam">East Africa Time (EAT)</option>
+                                    <option value="Africa/Nairobi">East Africa Time (EAT)</option>
+                                    <option value="UTC">UTC</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Auto-save</h4>
+                                    <p>Automatically save your work</p>
+                                </div>
+                                <label class="toggle-switch large">
+                                    <input type="checkbox" id="autoSaveToggle" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3 class="settings-group-title">
+                            <i class="fas fa-rocket"></i>
+                            Performance
+                        </h3>
+                        <div class="settings-items">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Animation Effects</h4>
+                                    <p>Enable smooth animations and transitions</p>
+                                </div>
+                                <label class="toggle-switch large">
+                                    <input type="checkbox" id="animationsToggle" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Hardware Acceleration</h4>
+                                    <p>Use GPU for better performance</p>
+                                </div>
+                                <label class="toggle-switch large">
+                                    <input type="checkbox" id="hardwareAccelToggle" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Cache Strategy</h4>
+                                    <p>Optimize loading performance</p>
+                                </div>
+                                <select class="setting-control" id="cacheSelect">
+                                    <option value="aggressive">Aggressive</option>
+                                    <option value="balanced" selected>Balanced</option>
+                                    <option value="conservative">Conservative</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Appearance Settings -->
+                <div class="settings-tab-content" id="appearance-tab">
+                    <div class="settings-group">
+                        <h3 class="settings-group-title">
+                            <i class="fas fa-paint-brush"></i>
+                            Theme & Colors
+                        </h3>
+                        <div class="settings-items">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Theme Mode</h4>
+                                    <p>Choose your preferred theme</p>
+                                </div>
+                                <div class="theme-options">
+                                    <label class="theme-option">
+                                        <input type="radio" name="theme" value="light">
+                                        <div class="theme-preview light">
+                                            <i class="fas fa-sun"></i>
+                                            <span>Light</span>
+                                        </div>
+                                    </label>
+                                    <label class="theme-option">
+                                        <input type="radio" name="theme" value="dark" checked>
+                                        <div class="theme-preview dark">
+                                            <i class="fas fa-moon"></i>
+                                            <span>Dark</span>
+                                        </div>
+                                    </label>
+                                    <label class="theme-option">
+                                        <input type="radio" name="theme" value="auto">
+                                        <div class="theme-preview auto">
+                                            <i class="fas fa-adjust"></i>
+                                            <span>Auto</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Accent Color</h4>
+                                    <p>Choose your primary color</p>
+                                </div>
+                                <div class="color-options">
+                                    <div class="color-option" data-color="#6366f1" style="background: #6366f1;"></div>
+                                    <div class="color-option" data-color="#10b981" style="background: #10b981;"></div>
+                                    <div class="color-option" data-color="#f59e0b" style="background: #f59e0b;"></div>
+                                    <div class="color-option" data-color="#ef4444" style="background: #ef4444;"></div>
+                                    <div class="color-option" data-color="#8b5cf6" style="background: #8b5cf6;"></div>
+                                </div>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Font Size</h4>
+                                    <p>Adjust text size for better readability</p>
+                                </div>
+                                <div class="font-size-control">
+                                    <button class="font-size-btn" data-size="small">A</button>
+                                    <button class="font-size-btn active" data-size="medium">A</button>
+                                    <button class="font-size-btn" data-size="large">A</button>
+                                    <button class="font-size-btn" data-size="xlarge">A</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3 class="settings-group-title">
+                            <i class="fas fa-desktop"></i>
+                            Layout & Display
+                        </h3>
+                        <div class="settings-items">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Compact Mode</h4>
+                                    <p>Use compact spacing for more content</p>
+                                </div>
+                                <label class="toggle-switch large">
+                                    <input type="checkbox" id="compactModeToggle">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Sidebar Position</h4>
+                                    <p>Choose sidebar placement</p>
+                                </div>
+                                <select class="setting-control" id="sidebarPosition">
+                                    <option value="left">Left</option>
+                                    <option value="right">Right</option>
+                                    <option value="hidden">Hidden</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Grid Density</h4>
+                                    <p>Control content spacing</p>
+                                </div>
+                                <select class="setting-control" id="gridDensity">
+                                    <option value="comfortable">Comfortable</option>
+                                    <option value="cozy" selected>Cozy</option>
+                                    <option value="compact">Compact</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notifications Settings -->
+                <div class="settings-tab-content" id="notifications-tab">
+                    <div class="settings-group">
+                        <h3 class="settings-group-title">
+                            <i class="fas fa-bell"></i>
+                            Notification Preferences
+                        </h3>
+                        <div class="settings-items">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Push Notifications</h4>
+                                    <p>Receive browser notifications</p>
+                                </div>
+                                <label class="toggle-switch large">
+                                    <input type="checkbox" id="pushNotificationsToggle" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Email Notifications</h4>
+                                    <p>Receive updates via email</p>
+                                </div>
+                                <label class="toggle-switch large">
+                                    <input type="checkbox" id="emailNotificationsToggle" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Sound Effects</h4>
+                                    <p>Play sounds for notifications</p>
+                                </div>
+                                <label class="toggle-switch large">
+                                    <input type="checkbox" id="soundEffectsToggle" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3 class="settings-group-title">
+                            <i class="fas fa-filter"></i>
+                            Notification Types
+                        </h3>
+                        <div class="settings-items">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>System Updates</h4>
+                                    <p>Notifications about system changes</p>
+                                </div>
+                                <label class="toggle-switch large">
+                                    <input type="checkbox" id="systemUpdatesToggle" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Security Alerts</h4>
+                                    <p>Important security notifications</p>
+                                </div>
+                                <label class="toggle-switch large">
+                                    <input type="checkbox" id="securityAlertsToggle" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Feature Announcements</h4>
+                                    <p>New features and improvements</p>
+                                </div>
+                                <label class="toggle-switch large">
+                                    <input type="checkbox" id="featureAnnouncementsToggle" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Marketing Emails</h4>
+                                    <p>Promotional content and offers</p>
+                                </div>
+                                <label class="toggle-switch large">
+                                    <input type="checkbox" id="marketingEmailsToggle">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Privacy & Security Settings -->
+                <div class="settings-tab-content" id="privacy-tab">
+                    <div class="settings-group">
+                        <h3 class="settings-group-title">
+                            <i class="fas fa-shield-alt"></i>
+                            Privacy Controls
+                        </h3>
+                        <div class="settings-items">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Data Collection</h4>
+                                    <p>Allow anonymous usage data collection</p>
+                                </div>
+                                <label class="toggle-switch large">
+                                    <input type="checkbox" id="dataCollectionToggle">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Cookies</h4>
+                                    <p>Accept cookies for better experience</p>
+                                </div>
+                                <label class="toggle-switch large">
+                                    <input type="checkbox" id="cookiesToggle" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Location Services</h4>
+                                    <p>Allow location-based features</p>
+                                </div>
+                                <label class="toggle-switch large">
+                                    <input type="checkbox" id="locationServicesToggle">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3 class="settings-group-title">
+                            <i class="fas fa-lock"></i>
+                            Security Settings
+                        </h3>
+                        <div class="settings-items">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Two-Factor Authentication</h4>
+                                    <p>Add extra security to your account</p>
+                                </div>
+                                <label class="toggle-switch large">
+                                    <input type="checkbox" id="twoFactorToggle">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Auto Logout</h4>
+                                    <p>Automatically logout after inactivity</p>
+                                </div>
+                                <select class="setting-control" id="autoLogoutSelect">
+                                    <option value="0">Never</option>
+                                    <option value="15">15 minutes</option>
+                                    <option value="30">30 minutes</option>
+                                    <option value="60">1 hour</option>
+                                    <option value="120">2 hours</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Session Management</h4>
+                                    <p>View and manage active sessions</p>
+                                </div>
+                                <button class="btn btn-secondary" id="manageSessionsBtn">
+                                    <i class="fas fa-desktop"></i>
+                                    Manage Sessions
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Settings -->
+                <div class="settings-tab-content" id="advanced-tab">
+                    <div class="settings-group">
+                        <h3 class="settings-group-title">
+                            <i class="fas fa-tools"></i>
+                            Developer Options
+                        </h3>
+                        <div class="settings-items">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Developer Mode</h4>
+                                    <p>Enable advanced developer features</p>
+                                </div>
+                                <label class="toggle-switch large">
+                                    <input type="checkbox" id="developerModeToggle">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Debug Console</h4>
+                                    <p>Show debug information and logs</p>
+                                </div>
+                                <label class="toggle-switch large">
+                                    <input type="checkbox" id="debugConsoleToggle">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>API Access</h4>
+                                    <p>Enable external API integrations</p>
+                                </div>
+                                <label class="toggle-switch large">
+                                    <input type="checkbox" id="apiAccessToggle">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3 class="settings-group-title">
+                            <i class="fas fa-database"></i>
+                            Data Management
+                        </h3>
+                        <div class="settings-items">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Export Data</h4>
+                                    <p>Download your personal data</p>
+                                </div>
+                                <button class="btn btn-secondary" id="exportDataBtn">
+                                    <i class="fas fa-download"></i>
+                                    Export Data
+                                </button>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Clear Cache</h4>
+                                    <p>Remove temporary files and data</p>
+                                </div>
+                                <button class="btn btn-secondary" id="clearCacheBtn">
+                                    <i class="fas fa-broom"></i>
+                                    Clear Cache
+                                </button>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Reset Settings</h4>
+                                    <p>Restore all settings to default</p>
+                                </div>
+                                <button class="btn btn-danger" id="resetSettingsBtn">
+                                    <i class="fas fa-redo"></i>
+                                    Reset All Settings
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Settings -->
+                <div class="settings-tab-content" id="system-tab">
+                    <div class="settings-group">
+                        <h3 class="settings-group-title">
+                            <i class="fas fa-info-circle"></i>
+                            System Information
+                        </h3>
+                        <div class="system-info-grid">
+                            <div class="system-info-item">
+                                <span class="info-label">App Version</span>
+                                <span class="info-value" id="appVersion">1.0.0</span>
+                            </div>
+                            <div class="system-info-item">
+                                <span class="info-label">Browser</span>
+                                <span class="info-value" id="browserInfo">Chrome 119</span>
+                            </div>
+                            <div class="system-info-item">
+                                <span class="info-label">Platform</span>
+                                <span class="info-value" id="platformInfo">Windows 10</span>
+                            </div>
+                            <div class="system-info-item">
+                                <span class="info-label">Screen Resolution</span>
+                                <span class="info-value" id="screenResolution">1920x1080</span>
+                            </div>
+                            <div class="system-info-item">
+                                <span class="info-label">Local Storage</span>
+                                <span class="info-value" id="localStorageUsage">2.5 MB / 5 MB</span>
+                            </div>
+                            <div class="system-info-item">
+                                <span class="info-label">Connection</span>
+                                <span class="info-value" id="connectionType">4G</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3 class="settings-group-title">
+                            <i class="fas fa-heartbeat"></i>
+                            System Health
+                        </h3>
+                        <div class="health-metrics">
+                            <div class="health-metric">
+                                <div class="metric-header">
+                                    <span>CPU Usage</span>
+                                    <span class="metric-value" id="cpuUsage">45%</span>
+                                </div>
+                                <div class="metric-bar">
+                                    <div class="metric-fill" style="width: 45%"></div>
+                                </div>
+                            </div>
+                            <div class="health-metric">
+                                <div class="metric-header">
+                                    <span>Memory Usage</span>
+                                    <span class="metric-value" id="memoryUsage">62%</span>
+                                </div>
+                                <div class="metric-bar">
+                                    <div class="metric-fill" style="width: 62%"></div>
+                                </div>
+                            </div>
+                            <div class="health-metric">
+                                <div class="metric-header">
+                                    <span>Storage</span>
+                                    <span class="metric-value" id="storageUsage">78%</span>
+                                </div>
+                                <div class="metric-bar">
+                                    <div class="metric-fill" style="width: 78%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3 class="settings-group-title">
+                            <i class="fas fa-redo"></i>
+                            Maintenance
+                        </h3>
+                        <div class="settings-items">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Auto Updates</h4>
+                                    <p>Automatically download and install updates</p>
+                                </div>
+                                <label class="toggle-switch large">
+                                    <input type="checkbox" id="autoUpdatesToggle" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Backup Settings</h4>
+                                    <p>Automatically backup your configuration</p>
+                                </div>
+                                <label class="toggle-switch large">
+                                    <input type="checkbox" id="autoBackupToggle" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>Error Reporting</h4>
+                                    <p>Send anonymous error reports to help improve</p>
+                                </div>
+                                <label class="toggle-switch large">
+                                    <input type="checkbox" id="errorReportingToggle" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Actions -->
+            <div class="settings-actions">
+                <button class="btn btn-primary" id="saveSettingsBtn">
+                    <i class="fas fa-save"></i>
+                    Save Changes
+                </button>
+                <button class="btn btn-secondary" id="cancelSettingsBtn">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                </button>
+                <button class="btn btn-outline" id="exportSettingsBtn">
+                    <i class="fas fa-download"></i>
+                    Export Settings
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Session Management Modal -->
+    <div class="modal" id="sessionsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Active Sessions</h3>
+                <button class="modal-close" id="closeSessionsModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="sessionsList">
+                    <!-- Sessions will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" id="logoutAllSessionsBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout All Sessions
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="settings.js"></script>
+</body>
+</html>
