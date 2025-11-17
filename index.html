@@ -3,67 +3,282 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fredi AI - Welcome</title>
+    <title>Fredi AI - Developer Hub & AI Platform</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="welcome-container">
+        <!-- Animated Background -->
+        <div class="animated-background">
+            <div class="floating-code">
+                <span>&lt;html&gt;</span>
+                <span>&lt;div class="container"&gt;</span>
+                <span>function developer() {</span>
+                <span>  return "Fredi AI";</span>
+                <span>}</span>
+                <span>console.log("Hello World");</span>
+                <span>const skills = ["JavaScript", "Python", "AI"];</span>
+            </div>
+        </div>
+
         <div class="welcome-content">
-            <div class="welcome-logo">
-                <div class="logo-icon">F</div>
-                <div class="logo-text">FREDI AI</div>
-            </div>
-            
-            <h1 class="welcome-title">Welcome to Fredi AI</h1>
-            <p class="welcome-subtitle">
-                Advanced AI-powered solutions and innovative projects that transform your digital experience.
-            </p>
-            
-            <div class="welcome-stats">
-                <div class="stat-item">
-                    <span class="stat-number">25+</span>
-                    <span class="stat-label">Projects</span>
+            <!-- Developer Profile Header -->
+            <div class="developer-header">
+                <div class="profile-avatar">
+                    <div class="avatar-icon">FE</div>
+                    <div class="online-status"></div>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-number">10K+</span>
-                    <span class="stat-label">Users</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">Daily</span>
-                    <span class="stat-label">Updates</span>
+                <div class="developer-info">
+                    <h1 class="developer-name">Fredi Elibarick Ezra</h1>
+                    <p class="developer-title">Full-Stack Developer & AI Specialist</p>
+                    <div class="location-tag">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Dar es Salaam, Tanzania</span>
+                    </div>
                 </div>
             </div>
             
-            <div class="welcome-actions">
-                <a href="login.html" class="btn btn-primary">
-                    <i class="fas fa-sign-in-alt"></i>
-                    Login
-                </a>
-                <a href="signup.html" class="btn btn-secondary">
-                    <i class="fas fa-user-plus"></i>
-                    Sign Up
-                </a>
-            </div>
-            
-            <div class="welcome-features">
-                <div class="feature">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Secure Authentication</span>
+            <!-- Main Welcome Section -->
+            <div class="main-welcome">
+                <div class="welcome-logo">
+                    <div class="logo-icon">F</div>
+                    <div class="logo-text">FREDI AI</div>
                 </div>
-                <div class="feature">
-                    <i class="fas fa-brain"></i>
-                    <span>AI-Powered</span>
+                
+                <h1 class="welcome-title">Welcome to My Developer Hub</h1>
+                <p class="welcome-subtitle">
+                    Building the future with <span class="highlight">AI-powered solutions</span> and 
+                    <span class="highlight">cutting-edge technology</span>. Transforming ideas into 
+                    digital reality through code and innovation.
+                </p>
+                
+                <!-- Tech Stack Showcase -->
+                <div class="tech-stack">
+                    <div class="tech-item">
+                        <i class="fab fa-js-square"></i>
+                        <span>JavaScript</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fab fa-python"></i>
+                        <span>Python</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fab fa-node-js"></i>
+                        <span>Node.js</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fab fa-react"></i>
+                        <span>React</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fas fa-brain"></i>
+                        <span>AI/ML</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fas fa-database"></i>
+                        <span>MongoDB</span>
+                    </div>
                 </div>
-                <div class="feature">
-                    <i class="fas fa-sync-alt"></i>
-                    <span>Daily Updates</span>
+                
+                <!-- Live Stats -->
+                <div class="welcome-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">50+</span>
+                        <span class="stat-label">Projects Built</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">3+</span>
+                        <span class="stat-label">Years Experience</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">10K+</span>
+                        <span class="stat-label">Users Served</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">Active Development</span>
+                    </div>
+                </div>
+                
+                <!-- Code Examples Carousel -->
+                <div class="code-carousel">
+                    <h3>Recent Code Snippets</h3>
+                    <div class="carousel-container">
+                        <div class="code-snippet active">
+                            <div class="code-header">
+                                <span class="file-name">ai-chatbot.js</span>
+                                <span class="language">JavaScript</span>
+                            </div>
+                            <pre><code>class FrediAIChatbot {
+  constructor() {
+    this.model = 'gpt-4';
+    this.context = [];
+  }
+  
+  async generateResponse(message) {
+    const response = await this.processMessage(message);
+    return this.formatResponse(response);
+  }
+}</code></pre>
+                        </div>
+                        <div class="code-snippet">
+                            <div class="code-header">
+                                <span class="file-name">api-server.py</span>
+                                <span class="language">Python</span>
+                            </div>
+                            <pre><code>from flask import Flask, jsonify
+from ai_models import FrediAI
+
+app = Flask(__name__)
+ai_model = FrediAI()
+
+@app.route('/api/chat', methods=['POST'])
+def chat_endpoint():
+    data = request.get_json()
+    response = ai_model.process(data['message'])
+    return jsonify({'response': response})</code></pre>
+                        </div>
+                        <div class="code-snippet">
+                            <div class="code-header">
+                                <span class="file-name">database.js</span>
+                                <span class="language">Node.js</span>
+                            </div>
+                            <pre><code>const mongoose = require('mongoose');
+
+const userSchema = new mongoose.Schema({
+  username: { type: String, required: true },
+  email: { type: String, unique: true },
+  projects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }]
+});
+
+module.exports = mongoose.model('User', userSchema);</code></pre>
+                        </div>
+                    </div>
+                    <div class="carousel-nav">
+                        <button class="nav-btn active" data-index="0"></button>
+                        <button class="nav-btn" data-index="1"></button>
+                        <button class="nav-btn" data-index="2"></button>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="welcome-actions">
+                    <a href="login.html" class="btn btn-primary">
+                        <i class="fas fa-terminal"></i>
+                        Developer Login
+                    </a>
+                    <a href="signup.html" class="btn btn-secondary">
+                        <i class="fas fa-code-branch"></i>
+                        Join Platform
+                    </a>
+                    <a href="about.html" class="btn btn-outline">
+                        <i class="fas fa-user"></i>
+                        View My Profile
+                    </a>
+                </div>
+                
+                <!-- Quick Features -->
+                <div class="quick-features">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h4>AI Integration</h4>
+                        <p>Advanced AI models and machine learning solutions</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h4>Mobile Apps</h4>
+                        <p>Cross-platform mobile applications</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h4>Secure Auth</h4>
+                        <p>Enterprise-grade security systems</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h4>Fast APIs</h4>
+                        <p>High-performance RESTful APIs</p>
+                    </div>
+                </div>
+                
+                <!-- Social Proof -->
+                <div class="social-proof">
+                    <div class="github-stats">
+                        <div class="github-stat">
+                            <i class="fab fa-github"></i>
+                            <span>3 GitHub Accounts</span>
+                        </div>
+                        <div class="github-stat">
+                            <i class="fas fa-code"></i>
+                            <span>50+ Repositories</span>
+                        </div>
+                        <div class="github-stat">
+                            <i class="fas fa-star"></i>
+                            <span>100+ Stars</span>
+                        </div>
+                    </div>
+                    <div class="social-links">
+                        <a href="https://github.com/Fred1e" class="social-link" target="_blank">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://github.com/FezChat" class="social-link" target="_blank">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://github.com/mr-X-force" class="social-link" target="_blank">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://wa.me/255752593977" class="social-link" target="_blank">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script src="auth.js"></script>
+    <script>
+        // Code Carousel Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const snippets = document.querySelectorAll('.code-snippet');
+            const navButtons = document.querySelectorAll('.nav-btn');
+            let currentIndex = 0;
+
+            function showSnippet(index) {
+                snippets.forEach(snippet => snippet.classList.remove('active'));
+                navButtons.forEach(btn => btn.classList.remove('active'));
+                
+                snippets[index].classList.add('active');
+                navButtons[index].classList.add('active');
+                currentIndex = index;
+            }
+
+            navButtons.forEach((button, index) => {
+                button.addEventListener('click', () => showSnippet(index));
+            });
+
+            // Auto-rotate carousel
+            setInterval(() => {
+                currentIndex = (currentIndex + 1) % snippets.length;
+                showSnippet(currentIndex);
+            }, 5000);
+
+            // Animated background effect
+            const floatingCode = document.querySelector('.floating-code');
+            setInterval(() => {
+                floatingCode.style.transform = `translateY(${Math.sin(Date.now() / 2000) * 10}px)`;
+            }, 50);
+        });
+    </script>
 </body>
 </html>
