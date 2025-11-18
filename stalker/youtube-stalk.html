@@ -390,7 +390,7 @@
                 emptyState.style.display = 'none';
                 videosGrid.innerHTML = '';
                 
-                fetch(`https://apis-keith.vercel.app/stalker/ytchannel?user=${encodeURIComponent(username)}`)
+                fetch(`https://apiskeith.vercel.app/stalker/ytchannel?user=${encodeURIComponent(username)}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.status) {
