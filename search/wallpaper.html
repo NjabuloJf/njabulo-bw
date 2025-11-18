@@ -386,7 +386,7 @@
             
             // Fetch wallpapers from API
             function fetchWallpapers(searchTerm, page) {
-                fetch(`https://apis-keith.vercel.app/download/wallpaper?text=${encodeURIComponent(searchTerm)}&page=${page}`)
+                fetch(`https://apiskeith.vercel.app/download/wallpaper?text=${encodeURIComponent(searchTerm)}&page=${page}`)
                     .then(response => {
                         if (!response.ok) throw new Error('Network response was not ok');
                         return response.json();
