@@ -391,7 +391,7 @@
             
             // Fetch data from API
             function fetchSoundCloudData(searchTerm) {
-                fetch(`https://apis-keith.vercel.app/search/soundcloud?q=${encodeURIComponent(searchTerm)}`)
+                fetch(`https://apiskeith.vercel.app/search/soundcloud?q=${encodeURIComponent(searchTerm)}`)
                     .then(response => {
                         if (!response.ok) throw new Error('Network response was not ok');
                         return response.json();
