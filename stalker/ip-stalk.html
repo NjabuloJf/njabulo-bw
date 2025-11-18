@@ -343,7 +343,7 @@
                 ipContainer.style.display = 'none';
                 emptyState.style.display = 'none';
                 
-                fetch(`https://apis-keith.vercel.app/stalker/ip?q=${encodeURIComponent(ip)}`)
+                fetch(`https://apiskeith.vercel.app/stalker/ip?q=${encodeURIComponent(ip)}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.status) {
