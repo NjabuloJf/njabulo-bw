@@ -336,7 +336,7 @@
                 profileContainer.style.display = 'none';
                 emptyState.style.display = 'none';
                 
-                fetch(`https://apis-keith.vercel.app/stalker/twitter?user=${encodeURIComponent(username)}`)
+                fetch(`https://apiskeith.vercel.app/stalker/twitter?user=${encodeURIComponent(username)}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.status) {
