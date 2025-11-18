@@ -368,7 +368,7 @@
                 emptyState.style.display = 'none';
                 keywordsContainer.innerHTML = '';
                 
-                fetch(`https://apis-keith.vercel.app/stalker/npm?q=${encodeURIComponent(packageName)}`)
+                fetch(`https://apiskeith.vercel.app/stalker/npm?q=${encodeURIComponent(packageName)}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.status) {
