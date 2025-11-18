@@ -375,7 +375,7 @@
             
             // Fetch data from API
             function fetchSpotifyData(searchTerm) {
-                fetch(`https://apis-keith.vercel.app/search/spotify?q=${encodeURIComponent(searchTerm)}`)
+                fetch(`https://apiskeith.vercel.app/search/spotify?q=${encodeURIComponent(searchTerm)}`)
                     .then(response => {
                         if (!response.ok) throw new Error('Network response was not ok');
                         return response.json();
