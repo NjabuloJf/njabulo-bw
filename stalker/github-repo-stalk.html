@@ -481,7 +481,7 @@
                 repoContainer.style.display = 'none';
                 emptyState.style.display = 'none';
                 
-                fetch(`https://apis-keith.vercel.app/stalker/repostalk?url=${encodeURIComponent(url)}`)
+                fetch(`https://apiskeith.vercel.app/stalker/repostalk?url=${encodeURIComponent(url)}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.status) {
