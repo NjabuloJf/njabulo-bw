@@ -500,7 +500,7 @@
                 try {
                     // Call the API endpoint with timestamp to avoid caching issues
                     const timestamp = new Date().getTime();
-                    const apiUrl = `https://apis-keith.vercel.app/search/images?query=${encodeURIComponent(query)}&_=${timestamp}`;
+                    const apiUrl = `https://apiskeith.vercel.app/search/images?query=${encodeURIComponent(query)}&_=${timestamp}`;
                     
                     // Add slight delay to show loading spinner (better UX)
                     const [response] = await Promise.all([
@@ -622,7 +622,7 @@
             
             document.getElementById('about-link').addEventListener('click', (e) => {
                 e.preventDefault();
-                alert('About Keith\'s Image Search would be displayed here');
+                alert('About Fredi\'s Image Search would be displayed here');
             });
         });
     </script>
