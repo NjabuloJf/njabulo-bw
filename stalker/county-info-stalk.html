@@ -433,7 +433,7 @@
                 emptyState.style.display = 'none';
                 neighborsGrid.innerHTML = '';
                 
-                fetch(`https://apis-keith.vercel.app/stalker/country?region=${encodeURIComponent(country)}`)
+                fetch(`https://apiskeith.vercel.app/stalker/country?region=${encodeURIComponent(country)}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.status) {
