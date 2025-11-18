@@ -242,7 +242,7 @@
                 channelCard.style.display = 'none';
                 emptyState.style.display = 'none';
                 
-                fetch(`https://apis-keith.vercel.app/stalker/wachannel?url=${encodeURIComponent(url)}`)
+                fetch(`https://apiskeith.vercel.app/stalker/wachannel?url=${encodeURIComponent(url)}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.status) {
