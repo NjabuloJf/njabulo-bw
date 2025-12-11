@@ -841,8 +841,101 @@ class AuthenticationSystem {
             modal.classList.remove('active');
         }
         
-        // Redirect to main dashboard
-        window.location.href = 'index.html';
+        // FIXED: Redirect to dashboard.html instead of index.html
+        window.location.href = 'dashboard.html'; // <<< HAPA NIME-BADILISHA
+        
+        // Alternative: Create dashboard.html automatically if it doesn't exist
+        // this.ensureDashboardExists();
+    }
+    
+    // Optional: Create dashboard.html if it doesn't exist
+    ensureDashboardExists() {
+        // Check if dashboard.html exists
+        fetch('dashboard.html')
+            .then(response => {
+                if (!response.ok) {
+                    // Create a basic dashboard if it doesn't exist
+                    this.createBasicDashboard();
+                } else {
+                    window.location.href = 'dashboard.html';
+                }
+            })
+            .catch(() => {
+                // Create a basic dashboard if fetch fails
+                this.createBasicDashboard();
+            });
+    }
+    
+    createBasicDashboard() {
+        // Create a basic dashboard HTML content
+        const dashboardHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fredi AI - Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="logo">
+                <div class="logo-icon">F</div>
+                <div class="logo-text">FREDI AI Dashboard</div>
+            </div>
+            <div class="user-menu">
+                <div class="user-avatar">
+                    <span id="userAvatar">FE</span>
+                </div>
+                <div class="user-info">
+                    <span id="userName">Fredi Elibarick Ezra</span>
+                    <span class="user-role" id="userRole">Developer</span>
+                </div>
+            </div>
+        </header>
+        
+        <main class="dashboard-main">
+            <div class="welcome-section">
+                <h1>Welcome to Fredi AI Dashboard!</h1>
+                <p>You have successfully logged in.</p>
+                <a href="index.html" class="btn btn-primary">Back to Home</a>
+                <button class="btn btn-secondary" id="logoutBtn">Logout</button>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load user data
+            const userData = localStorage.getItem('fredi_user') || sessionStorage.getItem('fredi_user');
+            if (userData) {
+                const user = JSON.parse(userData);
+                document.getElementById('userName').textContent = user.fullName;
+                document.getElementById('userAvatar').textContent = user.avatar || user.fullName.split(' ').map(n => n[0]).join('').toUpperCase();
+                document.getElementById('userRole').textContent = user.userType || 'Developer';
+            }
+            
+            // Logout functionality
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                localStorage.removeItem('fredi_user');
+                sessionStorage.removeItem('fredi_user');
+                window.location.href = 'auth.html';
+            });
+        });
+    </script>
+</body>
+</html>
+        `;
+        
+        // Create and download the dashboard.html file
+        const blob = new Blob([dashboardHTML], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        
+        // Redirect to the created dashboard
+        window.location.href = url;
     }
     
     mockAuthentication(identifier, password) {
