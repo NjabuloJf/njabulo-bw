@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fredi AI - Authentication</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="splash-screen">
+        <div class="splash-content">
+            <div class="splash-logo">
+                <div class="logo-spinner">
+                    <div class="spinner-circle"></div>
+                    <div class="spinner-icon">F</div>
+                </div>
+                <h1 class="splash-title">FREDI AI</h1>
+                <p class="splash-subtitle">Authentication System Loading...</p>
+            </div>
+            <div class="splash-progress">
+                <div class="progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Auth Container -->
+    <div class="auth-main-container" style="opacity: 0;">
+        <!-- Auth Navigation Tabs -->
+        <div class="auth-navigation">
+            <div class="auth-nav-tabs">
+                <button class="auth-tab active" data-tab="login">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Login</span>
+                </button>
+                <button class="auth-tab" data-tab="signup">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Sign Up</span>
+                </button>
+            </div>
+            <div class="auth-back-home">
+                <a href="index.html" class="back-home-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back to Home</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Auth Content Container -->
+        <div class="auth-content-container">
+            <!-- LOGIN FORM -->
+            <div class="auth-form-container active" id="loginFormContainer">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <div class="auth-logo">
+                            <div class="auth-logo-icon">F</div>
+                            <div class="auth-logo-text">FREDI AI</div>
+                        </div>
+                        <h1 class="auth-title">Welcome Back 👋</h1>
+                        <p class="auth-subtitle">Sign in to access your developer dashboard</p>
+                    </div>
+
+                    <form class="auth-form" id="loginForm">
+                        <div class="form-group">
+                            <label for="loginIdentifier" class="form-label">
+                                <i class="fas fa-user"></i>
+                                Username, Email or Phone
+                            </label>
+                            <input type="text" id="loginIdentifier" class="form-input" required 
+                                   placeholder="Enter username, email or phone">
+                            <div class="input-feedback" id="loginIdentifierFeedback">
+                                <span class="valid-icon"><i class="fas fa-check-circle"></i></span>
+                                <span class="error-icon"><i class="fas fa-exclamation-circle"></i></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="password-header">
+                                <label for="loginPassword" class="form-label">
+                                    <i class="fas fa-lock"></i>
+                                    Password
+                                </label>
+                                <div class="password-strength" id="loginPasswordStrength">
+                                    <span class="strength-dot"></span>
+                                    <span class="strength-dot"></span>
+                                    <span class="strength-dot"></span>
+                                </div>
+                            </div>
+                            <div class="password-input-group">
+                                <input type="password" id="loginPassword" class="form-input" required 
+                                       placeholder="Enter your password">
+                                <button type="button" class="password-toggle" id="toggleLoginPassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="input-feedback" id="loginPasswordFeedback">
+                                <span class="valid-icon"><i class="fas fa-check-circle"></i></span>
+                                <span class="error-icon"><i class="fas fa-exclamation-circle"></i></span>
+                            </div>
+                        </div>
+
+                        <!-- Real-time Login Status -->
+                        <div class="login-status" id="loginStatus">
+                            <div class="status-indicator">
+                                <div class="status-dot"></div>
+                                <span class="status-text">Ready to authenticate</span>
+                            </div>
+                            <div class="login-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-shield-alt"></i>
+                                    Secure Connection
+                                </span>
+                                <span class="stat-item">
+                                    <i class="fas fa-bolt"></i>
+                                    Real-time Validation
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-options">
+                            <label class="remember-me">
+                                <input type="checkbox" id="rememberMe">
+                                <span>Remember me for 30 days</span>
+                            </label>
+                            <a href="#forgot-password" class="forgot-password" id="forgotPasswordBtn">
+                                Forgot password?
+                            </a>
+                        </div>
+
+                        <button type="submit" class="auth-btn" id="loginBtn">
+                            <span class="btn-icon">
+                                <i class="fas fa-sign-in-alt"></i>
+                            </span>
+                            <span class="btn-text">Sign In</span>
+                            <div class="btn-loader">
+                                <div class="loader"></div>
+                            </div>
+                        </button>
+
+                        <!-- Quick Login Options -->
+                        <div class="quick-login-options">
+                            <p class="quick-login-title">Quick Login</p>
+                            <div class="quick-login-buttons">
+                                <button type="button" class="quick-login-btn" id="quickLoginDev">
+                                    <i class="fas fa-code"></i>
+                                    Developer Account
+                                </button>
+                                <button type="button" class="quick-login-btn" id="quickLoginAdmin">
+                                    <i class="fas fa-user-shield"></i>
+                                    Admin Account
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="auth-footer">
+                        <p>New to Fredi AI? <a href="#signup" class="auth-link switch-to-signup">Create an account</a></p>
+                    </div>
+                </div>
+
+                <!-- Login Features Sidebar -->
+                <div class="auth-features">
+                    <div class="feature-highlight">
+                        <h3><i class="fas fa-rocket"></i> What you get:</h3>
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check-circle"></i> Access to all projects</li>
+                            <li><i class="fas fa-check-circle"></i> Code samples repository</li>
+                            <li><i class="fas fa-check-circle"></i> AI model playground</li>
+                            <li><i class="fas fa-check-circle"></i> Real-time collaboration</li>
+                            <li><i class="fas fa-check-circle"></i> API keys & documentation</li>
+                        </ul>
+                    </div>
+                    <div class="recent-activities">
+                        <h3><i class="fas fa-history"></i> Recent Activity</h3>
+                        <div class="activities-list" id="loginActivities">
+                            <!-- Will be populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SIGNUP FORM -->
+            <div class="auth-form-container" id="signupFormContainer">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <div class="auth-logo">
+                            <div class="auth-logo-icon">F</div>
+                            <div class="auth-logo-text">FREDI AI</div>
+                        </div>
+                        <h1 class="auth-title">Join Our Community 🚀</h1>
+                        <p class="auth-subtitle">Start your developer journey today</p>
+                    </div>
+
+                    <form class="auth-form" id="signupForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="fullName" class="form-label">
+                                    <i class="fas fa-user"></i>
+                                    Full Name
+                                </label>
+                                <input type="text" id="fullName" class="form-input" required 
+                                       placeholder="Enter your full name">
+                                <div class="input-feedback" id="fullNameFeedback">
+                                    <span class="valid-icon"><i class="fas fa-check-circle"></i></span>
+                                    <span class="error-icon"><i class="fas fa-exclamation-circle"></i></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="username" class="form-label">
+                                    <i class="fas fa-at"></i>
+                                    Username
+                                </label>
+                                <input type="text" id="username" class="form-input" required 
+                                       placeholder="Choose a username">
+                                <div class="input-feedback" id="usernameFeedback">
+                                    <span class="valid-icon"><i class="fas fa-check-circle"></i></span>
+                                    <span class="error-icon"><i class="fas fa-exclamation-circle"></i></span>
+                                    <span class="availability-check">
+                                        <i class="fas fa-sync fa-spin"></i>
+                                        Checking...
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email" class="form-label">
+                                <i class="fas fa-envelope"></i>
+                                Email Address
+                            </label>
+                            <input type="email" id="email" class="form-input" required 
+                                   placeholder="Enter your email">
+                            <div class="input-feedback" id="emailFeedback">
+                                <span class="valid-icon"><i class="fas fa-check-circle"></i></span>
+                                <span class="error-icon"><i class="fas fa-exclamation-circle"></i></span>
+                                <span class="availability-check">
+                                    <i class="fas fa-sync fa-spin"></i>
+                                    Verifying...
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="phone" class="form-label">
+                                    <i class="fas fa-phone"></i>
+                                    Phone Number
+                                </label>
+                                <div class="phone-input-group">
+                                    <select class="country-code" id="countryCode">
+                                        <option value="255">TZ +255</option>
+                                        <option value="1">US +1</option>
+                                        <option value="44">UK +44</option>
+                                        <option value="91">IN +91</option>
+                                    </select>
+                                    <input type="tel" id="phone" class="form-input" required 
+                                           placeholder="XXX XXX XXX">
+                                </div>
+                                <div class="input-feedback" id="phoneFeedback">
+                                    <span class="valid-icon"><i class="fas fa-check-circle"></i></span>
+                                    <span class="error-icon"><i class="fas fa-exclamation-circle"></i></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="userType" class="form-label">
+                                    <i class="fas fa-user-tag"></i>
+                                    Account Type
+                                </label>
+                                <select id="userType" class="form-input">
+                                    <option value="developer">👨‍💻 Developer</option>
+                                    <option value="student">🎓 Student</option>
+                                    <option value="business">💼 Business</option>
+                                    <option value="researcher">🔬 Researcher</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="password-header">
+                                <label for="password" class="form-label">
+                                    <i class="fas fa-lock"></i>
+                                    Password
+                                </label>
+                                <div class="password-strength-meter" id="passwordStrength">
+                                    <span class="strength-text">Strength: <span id="strengthValue">None</span></span>
+                                    <div class="strength-bar">
+                                        <div class="strength-fill" id="strengthFill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="password-input-group">
+                                <input type="password" id="password" class="form-input" required 
+                                       placeholder="Create a strong password">
+                                <button type="button" class="password-toggle" id="togglePassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="password-requirements" id="passwordRequirements">
+                                <p class="requirements-title">Password must contain:</p>
+                                <ul class="requirements-list">
+                                    <li class="req-item" id="reqLength">
+                                        <i class="fas fa-circle"></i>
+                                        At least 8 characters
+                                    </li>
+                                    <li class="req-item" id="reqUppercase">
+                                        <i class="fas fa-circle"></i>
+                                        One uppercase letter
+                                    </li>
+                                    <li class="req-item" id="reqLowercase">
+                                        <i class="fas fa-circle"></i>
+                                        One lowercase letter
+                                    </li>
+                                    <li class="req-item" id="reqNumber">
+                                        <i class="fas fa-circle"></i>
+                                        One number
+                                    </li>
+                                    <li class="req-item" id="reqSpecial">
+                                        <i class="fas fa-circle"></i>
+                                        One special character
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirmPassword" class="form-label">
+                                <i class="fas fa-lock"></i>
+                                Confirm Password
+                            </label>
+                            <div class="password-input-group">
+                                <input type="password" id="confirmPassword" class="form-input" required 
+                                       placeholder="Confirm your password">
+                                <button type="button" class="password-toggle" id="toggleConfirmPassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="input-feedback" id="confirmPasswordFeedback">
+                                <span class="valid-icon"><i class="fas fa-check-circle"></i></span>
+                                <span class="error-icon"><i class="fas fa-exclamation-circle"></i></span>
+                            </div>
+                        </div>
+
+                        <!-- Real-time Signup Progress -->
+                        <div class="signup-progress" id="signupProgress">
+                            <div class="progress-header">
+                                <h4><i class="fas fa-tasks"></i> Account Setup Progress</h4>
+                                <span class="progress-percent" id="progressPercent">0%</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-fill" id="progressBarFill"></div>
+                            </div>
+                            <div class="progress-steps">
+                                <div class="progress-step active" data-step="1">
+                                    <div class="step-icon">1</div>
+                                    <span class="step-text">Basic Info</span>
+                                </div>
+                                <div class="progress-step" data-step="2">
+                                    <div class="step-icon">2</div>
+                                    <span class="step-text">Credentials</span>
+                                </div>
+                                <div class="progress-step" data-step="3">
+                                    <div class="step-icon">3</div>
+                                    <span class="step-text">Verification</span>
+                                </div>
+                                <div class="progress-step" data-step="4">
+                                    <div class="step-icon">4</div>
+                                    <span class="step-text">Complete</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group terms-group">
+                            <label class="terms-label">
+                                <input type="checkbox" id="agreeTerms" required>
+                                <span class="terms-text">
+                                    I agree to the 
+                                    <a href="#" class="terms-link">Terms of Service</a>, 
+                                    <a href="#" class="terms-link">Privacy Policy</a>, and 
+                                    <a href="#" class="terms-link">Developer Agreement</a>
+                                </span>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="auth-btn" id="signupBtn">
+                            <span class="btn-icon">
+                                <i class="fas fa-user-plus"></i>
+                            </span>
+                            <span class="btn-text">Create Account</span>
+                            <div class="btn-loader">
+                                <div class="loader"></div>
+                            </div>
+                        </button>
+
+                        <!-- Social Signup Options -->
+                        <div class="social-signup">
+                            <p class="social-title">Or sign up with</p>
+                            <div class="social-buttons">
+                                <button type="button" class="social-btn github-btn">
+                                    <i class="fab fa-github"></i>
+                                    GitHub
+                                </button>
+                                <button type="button" class="social-btn google-btn">
+                                    <i class="fab fa-google"></i>
+                                    Google
+                                </button>
+                                <button type="button" class="social-btn twitter-btn">
+                                    <i class="fab fa-twitter"></i>
+                                    Twitter
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="auth-footer">
+                        <p>Already have an account? <a href="#login" class="auth-link switch-to-login">Sign in here</a></p>
+                    </div>
+                </div>
+
+                <!-- Signup Benefits Sidebar -->
+                <div class="auth-features">
+                    <div class="benefits-highlight">
+                        <h3><i class="fas fa-gift"></i> Sign up benefits:</h3>
+                        <ul class="benefits-list">
+                            <li><i class="fas fa-check-circle"></i> Free AI API Credits</li>
+                            <li><i class="fas fa-check-circle"></i> Access to Source Code</li>
+                            <li><i class="fas fa-check-circle"></i> Project Templates</li>
+                            <li><i class="fas fa-check-circle"></i> Community Support</li>
+                            <li><i class="fas fa-check-circle"></i> Early Access Features</li>
+                        </ul>
+                    </div>
+                    <div class="signup-stats">
+                        <h3><i class="fas fa-chart-line"></i> Community Stats</h3>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-number">1,500+</div>
+                                <div class="stat-label">Active Developers</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">50+</div>
+                                <div class="stat-label">Open Source Projects</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">24/7</div>
+                                <div class="stat-label">Support Available</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FORGOT PASSWORD FORM -->
+            <div class="auth-form-container" id="forgotPasswordContainer">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <div class="auth-logo">
+                            <div class="auth-logo-icon">F</div>
+                            <div class="auth-logo-text">FREDI AI</div>
+                        </div>
+                        <h1 class="auth-title">Reset Password 🔐</h1>
+                        <p class="auth-subtitle">Enter your email to receive reset instructions</p>
+                    </div>
+
+                    <form class="auth-form" id="forgotPasswordForm">
+                        <div class="form-group">
+                            <label for="resetEmail" class="form-label">
+                                <i class="fas fa-envelope"></i>
+                                Email Address
+                            </label>
+                            <input type="email" id="resetEmail" class="form-input" required 
+                                   placeholder="Enter your registered email">
+                            <div class="input-feedback" id="resetEmailFeedback">
+                                <span class="valid-icon"><i class="fas fa-check-circle"></i></span>
+                                <span class="error-icon"><i class="fas fa-exclamation-circle"></i></span>
+                            </div>
+                        </div>
+
+                        <div class="reset-instructions">
+                            <p><i class="fas fa-info-circle"></i> We'll send you a verification code to reset your password.</p>
+                        </div>
+
+                        <button type="submit" class="auth-btn" id="resetPasswordBtn">
+                            <span class="btn-icon">
+                                <i class="fas fa-paper-plane"></i>
+                            </span>
+                            <span class="btn-text">Send Reset Instructions</span>
+                            <div class="btn-loader">
+                                <div class="loader"></div>
+                            </div>
+                        </button>
+
+                        <div class="back-to-login">
+                            <a href="#login" class="auth-link switch-to-login">
+                                <i class="fas fa-arrow-left"></i>
+                                Back to Login
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Brain Verification Modal -->
+        <div class="modal" id="brainVerificationModal">
+            <div class="modal-content">
+                <div class="brain-verification-container">
+                    <div class="verification-header">
+                        <div class="verification-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3>Human Verification Required</h3>
+                        <p>Complete this challenge to verify you're human</p>
+                    </div>
+                    
+                    <div class="verification-game">
+                        <div class="game-instructions">
+                            <p><i class="fas fa-info-circle"></i> Click the emojis in the correct sequence</p>
+                        </div>
+                        <div class="game-container" id="gameContainer">
+                            <!-- Game will be rendered here dynamically -->
+                        </div>
+                        <div class="game-progress">
+                            <div class="progress-text">
+                                Sequence: <span id="currentSequence">[]</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-fill" id="gameProgressBar"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="verification-footer">
+                        <div class="attempts-info">
+                            <i class="fas fa-redo"></i>
+                            Attempts: <span id="attemptsCount">0</span>/3
+                            <span class="time-remaining" id="timeRemaining">Time: 60s</span>
+                        </div>
+                        <div class="verification-buttons">
+                            <button class="auth-btn secondary" id="resetGameBtn">
+                                <i class="fas fa-redo"></i>
+                                Reset Challenge
+                            </button>
+                            <button class="auth-btn" id="verifyGameBtn">
+                                <i class="fas fa-check"></i>
+                                Verify & Continue
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Modal -->
+        <div class="modal" id="successModal">
+            <div class="modal-content">
+                <div class="success-container">
+                    <div class="success-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3 id="successTitle">Authentication Successful!</h3>
+                    <p id="successMessage">Redirecting to dashboard...</p>
+                    <div class="success-progress">
+                        <div class="progress-bar-fill" id="successProgressBar"></div>
+                    </div>
+                    <div class="success-actions">
+                        <button class="auth-btn" id="continueBtn">
+                            <i class="fas fa-rocket"></i>
+                            Continue to Dashboard
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live System Status -->
+        <div class="system-status">
+            <div class="status-indicator online">
+                <div class="status-dot"></div>
+                <span class="status-text">System: Online</span>
+            </div>
+            <div class="status-info">
+                <span class="info-item">
+                    <i class="fas fa-users"></i>
+                    <span id="activeUsers">0</span> active
+                </span>
+                <span class="info-item">
+                    <i class="fas fa-server"></i>
+                    <span id="serverLoad">0%</span> load
+                </span>
+                <span class="info-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span id="securityLevel">High</span>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth-system.js"></script>
+</body>
+</html>
