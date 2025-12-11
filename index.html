@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
 </head>
-<body class="light-mode">
+<body>
     <!-- Splash Screen -->
     <div id="splash-screen" class="splash-screen">
         <div class="splash-content">
@@ -27,495 +27,410 @@
         </div>
     </div>
 
-    <!-- Main Dashboard -->
-    <div class="dashboard-container">
-        <!-- Header with Theme Toggle -->
-        <header class="dashboard-header">
-            <div class="header-left">
-                <div class="logo">
+    <!-- Welcome Container -->
+    <div class="welcome-container">
+        <!-- Animated Background -->
+        <div class="animated-background">
+            <div class="floating-code">
+                <span>&lt;html&gt;</span>
+                <span>&lt;div class="container"&gt;</span>
+                <span>function developer() {</span>
+                <span>  return "Fredi AI";</span>
+                <span>}</span>
+                <span>console.log("Hello World");</span>
+                <span>const skills = ["JavaScript", "Python", "AI"];</span>
+            </div>
+        </div>
+
+        <div class="welcome-content">
+            <!-- Developer Profile Header -->
+            <div class="developer-header">
+                <div class="profile-avatar">
+                    <div class="avatar-icon">FE</div>
+                    <div class="online-status"></div>
+                </div>
+                <div class="developer-info">
+                    <h1 class="developer-name">Fredi Elibarick Ezra</h1>
+                    <p class="developer-title">Full-Stack Developer & AI Specialist</p>
+                    <div class="location-tag">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Dar es Salaam, Tanzania</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Welcome Section -->
+            <div class="main-welcome">
+                <div class="welcome-logo">
                     <div class="logo-icon">F</div>
                     <div class="logo-text">FREDI AI</div>
                 </div>
-                <nav class="main-nav">
-                    <a href="#projects" class="nav-link active">Projects</a>
-                    <a href="#code" class="nav-link">Code Samples</a>
-                    <a href="#about" class="nav-link">About</a>
-                    <a href="#contact" class="nav-link">Contact</a>
-                </nav>
-            </div>
-            <div class="header-right">
-                <div class="theme-toggle">
-                    <button id="theme-toggle" class="theme-btn">
-                        <i class="fas fa-moon"></i>
-                        <i class="fas fa-sun"></i>
-                    </button>
-                </div>
-                <div class="user-profile">
-                    <div class="profile-avatar">
-                        <div class="avatar-icon">FE</div>
-                        <div class="online-status"></div>
+                
+                <h1 class="welcome-title">Welcome to My Developer Hub</h1>
+                <p class="welcome-subtitle">
+                    Building the future with <span class="highlight">AI-powered solutions</span> and 
+                    <span class="highlight">cutting-edge technology</span>. Transforming ideas into 
+                    digital reality through code and innovation.
+                </p>
+                
+                <!-- Tech Stack Showcase -->
+                <div class="tech-stack">
+                    <div class="tech-item">
+                        <i class="fab fa-js-square"></i>
+                        <span>JavaScript</span>
                     </div>
-                    <span class="user-name">Fredi Elibarick Ezra</span>
-                </div>
-            </div>
-        </header>
-
-        <!-- Main Content -->
-        <main class="dashboard-main">
-            <!-- Hero Section -->
-            <section class="hero-section">
-                <div class="hero-content">
-                    <h1 class="hero-title">Welcome to Developer Hub</h1>
-                    <p class="hero-subtitle">
-                        Building the future with <span class="highlight">AI-powered solutions</span> and 
-                        <span class="highlight">cutting-edge technology</span>. Transforming ideas into 
-                        digital reality through code and innovation.
-                    </p>
-                    <div class="hero-stats">
-                        <div class="stat-card">
-                            <span class="stat-number">50+</span>
-                            <span class="stat-label">Projects Built</span>
-                        </div>
-                        <div class="stat-card">
-                            <span class="stat-number">3+</span>
-                            <span class="stat-label">Years Experience</span>
-                        </div>
-                        <div class="stat-card">
-                            <span class="stat-number">10K+</span>
-                            <span class="stat-label">Users Served</span>
-                        </div>
+                    <div class="tech-item">
+                        <i class="fab fa-python"></i>
+                        <span>Python</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fab fa-node-js"></i>
+                        <span>Node.js</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fab fa-react"></i>
+                        <span>React</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fas fa-brain"></i>
+                        <span>AI/ML</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fas fa-database"></i>
+                        <span>MongoDB</span>
                     </div>
                 </div>
-                <div class="hero-illustration">
-                    <div class="code-animation">
-                        <div class="floating-code">
-                            <span class="code-line">const dev = new Developer();</span>
-                            <span class="code-line">dev.skills = ["AI", "Web", "Mobile"];</span>
-                            <span class="code-line">dev.build("future");</span>
+                
+                <!-- Projects Carousel Section -->
+                <section class="projects-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Featured Projects</h2>
+                        <p class="section-subtitle">Auto-sliding showcase of my recent work</p>
+                        <div class="carousel-controls">
+                            <button class="carousel-btn prev-btn">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="carousel-btn next-btn">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
                         </div>
                     </div>
-                </div>
-            </section>
 
-            <!-- Projects Carousel -->
-            <section id="projects" class="projects-section">
-                <div class="section-header">
-                    <h2 class="section-title">Featured Projects</h2>
-                    <p class="section-subtitle">Auto-sliding showcase of my recent work</p>
-                    <div class="carousel-controls">
-                        <button class="carousel-btn prev-btn">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="carousel-btn next-btn">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                    </div>
-                </div>
+                    <div class="projects-carousel">
+                        <div class="carousel-track">
+                            <!-- Project 1 -->
+                            <div class="project-card active">
+                                <div class="project-image">
+                                    <div class="image-placeholder">
+                                        <i class="fas fa-robot"></i>
+                                    </div>
+                                    <div class="project-badge">AI</div>
+                                </div>
+                                <div class="project-content">
+                                    <h3 class="project-title">Fredi AI Assistant</h3>
+                                    <p class="project-description">
+                                        Advanced AI-powered assistant with natural language processing, 
+                                        multi-language support, and integration capabilities.
+                                    </p>
+                                    <div class="project-tech">
+                                        <span class="tech-tag">Python</span>
+                                        <span class="tech-tag">TensorFlow</span>
+                                        <span class="tech-tag">FastAPI</span>
+                                    </div>
+                                </div>
+                            </div>
 
-                <div class="projects-carousel">
-                    <div class="carousel-track">
-                        <!-- Project 1 -->
-                        <div class="project-card active">
-                            <div class="project-image">
-                                <div class="image-placeholder">
-                                    <i class="fas fa-robot"></i>
+                            <!-- Project 2 -->
+                            <div class="project-card">
+                                <div class="project-image">
+                                    <div class="image-placeholder">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </div>
+                                    <div class="project-badge">E-commerce</div>
                                 </div>
-                                <div class="project-badge">AI</div>
-                            </div>
-                            <div class="project-content">
-                                <h3 class="project-title">Fredi AI Assistant</h3>
-                                <p class="project-description">
-                                    Advanced AI-powered assistant with natural language processing, 
-                                    multi-language support, and integration capabilities.
-                                </p>
-                                <div class="project-tech">
-                                    <span class="tech-tag">Python</span>
-                                    <span class="tech-tag">TensorFlow</span>
-                                    <span class="tech-tag">FastAPI</span>
+                                <div class="project-content">
+                                    <h3 class="project-title">ShopSmart AI</h3>
+                                    <p class="project-description">
+                                        Intelligent e-commerce platform with AI-powered recommendations, 
+                                        real-time inventory management, and secure payments.
+                                    </p>
+                                    <div class="project-tech">
+                                        <span class="tech-tag">React</span>
+                                        <span class="tech-tag">Node.js</span>
+                                        <span class="tech-tag">MongoDB</span>
+                                    </div>
                                 </div>
-                                <button class="project-btn">View Details</button>
                             </div>
-                        </div>
 
-                        <!-- Project 2 -->
-                        <div class="project-card">
-                            <div class="project-image">
-                                <div class="image-placeholder">
-                                    <i class="fas fa-shopping-cart"></i>
+                            <!-- Project 3 -->
+                            <div class="project-card">
+                                <div class="project-image">
+                                    <div class="image-placeholder">
+                                        <i class="fas fa-mobile-alt"></i>
+                                    </div>
+                                    <div class="project-badge">Mobile</div>
                                 </div>
-                                <div class="project-badge">E-commerce</div>
-                            </div>
-                            <div class="project-content">
-                                <h3 class="project-title">ShopSmart AI</h3>
-                                <p class="project-description">
-                                    Intelligent e-commerce platform with AI-powered recommendations, 
-                                    real-time inventory management, and secure payments.
-                                </p>
-                                <div class="project-tech">
-                                    <span class="tech-tag">React</span>
-                                    <span class="tech-tag">Node.js</span>
-                                    <span class="tech-tag">MongoDB</span>
+                                <div class="project-content">
+                                    <h3 class="project-title">HealthTrack Pro</h3>
+                                    <p class="project-description">
+                                        Healthcare mobile app with AI diagnostics, appointment scheduling, 
+                                        and health monitoring features.
+                                    </p>
+                                    <div class="project-tech">
+                                        <span class="tech-tag">React Native</span>
+                                        <span class="tech-tag">Firebase</span>
+                                        <span class="tech-tag">GraphQL</span>
+                                    </div>
                                 </div>
-                                <button class="project-btn">View Details</button>
                             </div>
-                        </div>
 
-                        <!-- Project 3 -->
-                        <div class="project-card">
-                            <div class="project-image">
-                                <div class="image-placeholder">
-                                    <i class="fas fa-mobile-alt"></i>
+                            <!-- Project 4 -->
+                            <div class="project-card">
+                                <div class="project-image">
+                                    <div class="image-placeholder">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    <div class="project-badge">Analytics</div>
                                 </div>
-                                <div class="project-badge">Mobile</div>
-                            </div>
-                            <div class="project-content">
-                                <h3 class="project-title">HealthTrack Pro</h3>
-                                <p class="project-description">
-                                    Healthcare mobile app with AI diagnostics, appointment scheduling, 
-                                    and health monitoring features.
-                                </p>
-                                <div class="project-tech">
-                                    <span class="tech-tag">React Native</span>
-                                    <span class="tech-tag">Firebase</span>
-                                    <span class="tech-tag">GraphQL</span>
+                                <div class="project-content">
+                                    <h3 class="project-title">DataInsight AI</h3>
+                                    <p class="project-description">
+                                        Real-time business intelligence platform with predictive analytics, 
+                                        data visualization, and automated reporting.
+                                    </p>
+                                    <div class="project-tech">
+                                        <span class="tech-tag">Python</span>
+                                        <span class="tech-tag">D3.js</span>
+                                        <span class="tech-tag">PostgreSQL</span>
+                                    </div>
                                 </div>
-                                <button class="project-btn">View Details</button>
                             </div>
-                        </div>
 
-                        <!-- Project 4 -->
-                        <div class="project-card">
-                            <div class="project-image">
-                                <div class="image-placeholder">
-                                    <i class="fas fa-chart-line"></i>
+                            <!-- Project 5 -->
+                            <div class="project-card">
+                                <div class="project-image">
+                                    <div class="image-placeholder">
+                                        <i class="fas fa-gamepad"></i>
+                                    </div>
+                                    <div class="project-badge">Game Dev</div>
                                 </div>
-                                <div class="project-badge">Analytics</div>
-                            </div>
-                            <div class="project-content">
-                                <h3 class="project-title">DataInsight AI</h3>
-                                <p class="project-description">
-                                    Real-time business intelligence platform with predictive analytics, 
-                                    data visualization, and automated reporting.
-                                </p>
-                                <div class="project-tech">
-                                    <span class="tech-tag">Python</span>
-                                    <span class="tech-tag">D3.js</span>
-                                    <span class="tech-tag">PostgreSQL</span>
+                                <div class="project-content">
+                                    <h3 class="project-title">NeonRunner 3D</h3>
+                                    <p class="project-description">
+                                        3D endless runner game with advanced physics, particle effects, 
+                                        and multiplayer capabilities.
+                                    </p>
+                                    <div class="project-tech">
+                                        <span class="tech-tag">Unity</span>
+                                        <span class="tech-tag">C#</span>
+                                        <span class="tech-tag">WebGL</span>
+                                    </div>
                                 </div>
-                                <button class="project-btn">View Details</button>
                             </div>
-                        </div>
 
-                        <!-- Project 5 -->
-                        <div class="project-card">
-                            <div class="project-image">
-                                <div class="image-placeholder">
-                                    <i class="fas fa-gamepad"></i>
+                            <!-- Project 6 -->
+                            <div class="project-card">
+                                <div class="project-image">
+                                    <div class="image-placeholder">
+                                        <i class="fas fa-lock"></i>
+                                    </div>
+                                    <div class="project-badge">Security</div>
                                 </div>
-                                <div class="project-badge">Game Dev</div>
-                            </div>
-                            <div class="project-content">
-                                <h3 class="project-title">NeonRunner 3D</h3>
-                                <p class="project-description">
-                                    3D endless runner game with advanced physics, particle effects, 
-                                    and multiplayer capabilities.
-                                </p>
-                                <div class="project-tech">
-                                    <span class="tech-tag">Unity</span>
-                                    <span class="tech-tag">C#</span>
-                                    <span class="tech-tag">WebGL</span>
+                                <div class="project-content">
+                                    <h3 class="project-title">SecureAuth Pro</h3>
+                                    <p class="project-description">
+                                        Enterprise authentication system with biometric verification, 
+                                        multi-factor authentication, and threat detection.
+                                    </p>
+                                    <div class="project-tech">
+                                        <span class="tech-tag">Node.js</span>
+                                        <span class="tech-tag">JWT</span>
+                                        <span class="tech-tag">Redis</span>
+                                    </div>
                                 </div>
-                                <button class="project-btn">View Details</button>
                             </div>
-                        </div>
 
-                        <!-- Project 6 -->
-                        <div class="project-card">
-                            <div class="project-image">
-                                <div class="image-placeholder">
-                                    <i class="fas fa-lock"></i>
+                            <!-- Project 7 -->
+                            <div class="project-card">
+                                <div class="project-image">
+                                    <div class="image-placeholder">
+                                        <i class="fas fa-video"></i>
+                                    </div>
+                                    <div class="project-badge">Video</div>
                                 </div>
-                                <div class="project-badge">Security</div>
-                            </div>
-                            <div class="project-content">
-                                <h3 class="project-title">SecureAuth Pro</h3>
-                                <p class="project-description">
-                                    Enterprise authentication system with biometric verification, 
-                                    multi-factor authentication, and threat detection.
-                                </p>
-                                <div class="project-tech">
-                                    <span class="tech-tag">Node.js</span>
-                                    <span class="tech-tag">JWT</span>
-                                    <span class="tech-tag">Redis</span>
+                                <div class="project-content">
+                                    <h3 class="project-title">StreamSync AI</h3>
+                                    <p class="project-description">
+                                        Live streaming platform with AI content moderation, 
+                                        real-time transcoding, and interactive features.
+                                    </p>
+                                    <div class="project-tech">
+                                        <span class="tech-tag">WebRTC</span>
+                                        <span class="tech-tag">WebSocket</span>
+                                        <span class="tech-tag">FFmpeg</span>
+                                    </div>
                                 </div>
-                                <button class="project-btn">View Details</button>
-                            </div>
-                        </div>
-
-                        <!-- Project 7 -->
-                        <div class="project-card">
-                            <div class="project-image">
-                                <div class="image-placeholder">
-                                    <i class="fas fa-video"></i>
-                                </div>
-                                <div class="project-badge">Video</div>
-                            </div>
-                            <div class="project-content">
-                                <h3 class="project-title">StreamSync AI</h3>
-                                <p class="project-description">
-                                    Live streaming platform with AI content moderation, 
-                                    real-time transcoding, and interactive features.
-                                </p>
-                                <div class="project-tech">
-                                    <span class="tech-tag">WebRTC</span>
-                                    <span class="tech-tag">WebSocket</span>
-                                    <span class="tech-tag">FFmpeg</span>
-                                </div>
-                                <button class="project-btn">View Details</button>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="carousel-indicators">
-                    <span class="indicator active" data-index="0"></span>
-                    <span class="indicator" data-index="1"></span>
-                    <span class="indicator" data-index="2"></span>
-                    <span class="indicator" data-index="3"></span>
-                    <span class="indicator" data-index="4"></span>
-                    <span class="indicator" data-index="5"></span>
-                    <span class="indicator" data-index="6"></span>
-                </div>
-            </section>
-
-            <!-- Code Samples Section -->
-            <section id="code" class="code-section">
-                <div class="section-header">
-                    <h2 class="section-title">Code Samples</h2>
-                    <p class="section-subtitle">Examples across different programming languages</p>
-                </div>
-
-                <div class="code-tabs">
-                    <div class="tab-header">
-                        <button class="tab-btn active" data-tab="javascript">JavaScript</button>
-                        <button class="tab-btn" data-tab="python">Python</button>
-                        <button class="tab-btn" data-tab="java">Java</button>
-                        <button class="tab-btn" data-tab="cpp">C++</button>
-                        <button class="tab-btn" data-tab="php">PHP</button>
-                        <button class="tab-btn" data-tab="swift">Swift</button>
-                        <button class="tab-btn" data-tab="rust">Rust</button>
+                    <div class="carousel-indicators">
+                        <span class="indicator active" data-index="0"></span>
+                        <span class="indicator" data-index="1"></span>
+                        <span class="indicator" data-index="2"></span>
+                        <span class="indicator" data-index="3"></span>
+                        <span class="indicator" data-index="4"></span>
+                        <span class="indicator" data-index="5"></span>
+                        <span class="indicator" data-index="6"></span>
                     </div>
-
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="javascript">
-                            <div class="code-sample">
-                                <div class="code-header">
-                                    <span class="file-name">ai-chatbot.js</span>
-                                    <span class="language">JavaScript</span>
-                                </div>
-                                <pre><code class="language-javascript">class FrediAIChatbot {
-    constructor(model = 'gpt-4') {
-        this.model = model;
-        this.context = [];
-        this.isLearning = true;
-    }
-
-    async generateResponse(message) {
-        try {
-            const processed = await this.preprocessMessage(message);
-            const context = this.buildContext(processed);
-            const response = await this.callAIAPI(context);
-            
-            if (this.isLearning) {
-                this.learnFromInteraction(message, response);
-            }
-            
-            return this.formatResponse(response);
-        } catch (error) {
-            console.error('AI Error:', error);
-            return this.getFallbackResponse();
-        }
-    }
-
-    buildContext(message) {
-        return {
-            message,
-            timestamp: Date.now(),
-            previousContext: this.context.slice(-5),
-            userPreferences: this.userPrefs
-        };
-    }
-
-    formatResponse(aiResponse) {
-        return {
-            text: aiResponse.content,
-            confidence: aiResponse.confidence,
-            suggestions: aiResponse.suggestions || []
-        };
-    }
+                </section>
+                
+                <!-- Code Examples Carousel -->
+                <div class="code-carousel">
+                    <h3>Recent Code Snippets</h3>
+                    <div class="carousel-container">
+                        <div class="code-snippet active">
+                            <div class="code-header">
+                                <span class="file-name">ai-chatbot.js</span>
+                                <span class="language">JavaScript</span>
+                            </div>
+                            <pre><code>class FrediAIChatbot {
+  constructor() {
+    this.model = 'gpt-4';
+    this.context = [];
+  }
+  
+  async generateResponse(message) {
+    const response = await this.processMessage(message);
+    return this.formatResponse(response);
+  }
 }</code></pre>
-                            </div>
                         </div>
-
-                        <div class="tab-pane" id="python">
-                            <div class="code-sample">
-                                <div class="code-header">
-                                    <span class="file-name">neural_network.py</span>
-                                    <span class="language">Python</span>
-                                </div>
-                                <pre><code class="language-python">import tensorflow as tf
-import numpy as np
-from typing import List, Tuple
-
-class FrediNeuralNetwork:
-    def __init__(self, input_size: int, hidden_layers: List[int], output_size: int):
-        self.model = tf.keras.Sequential()
-        self.model.add(tf.keras.layers.Input(shape=(input_size,)))
-        
-        for neurons in hidden_layers:
-            self.model.add(tf.keras.layers.Dense(neurons, activation='relu'))
-            self.model.add(tf.keras.layers.Dropout(0.2))
-        
-        self.model.add(tf.keras.layers.Dense(output_size, activation='softmax'))
-        
-        self.compile_model()
-    
-    def compile_model(self, learning_rate: float = 0.001):
-        optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate)
-        self.model.compile(
-            optimizer=optimizer,
-            loss='categorical_crossentropy',
-            metrics=['accuracy']
-        )
-    
-    def train(self, X_train: np.ndarray, y_train: np.ndarray, 
-              epochs: int = 100, batch_size: int = 32) -> dict:
-        history = self.model.fit(
-            X_train, y_train,
-            epochs=epochs,
-            batch_size=batch_size,
-            validation_split=0.2,
-            verbose=1
-        )
-        return history.history
-    
-    def predict(self, X_input: np.ndarray) -> np.ndarray:
-        return self.model.predict(X_input, verbose=0)</code></pre>
+                        <div class="code-snippet">
+                            <div class="code-header">
+                                <span class="file-name">api-server.py</span>
+                                <span class="language">Python</span>
                             </div>
+                            <pre><code>from flask import Flask, jsonify
+from ai_models import FrediAI
+
+app = Flask(__name__)
+ai_model = FrediAI()
+
+@app.route('/api/chat', methods=['POST'])
+def chat_endpoint():
+    data = request.get_json()
+    response = ai_model.process(data['message'])
+    return jsonify({'response': response})</code></pre>
                         </div>
+                        <div class="code-snippet">
+                            <div class="code-header">
+                                <span class="file-name">database.js</span>
+                                <span class="language">Node.js</span>
+                            </div>
+                            <pre><code>const mongoose = require('mongoose');
 
-                        <!-- Additional language tabs would follow similar structure -->
-                    </div>
-                </div>
-            </section>
+const userSchema = new mongoose.Schema({
+  username: { type: String, required: true },
+  email: { type: String, unique: true },
+  projects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }]
+});
 
-            <!-- Tech Stack Section -->
-            <section class="tech-section">
-                <div class="section-header">
-                    <h2 class="section-title">Technology Stack</h2>
-                    <p class="section-subtitle">Technologies I work with</p>
-                </div>
-
-                <div class="tech-grid">
-                    <div class="tech-category">
-                        <h3 class="category-title">Frontend</h3>
-                        <div class="tech-items">
-                            <div class="tech-item">
-                                <i class="fab fa-react"></i>
-                                <span>React</span>
-                            </div>
-                            <div class="tech-item">
-                                <i class="fab fa-vuejs"></i>
-                                <span>Vue.js</span>
-                            </div>
-                            <div class="tech-item">
-                                <i class="fab fa-angular"></i>
-                                <span>Angular</span>
-                            </div>
-                            <div class="tech-item">
-                                <i class="fab fa-js-square"></i>
-                                <span>JavaScript</span>
-                            </div>
+module.exports = mongoose.model('User', userSchema);</code></pre>
                         </div>
                     </div>
-
-                    <div class="tech-category">
-                        <h3 class="category-title">Backend</h3>
-                        <div class="tech-items">
-                            <div class="tech-item">
-                                <i class="fab fa-node-js"></i>
-                                <span>Node.js</span>
-                            </div>
-                            <div class="tech-item">
-                                <i class="fab fa-python"></i>
-                                <span>Python</span>
-                            </div>
-                            <div class="tech-item">
-                                <i class="fab fa-java"></i>
-                                <span>Java</span>
-                            </div>
-                            <div class="tech-item">
-                                <i class="fas fa-server"></i>
-                                <span>Go</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="tech-category">
-                        <h3 class="category-title">AI/ML</h3>
-                        <div class="tech-items">
-                            <div class="tech-item">
-                                <i class="fas fa-brain"></i>
-                                <span>TensorFlow</span>
-                            </div>
-                            <div class="tech-item">
-                                <i class="fas fa-robot"></i>
-                                <span>PyTorch</span>
-                            </div>
-                            <div class="tech-item">
-                                <i class="fas fa-chart-line"></i>
-                                <span>Scikit-learn</span>
-                            </div>
-                            <div class="tech-item">
-                                <i class="fas fa-dna"></i>
-                                <span>OpenCV</span>
-                            </div>
-                        </div>
+                    <div class="carousel-nav">
+                        <button class="nav-btn active" data-index="0"></button>
+                        <button class="nav-btn" data-index="1"></button>
+                        <button class="nav-btn" data-index="2"></button>
                     </div>
                 </div>
-            </section>
-        </main>
-
-        <!-- Footer -->
-        <footer class="dashboard-footer">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>Fredi AI</h4>
-                    <p>Full-Stack Developer & AI Specialist</p>
-                    <p>Dar es Salaam, Tanzania</p>
+                
+                <!-- Action Buttons -->
+                <div class="welcome-actions">
+                    <a href="login.html" class="btn btn-primary">
+                        <i class="fas fa-terminal"></i>
+                        Developer Login
+                    </a>
+                    <a href="signup.html" class="btn btn-secondary">
+                        <i class="fas fa-code-branch"></i>
+                        Join Platform
+                    </a>
+                    <a href="about.html" class="btn btn-outline">
+                        <i class="fas fa-user"></i>
+                        View My Profile
+                    </a>
                 </div>
-                <div class="footer-section">
-                    <h4>Contact</h4>
-                    <a href="mailto:fredi@example.com">fredi@example.com</a>
-                    <a href="https://wa.me/255752593977">+255 752 593 977</a>
+                
+                <!-- Quick Features -->
+                <div class="quick-features">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h4>AI Integration</h4>
+                        <p>Advanced AI models and machine learning solutions</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h4>Mobile Apps</h4>
+                        <p>Cross-platform mobile applications</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h4>Secure Auth</h4>
+                        <p>Enterprise-grade security systems</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h4>Fast APIs</h4>
+                        <p>High-performance RESTful APIs</p>
+                    </div>
                 </div>
-                <div class="footer-section">
-                    <h4>GitHub Accounts</h4>
-                    <div class="github-links">
-                        <a href="https://github.com/Fred1e">@Fred1e</a>
-                        <a href="https://github.com/FezChat">@FezChat</a>
-                        <a href="https://github.com/mr-X-force">@mr-X-force</a>
+                
+                <!-- Social Proof -->
+                <div class="social-proof">
+                    <div class="github-stats">
+                        <div class="github-stat">
+                            <i class="fab fa-github"></i>
+                            <span>3 GitHub Accounts</span>
+                        </div>
+                        <div class="github-stat">
+                            <i class="fas fa-code"></i>
+                            <span>50+ Repositories</span>
+                        </div>
+                        <div class="github-stat">
+                            <i class="fas fa-star"></i>
+                            <span>100+ Stars</span>
+                        </div>
+                    </div>
+                    <div class="social-links">
+                        <a href="https://github.com/Fred1e" class="social-link" target="_blank">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://github.com/FezChat" class="social-link" target="_blank">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://github.com/mr-X-force" class="social-link" target="_blank">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://wa.me/255752593977" class="social-link" target="_blank">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
                     </div>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 Fredi AI Developer Hub. All rights reserved.</p>
-            </div>
-        </footer>
+        </div>
     </div>
 
-    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
     <script src="index.js"></script>
+    <script src="auth.js"></script>
 </body>
 </html>
