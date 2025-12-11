@@ -1,553 +1,212 @@
-// Main Application Script
+// Main JavaScript file for Developer Dashboard
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize the application
-    initApp();
+    // Initialize components
+    initThemeToggle();
+    initSplashScreen();
+    initProjectsCarousel();
+    initCodeTabs();
+    initSmoothScroll();
+    initHighlightJS();
+    initAnimations();
 });
 
-function initApp() {
-    // Initialize theme
-    initTheme();
-    
-    // Initialize splash screen
-    initSplashScreen();
-    
-    // Initialize category navigation
-    initCategoryNavigation();
-    
-    // Initialize code carousel
-    initCodeCarousel();
-    
-    // Initialize animations
-    initAnimations();
-    
-    // Initialize smooth scrolling
-    initSmoothScrolling();
-    
-    // Initialize tooltips
-    initTooltips();
-}
-
-// Theme Management
-function initTheme() {
+// Theme Toggle
+function initThemeToggle() {
     const themeToggle = document.getElementById('theme-toggle');
-    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    const body = document.body;
     
-    // Load saved theme or use system preference
-    const savedTheme = localStorage.getItem('theme') || 
-                      (prefersDarkScheme.matches ? 'dark' : 'light');
+    // Check for saved theme preference
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        body.classList.add('dark-mode');
+    }
     
-    // Apply theme
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    themeToggle.checked = savedTheme === 'dark';
-    
-    // Theme toggle event
-    themeToggle.addEventListener('change', function() {
-        const newTheme = this.checked ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
+    themeToggle.addEventListener('click', function() {
+        body.classList.toggle('dark-mode');
         
-        // Dispatch theme change event
-        document.dispatchEvent(new CustomEvent('themeChange', { detail: newTheme }));
-    });
-    
-    // Listen for system theme changes
-    prefersDarkScheme.addEventListener('change', (e) => {
-        if (!localStorage.getItem('theme')) {
-            const newTheme = e.matches ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            themeToggle.checked = newTheme === 'dark';
-        }
+        // Save preference
+        const isDarkMode = body.classList.contains('dark-mode');
+        localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
     });
 }
 
 // Splash Screen
 function initSplashScreen() {
     const splashScreen = document.getElementById('splash-screen');
-    const dashboard = document.querySelector('.dashboard-container');
     
-    // Show splash screen for 5 seconds
+    // Remove splash screen after 5 seconds
     setTimeout(() => {
-        splashScreen.classList.add('hidden');
-        
-        // Show dashboard after splash screen fades out
-        setTimeout(() => {
-            splashScreen.style.display = 'none';
-            dashboard.style.display = 'block';
-            
-            // Trigger initial animations
-            setTimeout(() => {
-                dashboard.classList.add('fade-in');
-                document.querySelectorAll('.section-header, .developer-card, .stat-card')
-                    .forEach(el => el.classList.add('slide-up'));
-            }, 100);
-            
-        }, 500);
+        splashScreen.style.display = 'none';
+        document.querySelector('.dashboard-container').style.opacity = '1';
     }, 5000);
 }
 
-// Category Navigation
-function initCategoryNavigation() {
-    const categoryBtns = document.querySelectorAll('.category-btn');
-    const categoryContents = document.querySelectorAll('.category-content');
+// Projects Carousel
+function initProjectsCarousel() {
+    const carouselTrack = document.querySelector('.carousel-track');
+    const projectCards = document.querySelectorAll('.project-card');
+    const indicators = document.querySelectorAll('.indicator');
+    const prevBtn = document.querySelector('.prev-btn');
+    const nextBtn = document.querySelector('.next-btn');
+    const totalProjects = projectCards.length;
+    let currentIndex = 0;
+    let autoSlideInterval;
     
-    // Set up category switching
-    categoryBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            const categoryId = this.getAttribute('data-category');
-            
-            // Update active button
-            categoryBtns.forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Show selected category
-            categoryContents.forEach(content => {
-                content.classList.remove('active');
-                if (content.id === categoryId) {
-                    setTimeout(() => {
-                        content.classList.add('active');
-                    }, 10);
-                }
-            });
-            
-            // Smooth scroll to category
-            document.querySelector('.categories-container').scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-            
-            // Dispatch category change event
-            document.dispatchEvent(new CustomEvent('categoryChange', {
-                detail: { category: categoryId }
-            }));
+    function updateCarousel() {
+        const cardWidth = projectCards[0].offsetWidth;
+        const translateX = -currentIndex * cardWidth;
+        carouselTrack.style.transform = `translateX(${translateX}px)`;
+        
+        // Update active states
+        projectCards.forEach((card, index) => {
+            card.classList.toggle('active', index === currentIndex);
+        });
+        
+        indicators.forEach((indicator, index) => {
+            indicator.classList.toggle('active', index === currentIndex);
+        });
+    }
+    
+    function nextSlide() {
+        currentIndex = (currentIndex + 1) % totalProjects;
+        updateCarousel();
+    }
+    
+    function prevSlide() {
+        currentIndex = (currentIndex - 1 + totalProjects) % totalProjects;
+        updateCarousel();
+    }
+    
+    function goToSlide(index) {
+        currentIndex = index;
+        updateCarousel();
+    }
+    
+    // Button events
+    nextBtn.addEventListener('click', nextSlide);
+    prevBtn.addEventListener('click', prevSlide);
+    
+    // Indicator events
+    indicators.forEach(indicator => {
+        indicator.addEventListener('click', function() {
+            const index = parseInt(this.getAttribute('data-index'));
+            goToSlide(index);
         });
     });
     
-    // Auto-rotate categories every 10 seconds
-    let currentCategoryIndex = 0;
-    const categoryIds = Array.from(categoryBtns).map(btn => btn.getAttribute('data-category'));
-    
-    function rotateCategories() {
-        currentCategoryIndex = (currentCategoryIndex + 1) % categoryIds.length;
-        const nextCategory = categoryIds[currentCategoryIndex];
-        
-        // Find and click the corresponding button
-        const nextBtn = document.querySelector(`.category-btn[data-category="${nextCategory}"]`);
-        if (nextBtn) {
-            nextBtn.click();
-        }
+    // Auto slide every 5 seconds
+    function startAutoSlide() {
+        autoSlideInterval = setInterval(nextSlide, 5000);
     }
     
-    // Start auto-rotation if not hovering over categories
-    let categoryRotation = setInterval(rotateCategories, 10000);
+    function stopAutoSlide() {
+        clearInterval(autoSlideInterval);
+    }
     
-    const categoriesContainer = document.querySelector('.categories-section');
-    categoriesContainer.addEventListener('mouseenter', () => {
-        clearInterval(categoryRotation);
-    });
+    // Pause auto-slide on hover
+    const carousel = document.querySelector('.projects-carousel');
+    carousel.addEventListener('mouseenter', stopAutoSlide);
+    carousel.addEventListener('mouseleave', startAutoSlide);
     
-    categoriesContainer.addEventListener('mouseleave', () => {
-        categoryRotation = setInterval(rotateCategories, 10000);
-    });
+    // Initialize
+    updateCarousel();
+    startAutoSlide();
 }
 
-// Code Carousel
-function initCodeCarousel() {
-    const codeSamples = document.querySelectorAll('.code-sample');
-    const dots = document.querySelectorAll('.carousel-dots .dot');
-    const prevBtn = document.querySelector('.carousel-controls .prev-btn');
-    const nextBtn = document.querySelector('.carousel-controls .next-btn');
+// Code Tabs
+function initCodeTabs() {
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabPanes = document.querySelectorAll('.tab-pane');
     
-    let currentIndex = 0;
-    
-    function showSample(index) {
-        // Update active sample
-        codeSamples.forEach(sample => sample.classList.remove('active'));
-        codeSamples[index].classList.add('active');
-        
-        // Update active dot
-        dots.forEach(dot => dot.classList.remove('active'));
-        dots[index].classList.add('active');
-        
-        // Highlight code
-        if (window.hljs) {
-            document.querySelectorAll('pre code').forEach(block => {
-                hljs.highlightElement(block);
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const tabId = this.getAttribute('data-tab');
+            
+            // Update active button
+            tabBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Show corresponding tab content
+            tabPanes.forEach(pane => {
+                pane.classList.remove('active');
+                if (pane.id === tabId) {
+                    pane.classList.add('active');
+                }
             });
-        }
-        
-        currentIndex = index;
-    }
-    
-    // Dot click events
-    dots.forEach((dot, index) => {
-        dot.addEventListener('click', () => showSample(index));
+        });
     });
-    
-    // Previous button
-    prevBtn.addEventListener('click', () => {
-        let newIndex = currentIndex - 1;
-        if (newIndex < 0) newIndex = codeSamples.length - 1;
-        showSample(newIndex);
-    });
-    
-    // Next button
-    nextBtn.addEventListener('click', () => {
-        let newIndex = currentIndex + 1;
-        if (newIndex >= codeSamples.length) newIndex = 0;
-        showSample(newIndex);
-    });
-    
-    // Auto-rotate carousel
-    let carouselInterval = setInterval(() => {
-        let newIndex = currentIndex + 1;
-        if (newIndex >= codeSamples.length) newIndex = 0;
-        showSample(newIndex);
-    }, 8000);
-    
-    // Pause on hover
-    const carousel = document.querySelector('.code-carousel');
-    carousel.addEventListener('mouseenter', () => {
-        clearInterval(carouselInterval);
-    });
-    
-    carousel.addEventListener('mouseleave', () => {
-        carouselInterval = setInterval(() => {
-            let newIndex = currentIndex + 1;
-            if (newIndex >= codeSamples.length) newIndex = 0;
-            showSample(newIndex);
-        }, 8000);
-    });
-    
-    // Initialize with first sample
-    showSample(0);
 }
 
-// Animations
+// Smooth Scroll
+function initSmoothScroll() {
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetSection = document.querySelector(targetId);
+            
+            if (targetSection) {
+                window.scrollTo({
+                    top: targetSection.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+                
+                // Update active nav link
+                navLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            }
+        });
+    });
+}
+
+// Syntax Highlighting
+function initHighlightJS() {
+    // Only highlight if Highlight.js is loaded
+    if (typeof hljs !== 'undefined') {
+        document.querySelectorAll('pre code').forEach(block => {
+            hljs.highlightElement(block);
+        });
+    }
+}
+
+// Animations on Scroll
 function initAnimations() {
-    // Intersection Observer for scroll animations
     const observerOptions = {
         threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
+        rootMargin: '0px 0px -100px 0px'
     };
     
-    const observer = new IntersectionObserver((entries) => {
+    const observer = new IntersectionObserver(function(entries) {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('animate-in');
-                observer.unobserve(entry.target);
             }
         });
     }, observerOptions);
     
-    // Observe elements for animation
-    document.querySelectorAll('.project-card, .stat-card, .category-content').forEach(el => {
+    // Observe elements to animate
+    document.querySelectorAll('.project-card, .tech-category, .code-sample').forEach(el => {
         observer.observe(el);
     });
+}
+
+// Add CSS for animations
+const style = document.createElement('style');
+style.textContent = `
+    .animate-in {
+        animation: slideUp 0.6s ease forwards;
+        opacity: 0;
+        transform: translateY(30px);
+    }
     
-    // Add CSS class for animations
-    const style = document.createElement('style');
-    style.textContent = `
-        .animate-in {
-            animation: fadeInUp 0.6s ease forwards;
+    @keyframes slideUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    `;
-    document.head.appendChild(style);
-}
-
-// Smooth Scrolling
-function initSmoothScrolling() {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            const targetId = this.getAttribute('href');
-            if (targetId === '#') return;
-            
-            const targetElement = document.querySelector(targetId);
-            if (targetElement) {
-                window.scrollTo({
-                    top: targetElement.offsetTop - 80,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-}
-
-// Tooltips
-function initTooltips() {
-    const tooltipElements = document.querySelectorAll('[data-tooltip]');
-    
-    tooltipElements.forEach(element => {
-        element.addEventListener('mouseenter', function() {
-            const tooltipText = this.getAttribute('data-tooltip');
-            const tooltip = document.createElement('div');
-            tooltip.className = 'tooltip';
-            tooltip.textContent = tooltipText;
-            document.body.appendChild(tooltip);
-            
-            const rect = this.getBoundingClientRect();
-            tooltip.style.position = 'fixed';
-            tooltip.style.left = `${rect.left + rect.width / 2 - tooltip.offsetWidth / 2}px`;
-            tooltip.style.top = `${rect.top - tooltip.offsetHeight - 10}px`;
-            tooltip.style.opacity = '1';
-            
-            this.tooltip = tooltip;
-        });
-        
-        element.addEventListener('mouseleave', function() {
-            if (this.tooltip) {
-                this.tooltip.style.opacity = '0';
-                setTimeout(() => {
-                    if (this.tooltip && this.tooltip.parentNode) {
-                        this.tooltip.parentNode.removeChild(this.tooltip);
-                    }
-                }, 300);
-            }
-        });
-    });
-}
-
-// Project Card Interactions
-function initProjectCardInteractions() {
-    const projectCards = document.querySelectorAll('.project-card');
-    
-    projectCards.forEach(card => {
-        card.addEventListener('click', function() {
-            const projectTitle = this.querySelector('h4').textContent;
-            const projectDescription = this.querySelector('p').textContent;
-            
-            // Show project details modal (to be implemented)
-            showProjectModal({
-                title: projectTitle,
-                description: projectDescription,
-                // Add more project data as needed
-            });
-        });
-    });
-}
-
-// Show Project Modal (placeholder)
-function showProjectModal(projectData) {
-    console.log('Project details:', projectData);
-    // Implement modal display logic here
-    // You could use a library or create a custom modal
-}
-
-// Notification System
-function showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.innerHTML = `
-        <i class="fas fa-${getNotificationIcon(type)}"></i>
-        <span>${message}</span>
-        <button class="notification-close">&times;</button>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // Show notification
-    setTimeout(() => notification.classList.add('show'), 10);
-    
-    // Close button
-    notification.querySelector('.notification-close').addEventListener('click', () => {
-        notification.classList.remove('show');
-        setTimeout(() => notification.remove(), 300);
-    });
-    
-    // Auto-remove after 5 seconds
-    setTimeout(() => {
-        if (notification.parentNode) {
-            notification.classList.remove('show');
-            setTimeout(() => notification.remove(), 300);
-        }
-    }, 5000);
-}
-
-function getNotificationIcon(type) {
-    const icons = {
-        info: 'info-circle',
-        success: 'check-circle',
-        warning: 'exclamation-triangle',
-        error: 'exclamation-circle'
-    };
-    return icons[type] || 'info-circle';
-}
-
-// Add notification styles
-const notificationStyles = document.createElement('style');
-notificationStyles.textContent = `
-    .notification {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 1rem 1.5rem;
-        background: var(--bg-card);
-        border-left: 4px solid var(--primary-color);
-        border-radius: var(--radius-md);
-        box-shadow: var(--shadow-lg);
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        z-index: 1000;
-        transform: translateX(150%);
-        transition: transform 0.3s ease;
-        max-width: 350px;
-    }
-    
-    .notification.show {
-        transform: translateX(0);
-    }
-    
-    .notification-info {
-        border-left-color: var(--info-color);
-    }
-    
-    .notification-success {
-        border-left-color: var(--accent-color);
-    }
-    
-    .notification-warning {
-        border-left-color: var(--warning-color);
-    }
-    
-    .notification-error {
-        border-left-color: var(--danger-color);
-    }
-    
-    .notification i {
-        font-size: 1.25rem;
-    }
-    
-    .notification-close {
-        background: none;
-        border: none;
-        color: var(--text-secondary);
-        font-size: 1.5rem;
-        cursor: pointer;
-        margin-left: auto;
-        padding: 0;
-        width: 24px;
-        height: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: var(--radius-sm);
-    }
-    
-    .notification-close:hover {
-        background: var(--bg-hover);
     }
 `;
-document.head.appendChild(notificationStyles);
-
-// Performance Optimization
-function throttle(func, limit) {
-    let inThrottle;
-    return function() {
-        const args = arguments;
-        const context = this;
-        if (!inThrottle) {
-            func.apply(context, args);
-            inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
-        }
-    };
-}
-
-// Debounce function
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
-// Initialize on window load
-window.addEventListener('load', function() {
-    // Show welcome notification
-    setTimeout(() => {
-        showNotification('Welcome to Fredi AI Developer Dashboard! 🚀', 'success');
-    }, 6000);
-    
-    // Initialize lazy loading for images
-    initLazyLoading();
-});
-
-// Lazy Loading for Images
-function initLazyLoading() {
-    if ('IntersectionObserver' in window) {
-        const imageObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    const src = img.getAttribute('data-src');
-                    if (src) {
-                        img.src = src;
-                        img.removeAttribute('data-src');
-                    }
-                    observer.unobserve(img);
-                }
-            });
-        });
-        
-        document.querySelectorAll('img[data-src]').forEach(img => {
-            imageObserver.observe(img);
-        });
-    }
-}
-
-// Keyboard Navigation
-document.addEventListener('keydown', function(e) {
-    // Escape key closes modals/tooltips
-    if (e.key === 'Escape') {
-        // Close any open modals or tooltips
-        document.querySelectorAll('.modal.show, .tooltip').forEach(el => {
-            el.remove();
-        });
-    }
-    
-    // Arrow keys for carousel navigation
-    if (e.key === 'ArrowLeft') {
-        document.querySelector('.carousel-controls .prev-btn').click();
-    } else if (e.key === 'ArrowRight') {
-        document.querySelector('.carousel-controls .next-btn').click();
-    }
-});
-
-// Service Worker Registration (for PWA)
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/sw.js').then(function(registration) {
-            console.log('ServiceWorker registration successful with scope: ', registration.scope);
-        }, function(err) {
-            console.log('ServiceWorker registration failed: ', err);
-        });
-    });
-}
-
-// Export functions for module usage (if needed)
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = {
-        initApp,
-        showNotification,
-        throttle,
-        debounce
-    };
-}
+document.head.appendChild(style);
