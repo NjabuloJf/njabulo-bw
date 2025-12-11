@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fredi AI - Ultimate Developer Dashboard</title>
-    <link rel="stylesheet" href="index.css">
+    <title>Fredi AI - Developer Hub & AI Platform</title>
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
 </head>
-<body>
+<body class="light-mode">
     <!-- Splash Screen -->
-    <div id="splash-screen">
+    <div id="splash-screen" class="splash-screen">
         <div class="splash-content">
-            <div class="spinner-container">
-                <div class="spinner"></div>
-                <div class="spinner-ring"></div>
-            </div>
-            <div class="splash-text">
-                <h1>FREDI AI</h1>
-                <p>Developer Hub & Innovation Platform</p>
+            <div class="splash-logo">
+                <div class="logo-spinner">
+                    <div class="spinner-circle"></div>
+                    <div class="spinner-icon">F</div>
+                </div>
+                <h1 class="splash-title">FREDI AI</h1>
+                <p class="splash-subtitle">Developer Hub Initializing...</p>
             </div>
             <div class="splash-progress">
                 <div class="progress-bar"></div>
@@ -28,842 +28,494 @@
     </div>
 
     <!-- Main Dashboard -->
-    <div class="dashboard-container" id="dashboard">
-        <!-- Header -->
+    <div class="dashboard-container">
+        <!-- Header with Theme Toggle -->
         <header class="dashboard-header">
-            <div class="logo-section">
-                <div class="logo-icon">
-                    <i class="fas fa-code"></i>
+            <div class="header-left">
+                <div class="logo">
+                    <div class="logo-icon">F</div>
+                    <div class="logo-text">FREDI AI</div>
                 </div>
-                <div class="logo-text">
-                    <h1>Fredi AI</h1>
-                    <p>Full-Stack Developer Hub</p>
-                </div>
+                <nav class="main-nav">
+                    <a href="#projects" class="nav-link active">Projects</a>
+                    <a href="#code" class="nav-link">Code Samples</a>
+                    <a href="#about" class="nav-link">About</a>
+                    <a href="#contact" class="nav-link">Contact</a>
+                </nav>
             </div>
-            
-            <div class="header-controls">
-                <div class="theme-switch">
-                    <input type="checkbox" id="theme-toggle" class="toggle-checkbox">
-                    <label for="theme-toggle" class="toggle-label">
-                        <i class="fas fa-sun"></i>
+            <div class="header-right">
+                <div class="theme-toggle">
+                    <button id="theme-toggle" class="theme-btn">
                         <i class="fas fa-moon"></i>
-                        <span class="toggle-ball"></span>
-                    </label>
+                        <i class="fas fa-sun"></i>
+                    </button>
                 </div>
-                <button class="notification-btn">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification-count">3</span>
-                </button>
                 <div class="user-profile">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop" alt="Profile" class="profile-pic">
+                    <div class="profile-avatar">
+                        <div class="avatar-icon">FE</div>
+                        <div class="online-status"></div>
+                    </div>
+                    <span class="user-name">Fredi Elibarick Ezra</span>
                 </div>
             </div>
         </header>
 
         <!-- Main Content -->
-        <main class="main-content">
-            <!-- Welcome Section -->
-            <section class="welcome-section">
-                <div class="developer-card">
-                    <div class="developer-avatar">
-                        <div class="avatar-initials">FE</div>
-                        <div class="online-status"></div>
-                    </div>
-                    <div class="developer-info">
-                        <h2>Fredi Elibarick Ezra</h2>
-                        <p class="developer-title">AI Specialist & Full-Stack Developer</p>
-                        <div class="developer-location">
-                            <i class="fas fa-map-marker-alt"></i>
-                            Dar es Salaam, Tanzania
+        <main class="dashboard-main">
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <div class="hero-content">
+                    <h1 class="hero-title">Welcome to Developer Hub</h1>
+                    <p class="hero-subtitle">
+                        Building the future with <span class="highlight">AI-powered solutions</span> and 
+                        <span class="highlight">cutting-edge technology</span>. Transforming ideas into 
+                        digital reality through code and innovation.
+                    </p>
+                    <div class="hero-stats">
+                        <div class="stat-card">
+                            <span class="stat-number">50+</span>
+                            <span class="stat-label">Projects Built</span>
                         </div>
-                        <div class="developer-skills">
-                            <span class="skill-tag">JavaScript</span>
-                            <span class="skill-tag">Python</span>
-                            <span class="skill-tag">AI/ML</span>
-                            <span class="skill-tag">React</span>
-                            <span class="skill-tag">Node.js</span>
-                            <span class="skill-tag">MongoDB</span>
+                        <div class="stat-card">
+                            <span class="stat-number">3+</span>
+                            <span class="stat-label">Years Experience</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number">10K+</span>
+                            <span class="stat-label">Users Served</span>
                         </div>
                     </div>
                 </div>
-
-                <!-- Stats Overview -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-project-diagram"></i>
-                        </div>
-                        <div class="stat-content">
-                            <h3>75+</h3>
-                            <p>Projects Completed</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-code-branch"></i>
-                        </div>
-                        <div class="stat-content">
-                            <h3>12</h3>
-                            <p>Active Repositories</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="stat-content">
-                            <h3>15K+</h3>
-                            <p>Users Impacted</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <div class="stat-content">
-                            <h3>230+</h3>
-                            <p>GitHub Stars</p>
+                <div class="hero-illustration">
+                    <div class="code-animation">
+                        <div class="floating-code">
+                            <span class="code-line">const dev = new Developer();</span>
+                            <span class="code-line">dev.skills = ["AI", "Web", "Mobile"];</span>
+                            <span class="code-line">dev.build("future");</span>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Projects Categories Section -->
-            <section class="categories-section">
+            <!-- Projects Carousel -->
+            <section id="projects" class="projects-section">
                 <div class="section-header">
-                    <h2>Project Categories</h2>
-                    <p>Explore my diverse portfolio across multiple domains</p>
-                </div>
-
-                <!-- Category Navigation -->
-                <div class="category-nav">
-                    <button class="category-btn active" data-category="ai">AI & Machine Learning</button>
-                    <button class="category-btn" data-category="download">Downloader Tools</button>
-                    <button class="category-btn" data-category="search">Search Engines</button>
-                    <button class="category-btn" data-category="dictionary">Dictionaries</button>
-                    <button class="category-btn" data-category="movies">Movies & Entertainment</button>
-                    <button class="category-btn" data-category="education">Education Zone</button>
-                    <button class="category-btn" data-category="whatsapp">WhatsApp Bots</button>
-                    <button class="category-btn" data-category="programming">Programming Tools</button>
-                    <button class="category-btn" data-category="ecommerce">E-commerce</button>
-                    <button class="category-btn" data-category="health">Health Tech</button>
-                </div>
-
-                <!-- Categories Container -->
-                <div class="categories-container">
-                    <!-- AI & Machine Learning -->
-                    <div class="category-content active" id="ai">
-                        <div class="category-header">
-                            <h3><i class="fas fa-brain"></i> AI & Machine Learning Projects</h3>
-                            <p>Intelligent systems and predictive models</p>
-                        </div>
-                        <div class="projects-grid">
-                            <!-- Project 1 -->
-                            <div class="project-card">
-                                <div class="project-image">
-                                    <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=250&fit=crop" alt="AI Chatbot">
-                                    <div class="project-badge">AI</div>
-                                </div>
-                                <div class="project-info">
-                                    <h4>Fredi AI Chatbot</h4>
-                                    <p>Advanced conversational AI with natural language processing</p>
-                                    <div class="project-tags">
-                                        <span>Python</span>
-                                        <span>TensorFlow</span>
-                                        <span>NLP</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Project 2 -->
-                            <div class="project-card">
-                                <div class="project-image">
-                                    <img src="https://images.unsplash.com/photo-1555255707-c07966088b7b?w=400&h=250&fit=crop" alt="Image Recognition">
-                                    <div class="project-badge">ML</div>
-                                </div>
-                                <div class="project-info">
-                                    <h4>Image Recognition System</h4>
-                                    <p>Computer vision system for object detection and classification</p>
-                                    <div class="project-tags">
-                                        <span>Python</span>
-                                        <span>OpenCV</span>
-                                        <span>CNN</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Project 3 -->
-                            <div class="project-card">
-                                <div class="project-image">
-                                    <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=400&h=250&fit=crop" alt="Predictive Analytics">
-                                    <div class="project-badge">Data Science</div>
-                                </div>
-                                <div class="project-info">
-                                    <h4>Predictive Analytics Dashboard</h4>
-                                    <p>Real-time data analysis and prediction system</p>
-                                    <div class="project-tags">
-                                        <span>Python</span>
-                                        <span>Scikit-learn</span>
-                                        <span>Django</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Project 4 -->
-                            <div class="project-card">
-                                <div class="project-image">
-                                    <img src="https://images.unsplash.com/photo-1535223289827-42f1e9919769?w=400&h=250&fit=crop" alt="Speech Recognition">
-                                    <div class="project-badge">NLP</div>
-                                </div>
-                                <div class="project-info">
-                                    <h4>Speech Recognition System</h4>
-                                    <p>Convert speech to text with high accuracy</p>
-                                    <div class="project-tags">
-                                        <span>Python</span>
-                                        <span>SpeechRecognition</span>
-                                        <span>Deep Learning</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Project 5 -->
-                            <div class="project-card">
-                                <div class="project-image">
-                                    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=250&fit=crop" alt="Recommendation Engine">
-                                    <div class="project-badge">AI</div>
-                                </div>
-                                <div class="project-info">
-                                    <h4>Recommendation Engine</h4>
-                                    <p>Personalized content recommendation system</p>
-                                    <div class="project-tags">
-                                        <span>Python</span>
-                                        <span>Pandas</span>
-                                        <span>Collaborative Filtering</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Downloader Tools -->
-                    <div class="category-content" id="download">
-                        <div class="category-header">
-                            <h3><i class="fas fa-download"></i> Downloader Tools</h3>
-                            <p>Advanced file download and management systems</p>
-                        </div>
-                        <div class="projects-grid">
-                            <!-- Project 1 -->
-                            <div class="project-card">
-                                <div class="project-image">
-                                    <img src="https://images.unsplash.com/photo-1611605698323-b1e99cfd37ea?w=400&h=250&fit=crop" alt="Video Downloader">
-                                    <div class="project-badge">Tool</div>
-                                </div>
-                                <div class="project-info">
-                                    <h4>Universal Video Downloader</h4>
-                                    <p>Download videos from multiple platforms</p>
-                                    <div class="project-tags">
-                                        <span>Python</span>
-                                        <span>FFmpeg</span>
-                                        <span>YouTube API</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Project 2 -->
-                            <div class="project-card">
-                                <div class="project-image">
-                                    <img src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=400&h=250&fit=crop" alt="Music Downloader">
-                                    <div class="project-badge">Audio</div>
-                                </div>
-                                <div class="project-info">
-                                    <h4>Music Download Manager</h4>
-                                    <p>High-quality audio download with metadata</p>
-                                    <div class="project-tags">
-                                        <span>Node.js</span>
-                                        <span>Express</span>
-                                        <span>MongoDB</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Project 3 -->
-                            <div class="project-card">
-                                <div class="project-image">
-                                    <img src="https://images.unsplash.com/photo-1614680376573-df3480f0c6ff?w=400&h=250&fit=crop" alt="File Manager">
-                                    <div class="project-badge">Management</div>
-                                </div>
-                                <div class="project-info">
-                                    <h4>Batch File Downloader</h4>
-                                    <p>Download multiple files simultaneously</p>
-                                    <div class="project-tags">
-                                        <span>Python</span>
-                                        <span>Multithreading</span>
-                                        <span>GUI</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Project 4 -->
-                            <div class="project-card">
-                                <div class="project-image">
-                                    <img src="https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=400&h=250&fit=crop" alt="Cloud Downloader">
-                                    <div class="project-badge">Cloud</div>
-                                </div>
-                                <div class="project-info">
-                                    <h4>Cloud Storage Downloader</h4>
-                                    <p>Download from cloud services automatically</p>
-                                    <div class="project-tags">
-                                        <span>JavaScript</span>
-                                        <span>Cloud APIs</span>
-                                        <span>Automation</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Project 5 -->
-                            <div class="project-card">
-                                <div class="project-image">
-                                    <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&h=250&fit=crop" alt="Browser Extension">
-                                    <div class="project-badge">Extension</div>
-                                </div>
-                                <div class="project-info">
-                                    <h4>Browser Download Assistant</h4>
-                                    <p>Smart download management extension</p>
-                                    <div class="project-tags">
-                                        <span>JavaScript</span>
-                                        <span>Chrome API</span>
-                                        <span>React</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Search Engines -->
-                    <div class="category-content" id="search">
-                        <div class="category-header">
-                            <h3><i class="fas fa-search"></i> Search Engines</h3>
-                            <p>Custom search solutions and information retrieval systems</p>
-                        </div>
-                        <div class="projects-grid">
-                            <!-- Project 1 -->
-                            <div class="project-card">
-                                <div class="project-image">
-                                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=250&fit=crop" alt="Web Search">
-                                    <div class="project-badge">Web</div>
-                                </div>
-                                <div class="project-info">
-                                    <h4>Meta Search Engine</h4>
-                                    <p>Aggregate results from multiple search engines</p>
-                                    <div class="project-tags">
-                                        <span>Python</span>
-                                        <span>Web Scraping</span>
-                                        <span>Flask</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Project 2 -->
-                            <div class="project-card">
-                                <div class="project-image">
-                                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=250&fit=crop" alt="Image Search">
-                                    <div class="project-badge">Images</div>
-                                </div>
-                                <div class="project-info">
-                                    <h4>Reverse Image Search</h4>
-                                    <p>Find similar images across the web</p>
-                                    <div class="project-tags">
-                                        <span>Python</span>
-                                        <span>Computer Vision</span>
-                                        <span>Elasticsearch</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Project 3 -->
-                            <div class="project-card">
-                                <div class="project-image">
-                                    <img src="https://images.unsplash.com/photo-1555099962-4199c345e5dd?w=400&h=250&fit=crop" alt="Local Search">
-                                    <div class="project-badge">Local</div>
-                                </div>
-                                <div class="project-info">
-                                    <h4>Local Business Search</h4>
-                                    <p>Find businesses and services nearby</p>
-                                    <div class="project-tags">
-                                        <span>JavaScript</span>
-                                        <span>Google Maps API</span>
-                                        <span>Node.js</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Project 4 -->
-                            <div class="project-card">
-                                <div class="project-image">
-                                    <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&h=250&fit=crop" alt="Academic Search">
-                                    <div class="project-badge">Academic</div>
-                                </div>
-                                <div class="project-info">
-                                    <h4>Academic Paper Search</h4>
-                                    <p>Search engine for research papers</p>
-                                    <div class="project-tags">
-                                        <span>Python</span>
-                                        <span>Semantic Search</span>
-                                        <span>MongoDB</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Project 5 -->
-                            <div class="project-card">
-                                <div class="project-image">
-                                    <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&h=250&fit=crop" alt="Real-time Search">
-                                    <div class="project-badge">Real-time</div>
-                                </div>
-                                <div class="project-info">
-                                    <h4>Real-time News Search</h4>
-                                    <p>Live news and social media search</p>
-                                    <div class="project-tags">
-                                        <span>Node.js</span>
-                                        <span>WebSocket</span>
-                                        <span>React</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Additional categories would follow the same pattern -->
-                    <!-- For brevity, I've shown 3 categories. The rest would be structured similarly -->
-                </div>
-            </section>
-
-            <!-- Code Samples Section -->
-            <section class="code-samples-section">
-                <div class="section-header">
-                    <h2>Code Samples</h2>
-                    <p>Explore code examples from different projects</p>
-                </div>
-
-                <div class="code-carousel">
-                    <div class="carousel-container">
-                        <!-- Sample 1: JavaScript -->
-                        <div class="code-sample active">
-                            <div class="code-header">
-                                <div class="code-language">
-                                    <i class="fab fa-js-square"></i> JavaScript
-                                </div>
-                                <div class="code-filename">ai-chatbot.js</div>
-                            </div>
-                            <pre><code class="language-javascript">// AI Chatbot Class
-class FrediAIChatbot {
-    constructor(model = 'gpt-4') {
-        this.model = model;
-        this.context = [];
-        this.temperature = 0.7;
-        this.maxTokens = 150;
-    }
-
-    // Process user message
-    async processMessage(message) {
-        try {
-            // Add message to context
-            this.context.push({
-                role: 'user',
-                content: message,
-                timestamp: new Date().toISOString()
-            });
-
-            // Generate AI response
-            const response = await this.generateAIResponse();
-            
-            // Add response to context
-            this.context.push({
-                role: 'assistant',
-                content: response,
-                timestamp: new Date().toISOString()
-            });
-
-            return response;
-        } catch (error) {
-            console.error('Error processing message:', error);
-            return 'I apologize, but I encountered an error.';
-        }
-    }
-
-    async generateAIResponse() {
-        // Simulated AI response generation
-        const responses = [
-            "Hello! How can I assist you today?",
-            "I understand your question. Let me provide detailed information.",
-            "Based on my analysis, I recommend the following approach.",
-            "That's an interesting question! Here's what I think.",
-            "I can help with that. Here's the information you need."
-        ];
-        
-        return responses[Math.floor(Math.random() * responses.length)];
-    }
-
-    // Clear conversation context
-    clearContext() {
-        this.context = [];
-        console.log('Chat context cleared');
-    }
-}
-
-// Export the chatbot class
-module.exports = FrediAIChatbot;</code></pre>
-                        </div>
-
-                        <!-- Sample 2: Python -->
-                        <div class="code-sample">
-                            <div class="code-header">
-                                <div class="code-language">
-                                    <i class="fab fa-python"></i> Python
-                                </div>
-                                <div class="code-filename">downloader.py</div>
-                            </div>
-                            <pre><code class="language-python">#!/usr/bin/env python3
-# Universal Video Downloader
-
-import yt_dlp
-import os
-from datetime import datetime
-from pathlib import Path
-
-class VideoDownloader:
-    def __init__(self, output_dir='downloads'):
-        """
-        Initialize video downloader with custom options
-        """
-        self.output_dir = Path(output_dir)
-        self.output_dir.mkdir(exist_ok=True)
-        
-        # YouTube DL options
-        self.ydl_opts = {
-            'format': 'best[ext=mp4]',
-            'outtmpl': str(self.output_dir / '%(title)s.%(ext)s'),
-            'quiet': False,
-            'no_warnings': True,
-            'ignoreerrors': True,
-            'progress_hooks': [self.progress_hook],
-        }
-    
-    def progress_hook(self, d):
-        """Progress callback function"""
-        if d['status'] == 'downloading':
-            percent = d.get('_percent_str', '0%')
-            speed = d.get('_speed_str', 'N/A')
-            eta = d.get('_eta_str', 'N/A')
-            print(f"\rDownloading: {percent} | Speed: {speed} | ETA: {eta}", end='')
-        elif d['status'] == 'finished':
-            print(f"\nDownload completed: {d['filename']}")
-    
-    def download_video(self, url):
-        """
-        Download video from URL
-        """
-        try:
-            print(f"Starting download from: {url}")
-            
-            with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
-                info = ydl.extract_info(url, download=True)
-                
-                if info:
-                    filename = ydl.prepare_filename(info)
-                    file_size = os.path.getsize(filename) if os.path.exists(filename) else 0
-                    
-                    result = {
-                        'success': True,
-                        'filename': filename,
-                        'title': info.get('title', 'Unknown'),
-                        'duration': info.get('duration', 0),
-                        'file_size': file_size,
-                        'timestamp': datetime.now().isoformat()
-                    }
-                    return result
-                    
-        except Exception as e:
-            print(f"Error downloading video: {e}")
-            return {
-                'success': False,
-                'error': str(e)
-            }
-    
-    def get_video_info(self, url):
-        """
-        Get video information without downloading
-        """
-        try:
-            with yt_dlp.YoutubeDL({'quiet': True}) as ydl:
-                info = ydl.extract_info(url, download=False)
-                
-                video_info = {
-                    'title': info.get('title'),
-                    'duration': info.get('duration'),
-                    'uploader': info.get('uploader'),
-                    'view_count': info.get('view_count'),
-                    'upload_date': info.get('upload_date'),
-                    'thumbnail': info.get('thumbnail'),
-                    'formats': []
-                }
-                
-                # Get available formats
-                for fmt in info.get('formats', []):
-                    video_info['formats'].append({
-                        'format_id': fmt.get('format_id'),
-                        'ext': fmt.get('ext'),
-                        'resolution': fmt.get('resolution'),
-                        'filesize': fmt.get('filesize')
-                    })
-                
-                return video_info
-                
-        except Exception as e:
-            print(f"Error getting video info: {e}")
-            return None
-
-# Usage example
-if __name__ == "__main__":
-    downloader = VideoDownloader()
-    
-    # Example URL
-    url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-    
-    # Get video info
-    info = downloader.get_video_info(url)
-    if info:
-        print(f"Video Title: {info['title']}")
-        print(f"Duration: {info['duration']} seconds")
-        print(f"Available formats: {len(info['formats'])}")
-    
-    # Download video
-    result = downloader.download_video(url)
-    if result['success']:
-        print(f"Download successful: {result['filename']}")</code></pre>
-                        </div>
-
-                        <!-- Sample 3: React -->
-                        <div class="code-sample">
-                            <div class="code-header">
-                                <div class="code-language">
-                                    <i class="fab fa-react"></i> React
-                                </div>
-                                <div class="code-filename">SearchComponent.jsx</div>
-                            </div>
-                            <pre><code class="language-javascript">import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
-import debounce from 'lodash/debounce';
-import './SearchComponent.css';
-
-const SearchComponent = ({ apiEndpoint, placeholder = "Search..." }) => {
-    const [query, setQuery] = useState('');
-    const [results, setResults] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [searchHistory, setSearchHistory] = useState([]);
-
-    // Initialize from localStorage
-    useEffect(() => {
-        const savedHistory = localStorage.getItem('searchHistory');
-        if (savedHistory) {
-            setSearchHistory(JSON.parse(savedHistory));
-        }
-    }, []);
-
-    // Debounced search function
-    const performSearch = useCallback(
-        debounce(async (searchQuery) => {
-            if (!searchQuery.trim()) {
-                setResults([]);
-                return;
-            }
-
-            setLoading(true);
-            setError(null);
-
-            try {
-                const response = await axios.get(apiEndpoint, {
-                    params: { q: searchQuery, limit: 10 }
-                });
-
-                setResults(response.data.results || response.data);
-                
-                // Update search history
-                const newHistory = [
-                    { query: searchQuery, timestamp: new Date().toISOString() },
-                    ...searchHistory.filter(item => item.query !== searchQuery)
-                ].slice(0, 10);
-                
-                setSearchHistory(newHistory);
-                localStorage.setItem('searchHistory', JSON.stringify(newHistory));
-                
-            } catch (err) {
-                setError('Failed to fetch search results. Please try again.');
-                console.error('Search error:', err);
-            } finally {
-                setLoading(false);
-            }
-        }, 500),
-        [apiEndpoint, searchHistory]
-    );
-
-    // Trigger search when query changes
-    useEffect(() => {
-        performSearch(query);
-    }, [query, performSearch]);
-
-    // Clear search results
-    const clearSearch = () => {
-        setQuery('');
-        setResults([]);
-        setError(null);
-    };
-
-    // Handle search history click
-    const handleHistoryClick = (historyQuery) => {
-        setQuery(historyQuery);
-    };
-
-    // Clear search history
-    const clearHistory = () => {
-        setSearchHistory([]);
-        localStorage.removeItem('searchHistory');
-    };
-
-    return (
-        <div className="search-container">
-            <div className="search-input-container">
-                <i className="fas fa-search search-icon"></i>
-                <input
-                    type="text"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    placeholder={placeholder}
-                    className="search-input"
-                    aria-label="Search"
-                />
-                {query && (
-                    <button 
-                        onClick={clearSearch}
-                        className="clear-btn"
-                        aria-label="Clear search"
-                    >
-                        <i className="fas fa-times"></i>
-                    </button>
-                )}
-            </div>
-
-            {error && (
-                <div className="error-message">
-                    <i className="fas fa-exclamation-circle"></i>
-                    {error}
-                </div>
-            )}
-
-            {loading && (
-                <div className="loading-indicator">
-                    <div className="spinner"></div>
-                    Searching...
-                </div>
-            )}
-
-            {/* Search Results */}
-            {results.length > 0 && (
-                <div className="search-results">
-                    <div className="results-header">
-                        <h3>Search Results ({results.length})</h3>
-                    </div>
-                    <div className="results-list">
-                        {results.map((result, index) => (
-                            <div key={index} className="result-item">
-                                <h4>{result.title || result.name}</h4>
-                                <p>{result.description || result.snippet}</p>
-                                {result.url && (
-                                    <a 
-                                        href={result.url} 
-                                        target="_blank" 
-                                        rel="noopener noreferrer"
-                                        className="result-link"
-                                    >
-                                        View Details <i className="fas fa-external-link-alt"></i>
-                                    </a>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            )}
-
-            {/* Search History */}
-            {searchHistory.length > 0 && !query && (
-                <div className="search-history">
-                    <div className="history-header">
-                        <h4>Recent Searches</h4>
-                        <button onClick={clearHistory} className="clear-history-btn">
-                            Clear History
-                        </button>
-                    </div>
-                    <div className="history-list">
-                        {searchHistory.map((item, index) => (
-                            <button
-                                key={index}
-                                onClick={() => handleHistoryClick(item.query)}
-                                className="history-item"
-                            >
-                                <i className="fas fa-history"></i>
-                                {item.query}
-                                <span className="history-time">
-                                    {new Date(item.timestamp).toLocaleTimeString()}
-                                </span>
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            )}
-
-            {/* No Results */}
-            {!loading && !error && query && results.length === 0 && (
-                <div className="no-results">
-                    <i className="fas fa-search"></i>
-                    <p>No results found for "{query}"</p>
-                </div>
-            )}
-        </div>
-    );
-};
-
-export default SearchComponent;</code></pre>
-                        </div>
-                    </div>
-                    
+                    <h2 class="section-title">Featured Projects</h2>
+                    <p class="section-subtitle">Auto-sliding showcase of my recent work</p>
                     <div class="carousel-controls">
                         <button class="carousel-btn prev-btn">
                             <i class="fas fa-chevron-left"></i>
                         </button>
-                        <div class="carousel-dots">
-                            <span class="dot active"></span>
-                            <span class="dot"></span>
-                            <span class="dot"></span>
-                        </div>
                         <button class="carousel-btn next-btn">
                             <i class="fas fa-chevron-right"></i>
                         </button>
                     </div>
                 </div>
+
+                <div class="projects-carousel">
+                    <div class="carousel-track">
+                        <!-- Project 1 -->
+                        <div class="project-card active">
+                            <div class="project-image">
+                                <div class="image-placeholder">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <div class="project-badge">AI</div>
+                            </div>
+                            <div class="project-content">
+                                <h3 class="project-title">Fredi AI Assistant</h3>
+                                <p class="project-description">
+                                    Advanced AI-powered assistant with natural language processing, 
+                                    multi-language support, and integration capabilities.
+                                </p>
+                                <div class="project-tech">
+                                    <span class="tech-tag">Python</span>
+                                    <span class="tech-tag">TensorFlow</span>
+                                    <span class="tech-tag">FastAPI</span>
+                                </div>
+                                <button class="project-btn">View Details</button>
+                            </div>
+                        </div>
+
+                        <!-- Project 2 -->
+                        <div class="project-card">
+                            <div class="project-image">
+                                <div class="image-placeholder">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </div>
+                                <div class="project-badge">E-commerce</div>
+                            </div>
+                            <div class="project-content">
+                                <h3 class="project-title">ShopSmart AI</h3>
+                                <p class="project-description">
+                                    Intelligent e-commerce platform with AI-powered recommendations, 
+                                    real-time inventory management, and secure payments.
+                                </p>
+                                <div class="project-tech">
+                                    <span class="tech-tag">React</span>
+                                    <span class="tech-tag">Node.js</span>
+                                    <span class="tech-tag">MongoDB</span>
+                                </div>
+                                <button class="project-btn">View Details</button>
+                            </div>
+                        </div>
+
+                        <!-- Project 3 -->
+                        <div class="project-card">
+                            <div class="project-image">
+                                <div class="image-placeholder">
+                                    <i class="fas fa-mobile-alt"></i>
+                                </div>
+                                <div class="project-badge">Mobile</div>
+                            </div>
+                            <div class="project-content">
+                                <h3 class="project-title">HealthTrack Pro</h3>
+                                <p class="project-description">
+                                    Healthcare mobile app with AI diagnostics, appointment scheduling, 
+                                    and health monitoring features.
+                                </p>
+                                <div class="project-tech">
+                                    <span class="tech-tag">React Native</span>
+                                    <span class="tech-tag">Firebase</span>
+                                    <span class="tech-tag">GraphQL</span>
+                                </div>
+                                <button class="project-btn">View Details</button>
+                            </div>
+                        </div>
+
+                        <!-- Project 4 -->
+                        <div class="project-card">
+                            <div class="project-image">
+                                <div class="image-placeholder">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="project-badge">Analytics</div>
+                            </div>
+                            <div class="project-content">
+                                <h3 class="project-title">DataInsight AI</h3>
+                                <p class="project-description">
+                                    Real-time business intelligence platform with predictive analytics, 
+                                    data visualization, and automated reporting.
+                                </p>
+                                <div class="project-tech">
+                                    <span class="tech-tag">Python</span>
+                                    <span class="tech-tag">D3.js</span>
+                                    <span class="tech-tag">PostgreSQL</span>
+                                </div>
+                                <button class="project-btn">View Details</button>
+                            </div>
+                        </div>
+
+                        <!-- Project 5 -->
+                        <div class="project-card">
+                            <div class="project-image">
+                                <div class="image-placeholder">
+                                    <i class="fas fa-gamepad"></i>
+                                </div>
+                                <div class="project-badge">Game Dev</div>
+                            </div>
+                            <div class="project-content">
+                                <h3 class="project-title">NeonRunner 3D</h3>
+                                <p class="project-description">
+                                    3D endless runner game with advanced physics, particle effects, 
+                                    and multiplayer capabilities.
+                                </p>
+                                <div class="project-tech">
+                                    <span class="tech-tag">Unity</span>
+                                    <span class="tech-tag">C#</span>
+                                    <span class="tech-tag">WebGL</span>
+                                </div>
+                                <button class="project-btn">View Details</button>
+                            </div>
+                        </div>
+
+                        <!-- Project 6 -->
+                        <div class="project-card">
+                            <div class="project-image">
+                                <div class="image-placeholder">
+                                    <i class="fas fa-lock"></i>
+                                </div>
+                                <div class="project-badge">Security</div>
+                            </div>
+                            <div class="project-content">
+                                <h3 class="project-title">SecureAuth Pro</h3>
+                                <p class="project-description">
+                                    Enterprise authentication system with biometric verification, 
+                                    multi-factor authentication, and threat detection.
+                                </p>
+                                <div class="project-tech">
+                                    <span class="tech-tag">Node.js</span>
+                                    <span class="tech-tag">JWT</span>
+                                    <span class="tech-tag">Redis</span>
+                                </div>
+                                <button class="project-btn">View Details</button>
+                            </div>
+                        </div>
+
+                        <!-- Project 7 -->
+                        <div class="project-card">
+                            <div class="project-image">
+                                <div class="image-placeholder">
+                                    <i class="fas fa-video"></i>
+                                </div>
+                                <div class="project-badge">Video</div>
+                            </div>
+                            <div class="project-content">
+                                <h3 class="project-title">StreamSync AI</h3>
+                                <p class="project-description">
+                                    Live streaming platform with AI content moderation, 
+                                    real-time transcoding, and interactive features.
+                                </p>
+                                <div class="project-tech">
+                                    <span class="tech-tag">WebRTC</span>
+                                    <span class="tech-tag">WebSocket</span>
+                                    <span class="tech-tag">FFmpeg</span>
+                                </div>
+                                <button class="project-btn">View Details</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="carousel-indicators">
+                    <span class="indicator active" data-index="0"></span>
+                    <span class="indicator" data-index="1"></span>
+                    <span class="indicator" data-index="2"></span>
+                    <span class="indicator" data-index="3"></span>
+                    <span class="indicator" data-index="4"></span>
+                    <span class="indicator" data-index="5"></span>
+                    <span class="indicator" data-index="6"></span>
+                </div>
             </section>
 
-            <!-- Contact Section -->
-            <section class="contact-section">
-                <div class="contact-card">
-                    <h3>Ready to Collaborate?</h3>
-                    <p>Let's build something amazing together</p>
-                    <div class="contact-methods">
-                        <a href="https://wa.me/255752593977" class="contact-btn whatsapp">
-                            <i class="fab fa-whatsapp"></i> WhatsApp
-                        </a>
-                        <a href="mailto:your.email@example.com" class="contact-btn email">
-                            <i class="fas fa-envelope"></i> Email
-                        </a>
-                        <a href="https://github.com/Fred1e" class="contact-btn github">
-                            <i class="fab fa-github"></i> GitHub
-                        </a>
+            <!-- Code Samples Section -->
+            <section id="code" class="code-section">
+                <div class="section-header">
+                    <h2 class="section-title">Code Samples</h2>
+                    <p class="section-subtitle">Examples across different programming languages</p>
+                </div>
+
+                <div class="code-tabs">
+                    <div class="tab-header">
+                        <button class="tab-btn active" data-tab="javascript">JavaScript</button>
+                        <button class="tab-btn" data-tab="python">Python</button>
+                        <button class="tab-btn" data-tab="java">Java</button>
+                        <button class="tab-btn" data-tab="cpp">C++</button>
+                        <button class="tab-btn" data-tab="php">PHP</button>
+                        <button class="tab-btn" data-tab="swift">Swift</button>
+                        <button class="tab-btn" data-tab="rust">Rust</button>
+                    </div>
+
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="javascript">
+                            <div class="code-sample">
+                                <div class="code-header">
+                                    <span class="file-name">ai-chatbot.js</span>
+                                    <span class="language">JavaScript</span>
+                                </div>
+                                <pre><code class="language-javascript">class FrediAIChatbot {
+    constructor(model = 'gpt-4') {
+        this.model = model;
+        this.context = [];
+        this.isLearning = true;
+    }
+
+    async generateResponse(message) {
+        try {
+            const processed = await this.preprocessMessage(message);
+            const context = this.buildContext(processed);
+            const response = await this.callAIAPI(context);
+            
+            if (this.isLearning) {
+                this.learnFromInteraction(message, response);
+            }
+            
+            return this.formatResponse(response);
+        } catch (error) {
+            console.error('AI Error:', error);
+            return this.getFallbackResponse();
+        }
+    }
+
+    buildContext(message) {
+        return {
+            message,
+            timestamp: Date.now(),
+            previousContext: this.context.slice(-5),
+            userPreferences: this.userPrefs
+        };
+    }
+
+    formatResponse(aiResponse) {
+        return {
+            text: aiResponse.content,
+            confidence: aiResponse.confidence,
+            suggestions: aiResponse.suggestions || []
+        };
+    }
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane" id="python">
+                            <div class="code-sample">
+                                <div class="code-header">
+                                    <span class="file-name">neural_network.py</span>
+                                    <span class="language">Python</span>
+                                </div>
+                                <pre><code class="language-python">import tensorflow as tf
+import numpy as np
+from typing import List, Tuple
+
+class FrediNeuralNetwork:
+    def __init__(self, input_size: int, hidden_layers: List[int], output_size: int):
+        self.model = tf.keras.Sequential()
+        self.model.add(tf.keras.layers.Input(shape=(input_size,)))
+        
+        for neurons in hidden_layers:
+            self.model.add(tf.keras.layers.Dense(neurons, activation='relu'))
+            self.model.add(tf.keras.layers.Dropout(0.2))
+        
+        self.model.add(tf.keras.layers.Dense(output_size, activation='softmax'))
+        
+        self.compile_model()
+    
+    def compile_model(self, learning_rate: float = 0.001):
+        optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate)
+        self.model.compile(
+            optimizer=optimizer,
+            loss='categorical_crossentropy',
+            metrics=['accuracy']
+        )
+    
+    def train(self, X_train: np.ndarray, y_train: np.ndarray, 
+              epochs: int = 100, batch_size: int = 32) -> dict:
+        history = self.model.fit(
+            X_train, y_train,
+            epochs=epochs,
+            batch_size=batch_size,
+            validation_split=0.2,
+            verbose=1
+        )
+        return history.history
+    
+    def predict(self, X_input: np.ndarray) -> np.ndarray:
+        return self.model.predict(X_input, verbose=0)</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- Additional language tabs would follow similar structure -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tech Stack Section -->
+            <section class="tech-section">
+                <div class="section-header">
+                    <h2 class="section-title">Technology Stack</h2>
+                    <p class="section-subtitle">Technologies I work with</p>
+                </div>
+
+                <div class="tech-grid">
+                    <div class="tech-category">
+                        <h3 class="category-title">Frontend</h3>
+                        <div class="tech-items">
+                            <div class="tech-item">
+                                <i class="fab fa-react"></i>
+                                <span>React</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fab fa-vuejs"></i>
+                                <span>Vue.js</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fab fa-angular"></i>
+                                <span>Angular</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fab fa-js-square"></i>
+                                <span>JavaScript</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tech-category">
+                        <h3 class="category-title">Backend</h3>
+                        <div class="tech-items">
+                            <div class="tech-item">
+                                <i class="fab fa-node-js"></i>
+                                <span>Node.js</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fab fa-python"></i>
+                                <span>Python</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fab fa-java"></i>
+                                <span>Java</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fas fa-server"></i>
+                                <span>Go</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tech-category">
+                        <h3 class="category-title">AI/ML</h3>
+                        <div class="tech-items">
+                            <div class="tech-item">
+                                <i class="fas fa-brain"></i>
+                                <span>TensorFlow</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fas fa-robot"></i>
+                                <span>PyTorch</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Scikit-learn</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fas fa-dna"></i>
+                                <span>OpenCV</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
         </main>
+
+        <!-- Footer -->
+        <footer class="dashboard-footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Fredi AI</h4>
+                    <p>Full-Stack Developer & AI Specialist</p>
+                    <p>Dar es Salaam, Tanzania</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <a href="mailto:fredi@example.com">fredi@example.com</a>
+                    <a href="https://wa.me/255752593977">+255 752 593 977</a>
+                </div>
+                <div class="footer-section">
+                    <h4>GitHub Accounts</h4>
+                    <div class="github-links">
+                        <a href="https://github.com/Fred1e">@Fred1e</a>
+                        <a href="https://github.com/FezChat">@FezChat</a>
+                        <a href="https://github.com/mr-X-force">@mr-X-force</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Fredi AI Developer Hub. All rights reserved.</p>
+            </div>
+        </footer>
     </div>
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-    <script src="index.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
