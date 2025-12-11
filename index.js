@@ -2,32 +2,51 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize components
-    initThemeToggle();
     initSplashScreen();
     initProjectsCarousel();
-    initCodeTabs();
-    initSmoothScroll();
-    initHighlightJS();
+    initCodeCarousel();
     initAnimations();
+    initAutoDetectTheme();
 });
 
-// Theme Toggle
-function initThemeToggle() {
-    const themeToggle = document.getElementById('theme-toggle');
-    const body = document.body;
+// Auto-detect theme from browser
+function initAutoDetectTheme() {
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
     
-    // Check for saved theme preference
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-        body.classList.add('dark-mode');
+    function setTheme(isDark) {
+        const root = document.documentElement;
+        
+        if (isDark) {
+            root.style.setProperty('--primary-color', '#5a6ee1');
+            root.style.setProperty('--secondary-color', '#4a0db4');
+            root.style.setProperty('--accent-color', '#ff2d95');
+            root.style.setProperty('--bg-color', '#121212');
+            root.style.setProperty('--card-bg', '#1e1e1e');
+            root.style.setProperty('--text-color', '#e0e0e0');
+            root.style.setProperty('--text-secondary', '#a0a0a0');
+            root.style.setProperty('--border-color', '#2d2d2d');
+            root.style.setProperty('--shadow', '0 4px 6px rgba(0, 0, 0, 0.3)');
+            root.style.setProperty('--gradient', 'linear-gradient(135deg, #5a6ee1 0%, #4a0db4 100%)');
+        } else {
+            root.style.setProperty('--primary-color', '#4361ee');
+            root.style.setProperty('--secondary-color', '#3a0ca3');
+            root.style.setProperty('--accent-color', '#f72585');
+            root.style.setProperty('--bg-color', '#f8f9fa');
+            root.style.setProperty('--card-bg', '#ffffff');
+            root.style.setProperty('--text-color', '#212529');
+            root.style.setProperty('--text-secondary', '#6c757d');
+            root.style.setProperty('--border-color', '#e9ecef');
+            root.style.setProperty('--shadow', '0 4px 6px rgba(0, 0, 0, 0.1)');
+            root.style.setProperty('--gradient', 'linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%)');
+        }
     }
     
-    themeToggle.addEventListener('click', function() {
-        body.classList.toggle('dark-mode');
-        
-        // Save preference
-        const isDarkMode = body.classList.contains('dark-mode');
-        localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+    // Set initial theme
+    setTheme(prefersDarkScheme.matches);
+    
+    // Listen for theme changes
+    prefersDarkScheme.addEventListener('change', (e) => {
+        setTheme(e.matches);
     });
 }
 
@@ -38,7 +57,7 @@ function initSplashScreen() {
     // Remove splash screen after 5 seconds
     setTimeout(() => {
         splashScreen.style.display = 'none';
-        document.querySelector('.dashboard-container').style.opacity = '1';
+        document.querySelector('.welcome-container').style.opacity = '1';
     }, 5000);
 }
 
@@ -114,62 +133,53 @@ function initProjectsCarousel() {
     startAutoSlide();
 }
 
-// Code Tabs
-function initCodeTabs() {
-    const tabBtns = document.querySelectorAll('.tab-btn');
-    const tabPanes = document.querySelectorAll('.tab-pane');
-    
-    tabBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            const tabId = this.getAttribute('data-tab');
-            
-            // Update active button
-            tabBtns.forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Show corresponding tab content
-            tabPanes.forEach(pane => {
-                pane.classList.remove('active');
-                if (pane.id === tabId) {
-                    pane.classList.add('active');
-                }
-            });
-        });
-    });
-}
+// Code Carousel
+function initCodeCarousel() {
+    const snippets = document.querySelectorAll('.code-snippet');
+    const navButtons = document.querySelectorAll('.nav-btn');
+    let currentIndex = 0;
+    let autoCodeInterval;
 
-// Smooth Scroll
-function initSmoothScroll() {
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            const targetSection = document.querySelector(targetId);
-            
-            if (targetSection) {
-                window.scrollTo({
-                    top: targetSection.offsetTop - 80,
-                    behavior: 'smooth'
-                });
-                
-                // Update active nav link
-                navLinks.forEach(l => l.classList.remove('active'));
-                this.classList.add('active');
-            }
-        });
-    });
-}
-
-// Syntax Highlighting
-function initHighlightJS() {
-    // Only highlight if Highlight.js is loaded
-    if (typeof hljs !== 'undefined') {
-        document.querySelectorAll('pre code').forEach(block => {
-            hljs.highlightElement(block);
-        });
+    function showSnippet(index) {
+        snippets.forEach(snippet => snippet.classList.remove('active'));
+        navButtons.forEach(btn => btn.classList.remove('active'));
+        
+        snippets[index].classList.add('active');
+        navButtons[index].classList.add('active');
+        currentIndex = index;
     }
+
+    navButtons.forEach((button, index) => {
+        button.addEventListener('click', () => {
+            showSnippet(index);
+            resetAutoCodeSlide();
+        });
+    });
+
+    // Auto-rotate code carousel every 4 seconds
+    function startAutoCodeSlide() {
+        autoCodeInterval = setInterval(() => {
+            currentIndex = (currentIndex + 1) % snippets.length;
+            showSnippet(currentIndex);
+        }, 4000);
+    }
+
+    function resetAutoCodeSlide() {
+        clearInterval(autoCodeInterval);
+        startAutoCodeSlide();
+    }
+
+    // Initialize
+    showSnippet(0);
+    startAutoCodeSlide();
+
+    // Animated background effect
+    const floatingCode = document.querySelector('.floating-code');
+    setInterval(() => {
+        if (floatingCode) {
+            floatingCode.style.transform = `translate(-50%, calc(-50% + ${Math.sin(Date.now() / 2000) * 10}px))`;
+        }
+    }, 50);
 }
 
 // Animations on Scroll
@@ -188,7 +198,7 @@ function initAnimations() {
     }, observerOptions);
     
     // Observe elements to animate
-    document.querySelectorAll('.project-card, .tech-category, .code-sample').forEach(el => {
+    document.querySelectorAll('.project-card, .feature-card, .tech-item').forEach(el => {
         observer.observe(el);
     });
 }
