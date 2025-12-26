@@ -157,72 +157,81 @@ document.querySelectorAll('.contact-info p').forEach(item => {
     });
 });
 
-// ===== SCROLLABLE BOTTOM NAVIGATION =====
+// ===== SCROLLABLE BOTTOM NAVIGATION (No Categories) =====
 function initScrollableNavigation() {
     const navContainer = document.querySelector('.nav-container');
     const scrollLeftBtn = document.getElementById('scrollLeft');
     const scrollRightBtn = document.getElementById('scrollRight');
-    const categoryIndicator = document.getElementById('currentCategory');
-    const navProgress = document.getElementById('navProgress');
-    const categories = document.querySelectorAll('.nav-category');
+    const scrollProgressThumb = document.getElementById('scrollProgressThumb');
+    const currentPageEl = document.getElementById('currentPage');
+    const totalPagesEl = document.getElementById('totalPages');
+    const navButtons = document.querySelectorAll('.nav-btn');
     
     if (!navContainer || !scrollLeftBtn) return;
     
-    const categoryWidth = 280; // Width of each category
-    const scrollAmount = categoryWidth + 32; // Category width + gap
+    // Calculate number of pages based on visible buttons
+    function calculatePages() {
+        const containerWidth = navContainer.clientWidth;
+        const buttonWidth = 80 + 16; // button width + margin
+        const buttonsPerPage = Math.floor(containerWidth / buttonWidth);
+        const totalButtons = navButtons.length;
+        return Math.ceil(totalButtons / buttonsPerPage);
+    }
     
-    // Calculate total scrollable width
-    const totalWidth = categories.length * scrollAmount;
-    let currentPosition = 0;
-    let currentCategoryIndex = 0;
+    let totalPages = calculatePages();
+    let currentPage = 1;
     
-    // Update category indicator and progress
-    function updateIndicator() {
-        const categoryTitles = ['Main', 'Categories', 'More Tools', 'Development'];
-        categoryIndicator.textContent = categoryTitles[currentCategoryIndex] || 'Main';
+    // Update total pages display
+    totalPagesEl.textContent = totalPages;
+    
+    // Update scroll progress and page indicator
+    function updateScrollIndicators() {
+        const scrollLeft = navContainer.scrollLeft;
+        const maxScroll = navContainer.scrollWidth - navContainer.clientWidth;
+        const scrollPercent = (scrollLeft / maxScroll) * 100;
         
-        // Update progress bar
-        const progress = ((currentCategoryIndex + 1) / categories.length) * 100;
-        navProgress.style.width = `${progress}%`;
+        // Update progress thumb
+        scrollProgressThumb.style.width = `${scrollPercent}%`;
         
-        // Update active category
-        categories.forEach((cat, index) => {
-            if (index === currentCategoryIndex) {
-                cat.style.opacity = '1';
-                cat.style.transform = 'scale(1.02)';
-                cat.style.borderColor = 'var(--primary)';
-            } else {
-                cat.style.opacity = '0.8';
-                cat.style.transform = 'scale(1)';
-                cat.style.borderColor = 'rgba(124, 58, 237, 0.2)';
-            }
-        });
+        // Calculate current page based on scroll position
+        if (maxScroll > 0) {
+            currentPage = Math.round((scrollLeft / maxScroll) * (totalPages - 1)) + 1;
+            currentPage = Math.min(Math.max(currentPage, 1), totalPages);
+            currentPageEl.textContent = currentPage;
+        }
+        
+        // Update scroll buttons visibility
+        scrollLeftBtn.style.opacity = scrollLeft <= 10 ? '0.3' : '0.9';
+        scrollRightBtn.style.opacity = scrollLeft >= maxScroll - 10 ? '0.3' : '0.9';
+        
+        scrollLeftBtn.style.cursor = scrollLeft <= 10 ? 'not-allowed' : 'pointer';
+        scrollRightBtn.style.cursor = scrollLeft >= maxScroll - 10 ? 'not-allowed' : 'pointer';
     }
     
     // Scroll left function
     scrollLeftBtn.addEventListener('click', () => {
-        if (currentCategoryIndex > 0) {
-            currentCategoryIndex--;
-            currentPosition += scrollAmount;
-            navContainer.scrollTo({
-                left: currentPosition,
-                behavior: 'smooth'
-            });
-            updateIndicator();
-        }
+        const containerWidth = navContainer.clientWidth;
+        const scrollAmount = containerWidth * 0.8; // Scroll 80% of container width
+        
+        navContainer.scrollBy({
+            left: -scrollAmount,
+            behavior: 'smooth'
+        });
+        
+        updateScrollIndicators();
     });
     
     // Scroll right function
     scrollRightBtn.addEventListener('click', () => {
-        if (currentCategoryIndex < categories.length - 1) {
-            currentCategoryIndex++;
-            currentPosition -= scrollAmount;
-            navContainer.scrollTo({
-                left: currentPosition,
-                behavior: 'smooth'
-            });
-            updateIndicator();
-        }
+        const containerWidth = navContainer.clientWidth;
+        const scrollAmount = containerWidth * 0.8; // Scroll 80% of container width
+        
+        navContainer.scrollBy({
+            left: scrollAmount,
+            behavior: 'smooth'
+        });
+        
+        updateScrollIndicators();
     });
     
     // Touch/swipe support for mobile
@@ -239,31 +248,25 @@ function initScrollableNavigation() {
     });
     
     function handleSwipe() {
-        const swipeThreshold = 50;
+        const swipeThreshold = 30;
+        const containerWidth = navContainer.clientWidth;
+        const scrollAmount = containerWidth * 0.8;
         
         if (touchStartX - touchEndX > swipeThreshold) {
             // Swipe left - scroll right
-            if (currentCategoryIndex < categories.length - 1) {
-                currentCategoryIndex++;
-                currentPosition -= scrollAmount;
-                navContainer.scrollTo({
-                    left: currentPosition,
-                    behavior: 'smooth'
-                });
-                updateIndicator();
-            }
+            navContainer.scrollBy({
+                left: scrollAmount,
+                behavior: 'smooth'
+            });
         } else if (touchEndX - touchStartX > swipeThreshold) {
             // Swipe right - scroll left
-            if (currentCategoryIndex > 0) {
-                currentCategoryIndex--;
-                currentPosition += scrollAmount;
-                navContainer.scrollTo({
-                    left: currentPosition,
-                    behavior: 'smooth'
-                });
-                updateIndicator();
-            }
+            navContainer.scrollBy({
+                left: -scrollAmount,
+                behavior: 'smooth'
+            });
         }
+        
+        setTimeout(updateScrollIndicators, 300);
     }
     
     // Keyboard navigation support
@@ -275,131 +278,164 @@ function initScrollableNavigation() {
         }
     });
     
-    // Auto-hide scroll indicators when at edges
-    function updateScrollIndicators() {
-        scrollLeftBtn.style.opacity = currentCategoryIndex === 0 ? '0.3' : '0.8';
-        scrollRightBtn.style.opacity = currentCategoryIndex === categories.length - 1 ? '0.3' : '0.8';
-        
-        scrollLeftBtn.style.cursor = currentCategoryIndex === 0 ? 'not-allowed' : 'pointer';
-        scrollRightBtn.style.cursor = currentCategoryIndex === categories.length - 1 ? 'not-allowed' : 'pointer';
-    }
-    
-    // Initialize
-    updateIndicator();
-    updateScrollIndicators();
-    
-    // Update indicators on scroll
-    navContainer.addEventListener('scroll', () => {
-        const scrollPos = Math.abs(navContainer.scrollLeft);
-        currentCategoryIndex = Math.floor(scrollPos / scrollAmount);
-        currentPosition = -scrollPos;
-        updateIndicator();
+    // Recalculate on resize
+    window.addEventListener('resize', () => {
+        totalPages = calculatePages();
+        totalPagesEl.textContent = totalPages;
         updateScrollIndicators();
     });
     
-    // Add click handlers to all nav buttons
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            // Remove active class from all buttons
-            document.querySelectorAll('.nav-btn').forEach(b => {
-                b.classList.remove('active');
-            });
-            
-            // Add active class to clicked button
-            this.classList.add('active');
-            
-            // Store active page in localStorage
-            const pageName = this.querySelector('span').textContent;
-            localStorage.setItem('lastActivePage', pageName);
+    // Active button click handler
+    navButtons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            // Don't prevent default for actual navigation
+            if (!this.classList.contains('active')) {
+                // Store active page
+                localStorage.setItem('activeNavBtn', this.getAttribute('href'));
+            }
         });
     });
     
-    // Restore last active page on load
-    const lastActivePage = localStorage.getItem('lastActivePage');
-    if (lastActivePage) {
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            if (btn.querySelector('span').textContent === lastActivePage) {
+    // Restore active button on load
+    const activeNavBtn = localStorage.getItem('activeNavBtn');
+    if (activeNavBtn) {
+        navButtons.forEach(btn => {
+            if (btn.getAttribute('href') === activeNavBtn) {
                 btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
             }
         });
     }
+    
+    // Initialize
+    updateScrollIndicators();
+    
+    // Update indicators on scroll
+    navContainer.addEventListener('scroll', updateScrollIndicators);
+    
+    // Auto-scroll to show active button on load
+    setTimeout(() => {
+        const activeBtn = document.querySelector('.nav-btn.active');
+        if (activeBtn) {
+            activeBtn.scrollIntoView({
+                behavior: 'smooth',
+                inline: 'center',
+                block: 'nearest'
+            });
+        }
+    }, 1000);
 }
 
-// ===== ENHANCED BOTTOM NAV ANIMATIONS =====
-function addNavAnimations() {
+// ===== ADD NAV BUTTON ANIMATIONS =====
+function addNavButtonEffects() {
+    const navButtons = document.querySelectorAll('.nav-btn');
+    
+    // Add staggered entrance animation
+    navButtons.forEach((btn, index) => {
+        btn.style.animationDelay = `${index * 0.05}s`;
+        btn.style.opacity = '0';
+        btn.style.transform = 'translateY(10px)';
+        
+        setTimeout(() => {
+            btn.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            btn.style.opacity = '1';
+            btn.style.transform = 'translateY(0)';
+        }, 100 + (index * 50));
+    });
+    
+    // Add hover sound effect (optional)
+    navButtons.forEach(btn => {
+        btn.addEventListener('mouseenter', () => {
+            btn.style.transform = 'translateY(-5px) scale(1.05)';
+        });
+        
+        btn.addEventListener('mouseleave', () => {
+            if (!btn.classList.contains('active')) {
+                btn.style.transform = 'translateY(0) scale(1)';
+            }
+        });
+        
+        btn.addEventListener('touchstart', () => {
+            btn.style.transform = 'scale(0.95)';
+        });
+        
+        btn.addEventListener('touchend', () => {
+            setTimeout(() => {
+                if (!btn.classList.contains('active')) {
+                    btn.style.transform = 'scale(1)';
+                }
+            }, 150);
+        });
+    });
+}
+
+// ===== ENHANCED NAVIGATION FEATURES =====
+function enhanceNavigation() {
     const navContainer = document.querySelector('.nav-container');
     
-    // Add floating animation to buttons
-    document.querySelectorAll('.nav-btn').forEach((btn, index) => {
-        btn.style.animationDelay = `${index * 0.1}s`;
-        btn.classList.add('fade-in-up');
+    // Add mouse wheel horizontal scrolling
+    navContainer.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        navContainer.scrollLeft += e.deltaY;
     });
     
-    // Add parallax effect on scroll
-    window.addEventListener('scroll', () => {
-        const scrollY = window.scrollY;
-        const bottomNav = document.querySelector('.bottom-nav');
-        
-        if (bottomNav) {
-            const opacity = 1 - (scrollY / 500);
-            bottomNav.style.opacity = Math.max(opacity, 0.8);
-            
-            // Slight movement effect
-            bottomNav.style.transform = `translateY(${scrollY * 0.02}px)`;
-        }
-    });
-    
-    // Hover effect for categories
-    document.querySelectorAll('.nav-category').forEach(category => {
-        category.addEventListener('mouseenter', () => {
-            category.style.transform = 'translateY(-5px)';
-            category.style.boxShadow = '0 10px 30px rgba(124, 58, 237, 0.3)';
+    // Add active button highlight on scroll into view
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const btn = entry.target;
+                navButtons.forEach(b => b.classList.remove('view-active'));
+                btn.classList.add('view-active');
+            }
         });
-        
-        category.addEventListener('mouseleave', () => {
-            category.style.transform = 'translateY(0)';
-            category.style.boxShadow = 'none';
-        });
+    }, {
+        root: navContainer,
+        threshold: 0.5
     });
-}
-
-// ===== UPDATE INITIALIZATION =====
-document.addEventListener('DOMContentLoaded', () => {
-    // Existing initialization...
     
-    // Add new navigation functions
-    initScrollableNavigation();
-    addNavAnimations();
+    // Observe all buttons
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        observer.observe(btn);
+    });
     
-    // Add CSS animation classes
+    // Add CSS for view-active state
     const style = document.createElement('style');
     style.textContent = `
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .nav-btn.view-active {
+            box-shadow: 0 0 15px rgba(124, 58, 237, 0.5) !important;
         }
         
-        .fade-in-up {
-            animation: fadeInUp 0.5s ease forwards;
-            opacity: 0;
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(124, 58, 237, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(124, 58, 237, 0); }
         }
         
-        /* Smooth transitions for nav */
-        .nav-category {
-            transition: all 0.3s ease;
-        }
-        
-        .nav-btn {
-            transition: all 0.2s ease;
+        .nav-btn.active {
+            animation: pulse 2s infinite;
         }
     `;
     document.head.appendChild(style);
+}
+
+// ===== INITIALIZE NAVIGATION =====
+document.addEventListener('DOMContentLoaded', () => {
+    // Existing initialization...
+    
+    // Initialize new navigation
+    initScrollableNavigation();
+    addNavButtonEffects();
+    enhanceNavigation();
+    
+    // Add active state to current page button
+    const currentPath = window.location.pathname;
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        const href = btn.getAttribute('href');
+        if (href && (currentPath.includes(href) || href === currentPath)) {
+            btn.classList.add('active');
+        }
+    });
 });
 
 // ===== INITIALIZE =====
