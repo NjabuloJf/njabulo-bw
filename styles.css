@@ -748,50 +748,306 @@ section {
     justify-content: center;
 }
 
-/* ===== BOTTOM NAVIGATION ===== */
+/* ===== SCROLLABLE BOTTOM NAVIGATION ===== */
 .bottom-nav {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    background: rgba(30, 41, 59, 0.95);
+    background: rgba(15, 23, 42, 0.95);
     backdrop-filter: blur(20px);
-    display: flex;
-    justify-content: space-around;
-    padding: 0.8rem 0;
-    border-top: 1px solid rgba(124, 58, 237, 0.2);
-    z-index: 100;
+    border-top: 1px solid rgba(124, 58, 237, 0.3);
+    z-index: 1000;
+    height: 180px; /* Increased height to show categories */
+    overflow: hidden;
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
 }
 
-.nav-item {
+.nav-container {
+    display: flex;
+    padding: 1rem 2rem;
+    gap: 2rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    height: calc(100% - 40px);
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+
+.nav-container::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Opera */
+}
+
+.nav-category {
+    flex: 0 0 280px;
+    padding: 1rem;
+    background: rgba(30, 41, 59, 0.7);
+    border-radius: 12px;
+    border: 1px solid rgba(124, 58, 237, 0.2);
+}
+
+.category-title {
+    font-size: 0.9rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    padding-left: 0.5rem;
+    border-left: 3px solid var(--primary);
+}
+
+.nav-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+}
+
+.nav-btn {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    padding: 0.8rem;
+    background: rgba(124, 58, 237, 0.1);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    border-radius: 8px;
     text-decoration: none;
     color: var(--text-secondary);
-    padding: 0.5rem;
-    transition: var(--transition);
-    flex: 1;
-    max-width: 100px;
+    transition: all 0.3s ease;
+    min-height: 70px;
+    position: relative;
 }
 
-.nav-item.active {
-    color: var(--primary);
-}
-
-.nav-item i {
-    font-size: 1.2rem;
-    margin-bottom: 4px;
-}
-
-.nav-item span {
-    font-size: 0.7rem;
-    font-weight: 500;
-}
-
-.nav-item:hover {
+.nav-btn:hover {
+    background: rgba(124, 58, 237, 0.2);
+    border-color: var(--primary);
     color: white;
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+}
+
+.nav-btn.active {
+    background: var(--gradient-primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.nav-btn.adult {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.nav-btn.adult:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: var(--danger);
+}
+
+.adult-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: var(--danger);
+    color: white;
+    font-size: 0.7rem;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-btn i {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.nav-btn span {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* Navigation Scroll Indicators */
+.nav-scroll-indicator {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background: rgba(124, 58, 237, 0.8);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    z-index: 1001;
+    opacity: 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.bottom-nav:hover .nav-scroll-indicator {
+    opacity: 1;
+}
+
+.nav-scroll-indicator.left {
+    left: 10px;
+}
+
+.nav-scroll-indicator.right {
+    right: 10px;
+}
+
+.nav-scroll-indicator:hover {
+    background: var(--primary);
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* Category Indicator */
+.category-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: rgba(15, 23, 42, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 0 2rem;
+}
+
+.category-indicator span {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    min-width: 80px;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 4px;
+    background: rgba(124, 58, 237, 0.2);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar .progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: var(--gradient-primary);
+    border-radius: 2px;
+    width: 25%; /* 4 categories = 25% each */
+    transition: transform 0.3s ease;
+}
+
+/* Active Button Styles */
+.nav-btn.active i {
+    animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+/* Responsive Design for Bottom Nav */
+@media (max-width: 768px) {
+    .bottom-nav {
+        height: 160px;
+    }
+    
+    .nav-category {
+        flex: 0 0 250px;
+    }
+    
+    .nav-buttons {
+        gap: 0.6rem;
+    }
+    
+    .nav-btn {
+        padding: 0.6rem;
+        min-height: 60px;
+    }
+    
+    .nav-btn i {
+        font-size: 1rem;
+    }
+    
+    .nav-btn span {
+        font-size: 0.7rem;
+    }
+    
+    .category-indicator {
+        height: 35px;
+        padding: 0 1rem;
+    }
+    
+    .category-indicator span {
+        font-size: 0.8rem;
+        min-width: 70px;
+    }
+}
+
+@media (max-width: 480px) {
+    .bottom-nav {
+        height: 150px;
+    }
+    
+    .nav-category {
+        flex: 0 0 220px;
+        padding: 0.8rem;
+    }
+    
+    .nav-buttons {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .nav-btn {
+        min-height: 50px;
+        padding: 0.5rem;
+    }
+    
+    .nav-container {
+        padding: 1rem;
+        gap: 1.5rem;
+    }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .nav-scroll-indicator {
+        opacity: 0.7 !important;
+        width: 50px;
+        height: 50px;
+    }
+    
+    .nav-scroll-indicator i {
+        font-size: 1.2rem;
+    }
+    
+    .nav-btn {
+        min-height: 65px;
+    }
+    
+    .nav-btn:active {
+        transform: scale(0.95);
+        transition: transform 0.1s ease;
+    }
+}
+
+/* Adjust Main Content Padding for Bottom Nav */
+.main-content {
+    padding-bottom: 220px !important; /* Increased for taller nav */
 }
 
 /* ===== FOOTER ===== */
@@ -869,37 +1125,37 @@ section {
     .header {
         padding: 1rem;
     }
-    
+
     .main-content {
         padding: 1rem;
     }
-    
+
     .hero-title {
         font-size: 2.2rem;
     }
-    
+
     .section-title {
         font-size: 1.8rem;
     }
-    
+
     .bots-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .hero-stats {
         flex-direction: column;
         gap: 1rem;
     }
-    
+
     .actions-grid {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .contact-buttons {
         flex-direction: column;
         gap: 0.8rem;
     }
-    
+
     .contact-buttons .btn {
         width: 100%;
     }
@@ -909,11 +1165,11 @@ section {
     .actions-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .social-grid {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .section-title {
         font-size: 1.5rem;
     }
