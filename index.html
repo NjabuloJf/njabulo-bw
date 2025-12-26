@@ -2,557 +2,427 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fredi AI - Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Fredi AI - Developer Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Loading Bar -->
-    <div class="loading-bar" id="loadingBar"></div>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="loader"></div>
+            <h2>Fredi AI</h2>
+            <p>Loading dashboard...</p>
+        </div>
+    </div>
 
-    <!-- Scroll Progress -->
-    <div class="scroll-progress" id="scrollProgress"></div>
-
-    <!-- Scroll to Top Button -->
-    <button class="scroll-to-top" id="scrollToTop">
-        <i class="fas fa-chevron-up"></i>
+    <!-- Scroll to Top -->
+    <button class="scroll-top" id="scrollTop">
+        <i class="fas fa-arrow-up"></i>
     </button>
 
-    <!-- Header -->
+    <!-- Top Header -->
     <header class="header">
-        <div class="header-left">
+        <div class="header-container">
             <div class="logo">
                 <div class="logo-icon">F</div>
-                <div class="logo-text">FREDI AI</div>
-            </div>
-            <nav class="nav-menu">
-                <a href="#home" class="nav-item active">Home</a>
-                <a href="#menu" class="nav-item">Quick Menu</a>
-                <a href="#projects" class="nav-item">Projects</a>
-                <a href="#features" class="nav-item">Features</a>
-                <a href="#stats" class="nav-item">Statistics</a>
-            </nav>
-        </div>
-        <div class="header-right">
-            <!-- Quick Settings Toggle -->
-            <div class="quick-settings-toggle" id="quickSettingsToggle">
-                <i class="fas fa-sliders-h"></i>
-            </div>
-
-            <!-- Quick Settings Panel -->
-            <div class="quick-settings-panel" id="quickSettingsPanel">
-                <div class="settings-header">
-                    <h4>Quick Settings</h4>
-                    <button class="close-settings" id="closeSettings">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="settings-content">
-                    <div class="setting-item">
-                        <span>Dark Mode</span>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="darkModeToggle" checked>
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="setting-item">
-                        <span>Notifications</span>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="notificationsToggle" checked>
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="setting-item">
-                        <span>Auto Updates</span>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="autoUpdateToggle">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="setting-item">
-                        <span>Sound Effects</span>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="soundToggle" checked>
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="settings-actions">
-                        <a href="settings.html" class="btn btn-primary btn-sm">
-                            <i class="fas fa-cog"></i>
-                            Full Settings
-                        </a>
-                        <button class="btn btn-secondary btn-sm" id="resetSettings">
-                            <i class="fas fa-redo"></i>
-                            Reset
-                        </button>
-                    </div>
+                <div class="logo-text">
+                    <span class="logo-main">FREDI</span>
+                    <span class="logo-sub">AI DEVELOPER</span>
                 </div>
             </div>
 
-            <div class="user-menu" id="userMenu">
-                <div class="user-avatar" id="userAvatar">
-                    <!-- Avatar will be loaded dynamically -->
-                </div>
-                <span class="user-name" id="userName">User</span>
-                <div class="user-dropdown">
-                    <a href="profile.html" class="dropdown-item">
+            <div class="header-actions">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                    <i class="fas fa-sun"></i>
+                </button>
+                
+                <div class="user-profile">
+                    <div class="avatar">
                         <i class="fas fa-user"></i>
-                        Profile
-                    </a>
-                    <a href="payment.html" class="dropdown-item">
-                        <i class="fas fa-crown"></i>
-                        Upgrade to Pro
-                    </a>
-                    <a href="settings.html" class="dropdown-item">
-                        <i class="fas fa-cog"></i>
-                        Settings
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item" id="logoutBtn">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Logout
-                    </a>
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name">Fredi Ezra</span>
+                        <span class="user-role">Bot Developer</span>
+                    </div>
                 </div>
             </div>
-            <button class="theme-toggle" id="themeToggle">
-                <i class="fas fa-moon"></i>
-            </button>
         </div>
     </header>
 
     <!-- Main Content -->
     <main class="main-content">
         <!-- Hero Section -->
-        <div class="greeting-container">
-            <h2 id="greetingMessage" class="greeting-message">Welcome back!</h2>
-            <p class="greeting-subtitle" id="greetingSubtitle">Ready to create something amazing today?</p>
-        </div>
-
-        <section id="home" class="hero-section fade-in-up">
-            <h1 class="hero-title">Welcome to Fredi AI</h1>
-            <p class="hero-subtitle">
-                Advanced AI-powered solutions and innovative projects that transform your digital experience. 
-                Explore cutting-edge technology and intelligent automation.
-            </p>
-            
-            <div class="hero-stats">
-                <div class="stat-item">
-                    <span class="stat-number" id="projectsCount">25+</span>
-                    <span class="stat-label">Projects</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number" id="usersCount">10K+</span>
-                    <span class="stat-label">Users</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number" id="updatesCount">Daily</span>
-                    <span class="stat-label">Updates</span>
-                </div>
-            </div>
-
-            <!-- System Status Widget -->
-            <div class="system-status-widget">
-                <h3 class="widget-title">
-                    <i class="fas fa-server"></i>
-                    System Status
-                </h3>
-                <div class="status-grid">
-                    <div class="status-item online">
-                        <i class="fas fa-circle"></i>
-                        <span>Web Services</span>
-                    </div>
-                    <div class="status-item online">
-                        <i class="fas fa-circle"></i>
-                        <span>API Gateway</span>
-                    </div>
-                    <div class="status-item online">
-                        <i class="fas fa-circle"></i>
-                        <span>Database</span>
-                    </div>
-                    <div class="status-item warning">
-                        <i class="fas fa-circle"></i>
-                        <span>CDN Network</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Calendar Section -->
-            <div class="calendar-container">
-                <h3 class="card-title">Calendar</h3>
-                <div class="calendar">
-                    <div class="calendar-header">
-                        <h2 class="month-year" id="month-year">Month Year</h2>
-                    </div>
-                    <div class="weekdays">
-                        <div>Sun</div>
-                        <div>Mon</div>
-                        <div>Tue</div>
-                        <div>Wed</div>
-                        <div>Thu</div>
-                        <div>Fri</div>
-                        <div>Sat</div>
-                    </div>
-                    <div class="days" id="days"></div>
-                    <div class="calendar-navigation">
-                        <button class="calendar-btn" id="prev-month"><i class="fas fa-chevron-left"></i> Prev</button>
-                        <button class="calendar-btn" id="today">Today</button>
-                        <button class="calendar-btn" id="next-month">Next <i class="fas fa-chevron-right"></i></button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="cta-buttons">
-                <a href="#menu" class="btn btn-primary">
-                    <i class="fas fa-rocket"></i>
-                    Explore Menu
-                </a>
-                <a href="settings.html" class="btn btn-secondary">
-                    <i class="fas fa-cog"></i>
-                    App Settings
-                </a>
-                <a href="payment.html" class="btn btn-accent">
-                    <i class="fas fa-crown"></i>
-                    Go Pro
-                </a>
-            </div>
-        </section>
-
-        <!-- Quick Menu Section -->
-        <section id="menu" class="menu-section fade-in-up">
-            <h2 class="menu-section-title">Quick Access Menu</h2>
-            
-            <div class="menu-grid">
-                <!-- Main Category -->
-                <div class="menu-category">
-                    <h3 class="category-title">
-                        <i class="fas fa-home"></i>
-                        Main
-                    </h3>
-                    <div class="menu-items">
-                        <a href="/" class="menu-item">
-                            <div class="menu-item-icon">
-                                <i class="fas fa-home"></i>
-                            </div>
-                            <div class="menu-item-text">Dashboard</div>
-                        </a>
-                        <a href="/portfolio" class="menu-item">
-                            <div class="menu-item-icon">
-                                <i class="fas fa-briefcase"></i>
-                            </div>
-                            <div class="menu-item-text">Portfolio</div>
-                        </a>
-                        <a href="/support" class="menu-item">
-                            <div class="menu-item-icon">
-                                <i class="fas fa-praying-hands"></i>
-                            </div>
-                            <div class="menu-item-text">Support</div>
-                        </a>
-                        <a href="/project" class="menu-item">
-                            <div class="menu-item-icon">
-                                <i class="fas fa-comment-dots"></i>
-                            </div>
-                            <div class="menu-item-text">Project</div>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Categories -->
-                <div class="menu-category">
-                    <h3 class="category-title">
-                        <i class="fas fa-th-large"></i>
-                        Categories
-                    </h3>
-                    <div class="menu-items">
-                        <a href="./search.html" class="menu-item">
-                            <div class="menu-item-icon">
-                                <i class="fas fa-search"></i>
-                            </div>
-                            <div class="menu-item-text">Search</div>
-                        </a>
-                        <a href="./ai.html" class="menu-item">
-                            <div class="menu-item-icon">
-                                <i class="fas fa-gears"></i>
-                            </div>
-                            <div class="menu-item-text">AI {Artificial Intelligence}</div>
-                        </a>
-                        <a href="./movie.html" class="menu-item">
-                            <div class="menu-item-icon">
-                                <i class="fas fa-film"></i>
-                            </div>
-                            <div class="menu-item-text">Movies</div>
-                        </a>
-                        <a href="./porno.html" class="menu-item">
-                            <div class="menu-item-icon">
-                                <i class="fas fa-ban"></i>
-                            </div>
-                            <div class="menu-item-text">18+ menu</div>
-                            <div class="menu-item-badge">🔞</div>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- More Categories -->
-                <div class="menu-category">
-                    <h3 class="category-title">
-                        <i class="fas fa-layer-group"></i>
-                        More Tools
-                    </h3>
-                    <div class="menu-items">
-                        <a href="./dowload.html" class="menu-item">
-                            <div class="menu-item-icon">
-                                <i class="fas fa-download"></i>
-                            </div>
-                            <div class="menu-item-text">Download</div>
-                        </a>
-                        <a href="./stalker.html" class="menu-item">
-                            <div class="menu-item-icon">
-                                <i class="fas fa-user-secret"></i>
-                            </div>
-                            <div class="menu-item-text">Stalker</div>
-                        </a>
-                        <a href="./fun.html" class="menu-item">
-                            <div class="menu-item-icon">
-                                <i class="fas fa-gamepad"></i>
-                            </div>
-                            <div class="menu-item-text">Fun</div>
-                        </a>
-                        <a href="./editing.html" class="menu-item">
-                            <div class="menu-item-icon">
-                                <i class="fas fa-edit"></i>
-                            </div>
-                            <div class="menu-item-text">Editing</div>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Development -->
-                <div class="menu-category">
-                    <h3 class="category-title">
-                        <i class="fas fa-code"></i>
-                        Development
-                    </h3>
-                    <div class="menu-items">
-                        <a href="./coding.html" class="menu-item">
-                            <div class="menu-item-icon">
-                                <i class="fas fa-code"></i>
-                            </div>
-                            <div class="menu-item-text">Coding</div>
-                        </a>
-                        <a href="./sports.html" class="menu-item">
-                            <div class="menu-item-icon">
-                                <i class="fas fa-running"></i>
-                            </div>
-                            <div class="menu-item-text">Sports</div>
-                        </a>
-                        <a href="./kamusi.html" class="menu-item">
-                            <div class="menu-item-icon">
-                                <i class="fas fa-book"></i>
-                            </div>
-                            <div class="menu-item-text">Dictionary</div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Real-time Stats -->
-        <section id="stats" class="section">
-            <div class="section-header">
-                <h2 class="section-title">Live Statistics</h2>
-                <p class="section-subtitle">Real-time data and performance metrics</p>
-            </div>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <i class="fas fa-globe"></i>
-                    <span class="number" id="onlineUsers">2,847</span>
-                    <span class="label">Online Users</span>
-                </div>
-                <div class="stat-card">
-                    <i class="fas fa-bolt"></i>
-                    <span class="number" id="responseTime">98ms</span>
-                    <span class="label">Avg Response Time</span>
-                </div>
-                <div class="stat-card">
-                    <i class="fas fa-server"></i>
-                    <span class="number" id="uptime">99.9%</span>
-                    <span class="label">System Uptime</span>
-                </div>
-                <div class="stat-card">
-                    <i class="fas fa-download"></i>
-                    <span class="number" id="downloads">1.2M</span>
-                    <span class="label">Total Downloads</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Projects Section -->
-        <section id="projects" class="section">
-            <div class="section-header">
-                <h2 class="section-title">Featured Projects</h2>
-                <p class="section-subtitle">Innovative solutions powered by advanced AI technology</p>
-            </div>
-            <div class="projects-grid">
-                <!-- FREDI-MD Project -->
-                <div class="project-card fade-in-up">
-                    <div class="project-icon">
-                        <i class="fab fa-whatsapp"></i>
-                    </div>
-                    <h3 class="project-title">FREDI-MD</h3>
-                    <p class="project-description">
-                        Advanced WhatsApp bot with 200+ plugins, AI integration, and multi-platform support. 
-                        Serving 10,000+ active users with daily updates and premium features.
+        <section class="hero-section" id="home">
+            <div class="hero-content">
+                <div class="welcome-message">
+                    <h1 class="hero-title">
+                        <span class="greeting" id="greeting">Welcome</span>
+                        <span class="highlight">Fredi Ezra</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        AI & Bot Developer from Arusha, Tanzania. Creator of FEE-XMD & LUCKY-MD WhatsApp bots.
                     </p>
-                    <div class="project-links">
-                        <a href="https://github.com/mr-X-force/fredi-md" class="project-link link-github" target="_blank">
-                            <i class="fab fa-github"></i> GitHub
-                        </a>
-                        <a href="https://whatsapp.com/channel/0029VbAjdiWBFLgXpS7VJz1u" class="project-link link-live" target="_blank">
-                            <i class="fas fa-external-link-alt"></i> Channel
-                        </a>
+                    
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-code"></i>
+                            <div>
+                                <span class="stat-number">10+</span>
+                                <span class="stat-label">Projects</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fab fa-whatsapp"></i>
+                            <div>
+                                <span class="stat-number">50K+</span>
+                                <span class="stat-label">Bot Users</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-star"></i>
+                            <div>
+                                <span class="stat-number">200+</span>
+                                <span class="stat-label">Features</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- LUCKY-MD-XFORCE Project -->
-                <div class="project-card fade-in-up">
-                    <div class="project-icon">
+                <div class="hero-image">
+                    <div class="bot-icon">
                         <i class="fas fa-robot"></i>
                     </div>
-                    <h3 class="project-title">LUCKY-MD-XFORCE</h3>
-                    <p class="project-description">
-                        Modern WhatsApp bot built with JavaScript and Docker. Features 50+ modules, 
-                        AI chat, media downloaders, and advanced automation capabilities.
+                </div>
+            </div>
+        </section>
+
+        <!-- Developer Info Section -->
+        <section class="developer-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-user-tie"></i>
+                    About the Developer
+                </h2>
+                <p class="section-subtitle">Fredi AI Tech - Building the future of WhatsApp automation</p>
+            </div>
+
+            <div class="developer-grid">
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3>Location</h3>
+                    <p>Arusha, Tanzania</p>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3>Email</h3>
+                    <p>frediezra360@gmail.com</p>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fab fa-whatsapp"></i>
+                    </div>
+                    <h3>WhatsApp</h3>
+                    <p>+255 764 182 801</p>
+                    <p>+256 752 593 977</p>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fab fa-github"></i>
+                    </div>
+                    <h3>GitHub</h3>
+                    <p>github.com/Fred1e</p>
+                    <p>github.com/mr-X-force</p>
+                </div>
+            </div>
+
+            <div class="skills-section">
+                <h3 class="skills-title">
+                    <i class="fas fa-tools"></i>
+                    Technical Expertise
+                </h3>
+                <div class="skills-grid">
+                    <span class="skill-tag">WhatsApp Bot Development</span>
+                    <span class="skill-tag">Node.js & JavaScript</span>
+                    <span class="skill-tag">AI Integration</span>
+                    <span class="skill-tag">API Development</span>
+                    <span class="skill-tag">Cloud Deployment</span>
+                    <span class="skill-tag">Database Management</span>
+                    <span class="skill-tag">UI/UX Design</span>
+                    <span class="skill-tag">Open Source Projects</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Bots Section -->
+        <section class="bots-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-robot"></i>
+                    My WhatsApp Bots
+                </h2>
+                <p class="section-subtitle">Advanced automation solutions serving thousands of users</p>
+            </div>
+
+            <div class="bots-grid">
+                <!-- FEE-XMD Bot -->
+                <div class="bot-card">
+                    <div class="bot-header">
+                        <div class="bot-icon-large fee-xmd">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <div class="bot-badge">Flagship</div>
+                    </div>
+                    <h3 class="bot-title">FEE-XMD</h3>
+                    <p class="bot-description">
+                        Complete WhatsApp automation solution with 200+ features including media downloaders, 
+                        AI chat, games, tools, and educational features.
                     </p>
-                    <div class="project-links">
-                        <a href="https://github.com/mr-X-force/LUCKY-MD-XFORCE" class="project-link link-github" target="_blank">
+                    
+                    <div class="bot-features">
+                        <span><i class="fas fa-check"></i> 200+ Commands</span>
+                        <span><i class="fas fa-check"></i> Multi-Platform</span>
+                        <span><i class="fas fa-check"></i> Daily Updates</span>
+                    </div>
+                    
+                    <div class="bot-stats">
+                        <div class="bot-stat">
+                            <i class="fas fa-users"></i>
+                            <span>25K+ Users</span>
+                        </div>
+                        <div class="bot-stat">
+                            <i class="fas fa-code-branch"></i>
+                            <span>100+ Forks</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bot-actions">
+                        <a href="https://github.com/Fred1e/Fee-Xmd" class="btn btn-primary" target="_blank">
                             <i class="fab fa-github"></i> GitHub
                         </a>
-                        <a href="https://lucky-ai-docs.vercel.app" class="project-link link-live" target="_blank">
-                            <i class="fas fa-book"></i> Docs
+                        <a href="fee-xmd-dashboard.html" class="btn btn-secondary">
+                            <i class="fas fa-cog"></i> Dashboard
                         </a>
                     </div>
                 </div>
 
-                <!-- Movies Library -->
-                <div class="project-card fade-in-up">
-                    <div class="project-icon">
-                        <i class="fas fa-film"></i>
+                <!-- LUCKY-MD Bot -->
+                <div class="bot-card">
+                    <div class="bot-header">
+                        <div class="bot-icon-large lucky-md">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="bot-badge">Popular</div>
                     </div>
-                    <h3 class="project-title">FREDI MOVIES LIBRARY</h3>
-                    <p class="project-description">
-                        Smart movie hub with AI-powered recommendations, HD trailers, 
-                        and comprehensive TV shows library. Fast, smooth, and user-friendly.
+                    <h3 class="bot-title">LUCKY-MD</h3>
+                    <p class="bot-description">
+                        Modern WhatsApp bot built with JavaScript and Docker. Features AI capabilities, 
+                        media processing, and advanced automation tools.
                     </p>
-                    <div class="project-links">
-                        <a href="https://fredi-movies-library.vercel.app/" class="project-link link-live" target="_blank">
-                            <i class="fas fa-film"></i> Visit Site
+                    
+                    <div class="bot-features">
+                        <span><i class="fas fa-check"></i> 50+ Modules</span>
+                        <span><i class="fas fa-check"></i> Docker Ready</span>
+                        <span><i class="fas fa-check"></i> AI Chat</span>
+                    </div>
+                    
+                    <div class="bot-stats">
+                        <div class="bot-stat">
+                            <i class="fas fa-users"></i>
+                            <span>15K+ Users</span>
+                        </div>
+                        <div class="bot-stat">
+                            <i class="fas fa-star"></i>
+                            <span>500+ Stars</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bot-actions">
+                        <a href="https://github.com/mr-X-force/LUCKY-MD-XFORCE" class="btn btn-primary" target="_blank">
+                            <i class="fab fa-github"></i> GitHub
                         </a>
-                        <a href="https://fredi-movies-library.vercel.app/docs" class="project-link link-github" target="_blank">
-                            <i class="fas fa-book"></i> Documentation
+                        <a href="lucky-md-dashboard.html" class="btn btn-secondary">
+                            <i class="fas fa-cog"></i> Dashboard
                         </a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Features Section -->
-        <section id="features" class="section">
+        <!-- Quick Actions Section -->
+        <section class="actions-section">
             <div class="section-header">
-                <h2 class="section-title">Key Features</h2>
-                <p class="section-subtitle">Powerful capabilities that set our projects apart</p>
+                <h2 class="section-title">
+                    <i class="fas fa-bolt"></i>
+                    Quick Actions
+                </h2>
+                <p class="section-subtitle">Essential tools and quick access links</p>
             </div>
-            <div class="features-grid">
-                <div class="feature-card fade-in-up">
-                    <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3 class="feature-title">Advanced Security</h3>
-                    <p class="feature-description">
-                        Enterprise-grade security with encryption, anti-delete protection, 
-                        and secure data handling for all your communications.
-                    </p>
-                </div>
 
-                <div class="feature-card fade-in-up">
-                    <div class="feature-icon">
-                        <i class="fas fa-brain"></i>
+            <div class="actions-grid">
+                <a href="pair.html" class="action-card">
+                    <div class="action-icon pair">
+                        <i class="fas fa-link"></i>
                     </div>
-                    <h3 class="feature-title">AI Integration</h3>
-                    <p class="feature-description">
-                        GPT-4 level chatbots, Stable Diffusion image generation, 
-                        and intelligent voice synthesis for natural interactions.
-                    </p>
-                </div>
+                    <h3>Pair Bot</h3>
+                    <p>Generate pairing code for WhatsApp</p>
+                </a>
+                
+                <a href="deploy.html" class="action-card">
+                    <div class="action-icon deploy">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3>Deploy Bot</h3>
+                    <p>Deploy your own bot instance</p>
+                </a>
+                
+                <a href="https://fredi-ai-site.vercel.app" class="action-card" target="_blank">
+                    <div class="action-icon website">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>Website</h3>
+                    <p>Visit main website</p>
+                </a>
+                
+                <a href="https://github.com/Fred1e" class="action-card" target="_blank">
+                    <div class="action-icon github">
+                        <i class="fab fa-github"></i>
+                    </div>
+                    <h3>GitHub</h3>
+                    <p>View all projects</p>
+                </a>
+            </div>
+        </section>
 
-                <div class="feature-card fade-in-up">
-                    <div class="feature-icon">
-                        <i class="fas fa-sync-alt"></i>
-                    </div>
-                    <h3 class="feature-title">Daily Updates</h3>
-                    <p class="feature-description">
-                        Continuous deployment pipeline with daily feature updates, 
-                        zero downtime, and community-driven development.
-                    </p>
-                </div>
+        <!-- Social Links -->
+        <section class="social-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-share-alt"></i>
+                    Connect With Me
+                </h2>
+                <p class="section-subtitle">Join our community and stay updated</p>
+            </div>
 
-                <div class="feature-card fade-in-up">
-                    <div class="feature-icon">
-                        <i class="fas fa-download"></i>
-                    </div>
-                    <h3 class="feature-title">Universal Downloader</h3>
-                    <p class="feature-description">
-                        Download from 50+ platforms with batch processing, 
-                        quality selection, and format conversion capabilities.
-                    </p>
+            <div class="social-grid">
+                <a href="https://whatsapp.com/channel/0029Vb6mzVF7tkj42VNPrZ3V" class="social-card" target="_blank">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp Channel</span>
+                </a>
+                
+                <a href="https://chat.whatsapp.com/KERPI5K0w0L9rzU00QSw40" class="social-card" target="_blank">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp Group</span>
+                </a>
+                
+                <a href="https://facebook.com/FrediEzra" class="social-card" target="_blank">
+                    <i class="fab fa-facebook"></i>
+                    <span>Facebook</span>
+                </a>
+                
+                <a href="https://instagram.com/frediezra" class="social-card" target="_blank">
+                    <i class="fab fa-instagram"></i>
+                    <span>Instagram</span>
+                </a>
+                
+                <a href="https://youtube.com/FrediAI-tech" class="social-card" target="_blank">
+                    <i class="fab fa-youtube"></i>
+                    <span>YouTube</span>
+                </a>
+                
+                <a href="mailto:frediezra360@gmail.com" class="social-card">
+                    <i class="fas fa-envelope"></i>
+                    <span>Email</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Contact Info -->
+        <section class="contact-section">
+            <div class="contact-card">
+                <h3>
+                    <i class="fas fa-headset"></i>
+                    Support & Contact
+                </h3>
+                <div class="contact-info">
+                    <p><i class="fas fa-envelope"></i> frediezra360@gmail.com</p>
+                    <p><i class="fab fa-whatsapp"></i> +255 764 182 801 (Tanzania)</p>
+                    <p><i class="fab fa-whatsapp"></i> +256 752 593 977 (International)</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Arusha, Tanzania</p>
+                </div>
+                
+                <div class="contact-buttons">
+                    <a href="mailto:frediezra360@gmail.com" class="btn btn-primary">
+                        <i class="fas fa-envelope"></i> Send Email
+                    </a>
+                    <a href="https://wa.me/255764182801" class="btn btn-success" target="_blank">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </a>
                 </div>
             </div>
         </section>
     </main>
 
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="#home" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#projects" class="nav-item">
+            <i class="fas fa-robot"></i>
+            <span>Bots</span>
+        </a>
+        <a href="pair.html" class="nav-item">
+            <i class="fas fa-link"></i>
+            <span>Pair</span>
+        </a>
+        <a href="deploy.html" class="nav-item">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <span>Deploy</span>
+        </a>
+        <a href="menu.html" class="nav-item">
+            <i class="fas fa-th"></i>
+            <span>Menu</span>
+        </a>
+    </nav>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
-            <div class="footer-section">
-                <h3>FREDI AI</h3>
-                <p>Advanced AI-powered solutions and innovative projects that transform your digital experience.</p>
+            <div class="footer-brand">
+                <div class="footer-logo">F</div>
+                <div class="footer-text">
+                    <h3>Fredi AI Tech</h3>
+                    <p>AI & Bot Development</p>
+                </div>
             </div>
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul class="footer-links">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#projects">Projects</a></li>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#stats">Statistics</a></li>
-                </ul>
+            
+            <div class="footer-links">
+                <a href="https://github.com/Fred1e">GitHub</a>
+                <a href="https://fredi-ai-site.vercel.app">Website</a>
+                <a href="privacy.html">Privacy</a>
+                <a href="terms.html">Terms</a>
             </div>
-            <div class="footer-section">
-                <h3>Connect</h3>
-                <ul class="footer-links">
-                    <li><a href="https://github.com/mr-X-force" target="_blank">GitHub</a></li>
-                    <li><a href="https://whatsapp.com/channel/0029VbAjdiWBFLgXpS7VJz1u" target="_blank">WhatsApp Channel</a></li>
-                    <li><a href="https://fredi-ai-contact-us.vercel.app" target="_blank">Contact</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 Fredi AI. All rights reserved. | Powered by Innovation</p>
+            
+            <p class="footer-copyright">
+                © 2026 Fredi Ezra. All rights reserved.<br>
+                Arusha, Tanzania | AI Developer & Bot Creator
+            </p>
         </div>
     </footer>
 
-    <!-- Donation Modal -->
-    <div class="modal" id="donationModal">
-        <div class="modal-content">
-            <h3>Love Using Fredi AI? Help Us Grow!</h3>
-            <p>Fredi AI is your free all-in-one hub for help with downloads, searches, coding, AI, movies, books, and much more. If you find it useful, consider making a donation. Your support directly funds maintenance, new features, and ensures the site remains free and fast for our entire community.</p>
-            <div class="modal-buttons">
-                <a href="payment.html" class="modal-btn yes">Yes, I'll Donate</a>
-                <button class="modal-btn no" id="declineDonation">Not Now</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="auth.js"></script>
-    <script src="dashboard.js"></script>
+    <!-- JavaScript -->
+    <script src="script.js"></script>
 </body>
 </html>
