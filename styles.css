@@ -1243,3 +1243,19 @@ section {
         font-size: 1.5rem;
     }
 }
+
+
+  .card-slider {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+
+  .card {
+    width: 300px;
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    scroll-snap-align: center;
+    margin-right: 20px;
+  }
