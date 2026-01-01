@@ -1,630 +1,415 @@
-<!doctype html>
-<html lang="sw">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>FredieMovieBox Owner</title>
-<link rel="icon" href="data:,🎬" />
-<style>
-  :root{
-    --bg:#0f1724; --card:#0b1220; --muted:#9aa4b2; --accent:#ff6b6b; --glass: rgba(255,255,255,0.03);
-    --glass-2: rgba(255,255,255,0.02); --success:#28c76f;
-  }
-  [data-theme="light"]{
-    --bg:#f4f7fb; --card:#ffffff; --muted:#55627a; --accent:#ff6b6b; --glass: rgba(15,20,36,0.04);
-  }
-
-  html,body{height:100%; margin:0; font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;}
-  body{background:linear-gradient(180deg,var(--bg), #061226 120%); color:#e6eef8; transition:all .25s;}
-  header{
-    display:flex; align-items:center; justify-content:space-between; gap:16px;
-    padding:14px 20px; position:sticky; top:0; z-index:30; backdrop-filter: blur(6px);
-    background: linear-gradient(180deg, rgba(0,0,0,0.25), transparent);
-  }
-  .brand{display:flex;align-items:center;gap:12px;font-weight:700}
-  .brand .logo{width:42px;height:42px;border-radius:8px;background:linear-gradient(135deg,#ff6b6b,#ffa94d);display:flex;align-items:center;justify-content:center;font-size:18px}
-  .controls{display:flex;align-items:center;gap:12px}
-  .btn{background:var(--glass);border:1px solid rgba(255,255,255,0.03);padding:8px 10px;border-radius:10px;color:var(--muted);cursor:pointer}
-  .toggle{display:flex;align-items:center;gap:8px}
-  main{display:flex;gap:18px;padding:18px;max-width:1300px;margin:18px auto;}
-  /* Left: Gallery */
-  .left{flex:1}
-  .searchbar{display:flex;gap:8px;margin-bottom:12px}
-  .searchbar input{flex:1;padding:12px;border-radius:10px;border:0; outline:none;background:var(--card); color:inherit}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
-  .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:12px;padding:10px; display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:transform .18s,box-shadow .18s}
-  .card:hover{transform:translateY(-6px); box-shadow:0 8px 30px rgba(0,0,0,0.5)}
-  .cover{width:100%;aspect-ratio:2/3;border-radius:8px;background-size:cover;background-position:center}
-  .meta{font-size:13px;color:var(--muted)}
-  /* Right: Player / details */
-  .right{width:420px;flex-shrink:0;display:flex;flex-direction:column;gap:12px;position:relative}
-  .player-card{background:var(--card);padding:12px;border-radius:12px;display:flex;flex-direction:column;gap:8px}
-  video{width:100%;height:auto;background:#000;border-radius:8px;transform-origin:center center}
-  .player-controls{display:flex;justify-content:space-between;align-items:center;gap:8px}
-  .progress{height:6px;background:var(--glass-2);border-radius:999px;overflow:hidden}
-  .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#ffb86b);width:0%;}
-  .small{font-size:13px;color:var(--muted)}
-  /* Menu */
-  .menu{position:fixed;left:12px;top:90px;background:var(--card);padding:10px;border-radius:10px;width:220px;box-shadow:0 8px 40px rgba(0,0,0,0.6)}
-  .menu h4{margin:4px 0 8px 0}
-  .menu .item{padding:8px;border-radius:8px;cursor:pointer;color:var(--muted)}
-  .menu .item:hover{background:var(--glass); color:inherit}
-  /* Footer */
-  footer{padding:12px;text-align:center;color:var(--muted);font-size:13px}
-  /* Scroll circle progress */
-  .scroll-circle{
-    position:fixed;right:18px;bottom:18px;z-index:40;width:64px;height:64px;border-radius:50%;
-    display:grid;place-items:center;background:linear-gradient(180deg, rgba(255,255,255,0.03), transparent);
-    box-shadow:0 6px 18px rgba(0,0,0,0.45); cursor:pointer;backdrop-filter: blur(6px)
-  }
-  .scroll-svg{transform:rotate(-90deg)}
-  .circle-icon{position:absolute;font-size:18px;pointer-events:none}
-  /* Responsive */
-  @media (max-width:960px){
-    main{flex-direction:column;padding:12px}
-    .right{width:100%}
-    .menu{display:none}
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Piyush-Movies - Stream Movies & TV Shows Online</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assest/piyush-web-png.png">
+    <link rel="stylesheet" href="Movie-css-js/style.css?v=3.3">
+    
 </head>
-<body data-theme="dark">
-<header>
-  <div class="brand">
-    <div class="logo">FM</div>
-    <div>
-      <div>FredieMovieBox <small style="display:block;font-weight:500;color:var(--muted)">Owner</small></div>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+                   <div class="search-container">
+                <div class="input-group">
+                    <input style="color: white;" type="text" class="form-control search-input" id="searchInput" 
+                           placeholder="Search for movies or TV shows...">
+                    <button class="btn search-btn" type="button" id="searchBtn">
+                        <i class="fas fa-search me-2 "></i>Search
+                    </button>
+                </div>
+            </div>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('home')">
+                            <i class="fas fa-home"></i>
+                            Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('movies')">
+                            <i class="fas fa-film"></i>
+                            Movies
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('tv')">
+                            <i class="fas fa-tv"></i>
+                            TV Shows
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="genreDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-list"></i>
+                            Genres
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" onclick="filterByGenre(28, 'Action')">Action</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="filterByGenre(35, 'Comedy')">Comedy</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="filterByGenre(18, 'Drama')">Drama</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="filterByGenre(27, 'Horror')">Horror</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="filterByGenre(878, 'Sci-Fi')">Sci-Fi</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="filterByGenre(53, 'Thriller')">Thriller</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="filterByGenre(10749, 'Romance')">Romance</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="filterByGenre(16, 'Animation')">Animation</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item ms-auto">
+                        <button>
+                            <a class="admin-link" href="/li-project-555555 - Copy/index.html">Admin Login</a>
+                            <div class="star-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" viewBox="0 0 784.11 815.53" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                    <defs></defs>
+                                    <g id="Layer_x0020_1">
+                                        <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                                        <path class="fil0" d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"></path>
+                                    </g>
+                                </svg>
+                            </div>
+                            <div class="star-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" viewBox="0 0 784.11 815.53" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                    <defs></defs>
+                                    <g id="Layer_x0020_1">
+                                        <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                                        <path class="fil0" d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"></path>
+                                    </g>
+                                </svg>
+                            </div>
+                            <div class="star-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" viewBox="0 0 784.11 815.53" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                    <defs></defs>
+                                    <g id="Layer_x0020_1">
+                                        <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                                        <path class="fil0" d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"></path>
+                                    </g>
+                                </svg>
+                            </div>
+                            <div class="star-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" viewBox="0 0 784.11 815.53" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                    <defs></defs>
+                                    <g id="Layer_x0020_1">
+                                        <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                                        <path class="fil0" d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"></path>
+                                    </g>
+                                </svg>
+                            </div>
+                            <div class="star-5">
+                                <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" viewBox="0 0 784.11 815.53" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                    <defs></defs>
+                                    <g id="Layer_x0020_1">
+                                        <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                                        <path class="fil0" d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"></path>
+                                    </g>
+                                </svg>
+                            </div>
+                            <div class="star-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" viewBox="0 0 784.11 815.53" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                    <defs></defs>
+                                    <g id="Layer_x0020_1">
+                                        <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                                        <path class="fil0" d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"></path>
+                                    </g>
+                                </svg>
+                            </div>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="heroSection">
+        <div class="container">
+            <h1 class="hero-title">
+                Welcome to <span class="gradient-text">Njabulo Jb-Movies</span>
+            </h1>
+            <p class="hero-subtitle">
+                Found a broken link or looking for a specific movie? Hit  '+ Request Movie' and submit your request......🎬
+
+            </p>
+            <button>
+                <a class="nav-link" href="#" onclick="showSection('request')">
+                            <i class="fas fa-plus-circle"></i>
+                            Request Movie
+                        </a>
+            </button>
+          
+              <button style="margin-top: 4vh;">
+                <a style="text-decoration: none; color: rgb(66, 69, 247);" class="nav-linkv" href="/Req/request.html">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-patch-check-fill" viewBox="0 0 16 16">
+  <path d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708"/>
+</svg>
+                            Access Your Request
+                        </a>
+            </button>
+        </div>
+    </section>
+
+    <!-- Main Content Container -->
+    <div class="container-fluid main-container mt-4">
+        <!-- Home Section -->
+        <div id="homeSection" class="content-section active">
+            <!-- Trending Movies -->
+            <section class="mb-5">
+                <h2 class="section-title">
+                    <span class="trending-title">🔥 Trending This Week</span>
+                </h2>
+                <div id="trendingMovies" class="grid-responsive">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Loading trending movies...
+                    </div>
+                </div>
+            </section>
+
+            <!-- Comedy Movies -->
+            <section class="mb-5">
+                <h2 class="section-title">
+                    <span class="comedy-title">😂 Comedy Movies</span>
+                </h2>
+                <div id="comedyMovies" class="grid-responsive">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Loading comedy movies...
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bengali Movies -->
+            <section class="mb-5">
+                <h2 class="section-title">
+                    <span class="bengali-title">🎬 Bengali Movies</span>
+                </h2>
+                <div id="bengaliMovies" class="grid-responsive">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Loading Bengali movies...
+                    </div>
+                </div>
+            </section>
+
+            <!-- Popular Content Tabs -->
+            <section>
+                <ul class="nav nav-tabs" id="contentTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="movies-tab" data-bs-toggle="tab" data-bs-target="#movies" 
+                                type="button" role="tab">
+                            <i class="fas fa-film me-2"></i>Popular Movies
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tv-tab" data-bs-toggle="tab" data-bs-target="#tv" 
+                                type="button" role="tab">
+                            <i class="fas fa-tv me-2"></i>Popular TV Shows
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="contentTabsContent">
+                    <!-- Movies Tab -->
+                    <div class="tab-pane fade show active" id="movies" role="tabpanel">
+                        <div id="popularMovies" class="grid-responsive">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                Loading popular movies...
+                            </div>
+                        </div>
+                        <div class="infinite-loading" id="moviesInfiniteLoading">
+                            <div class="spinner"></div>
+                            Loading more movies...
+                        </div>
+                    </div>
+
+                    <!-- TV Shows Tab -->
+                    <div class="tab-pane fade" id="tv" role="tabpanel">
+                        <div id="popularTVShows" class="grid-responsive">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                Loading popular TV shows...
+                            </div>
+                        </div>
+                        <div class="infinite-loading" id="tvInfiniteLoading">
+                            <div class="spinner"></div>
+                            Loading more TV shows...
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Movies Section -->
+        <div id="moviesSection" class="content-section">
+            <h2 class="section-title">Popular Movies</h2>
+            <div id="moviesGrid" class="grid-responsive">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Loading movies...
+                </div>
+            </div>
+            <div class="infinite-loading" id="moviesSectionInfiniteLoading">
+                <div class="spinner"></div>
+                Loading more movies...
+            </div>
+        </div>
+
+        <!-- TV Shows Section -->
+        <div id="tvSection" class="content-section">
+            <h2 class="section-title">Popular TV Shows</h2>
+            <div id="tvGrid" class="grid-responsive">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Loading TV shows...
+                </div>
+            </div>
+            <div class="infinite-loading" id="tvSectionInfiniteLoading">
+                <div class="spinner"></div>
+                Loading more TV shows...
+            </div>
+        </div>
+
+        <!-- Movie Request Section -->
+        <div id="requestSection" class="content-section">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="request-form-container">
+                            <h2 class="section-title text-center mb-4">
+                                <i class="fas fa-plus-circle me-2"></i>
+                                <span class="gradient-text">Request a Movie</span>
+                            </h2>
+                            <h3 class="text-center  mb-4">Request Your Fvt Movie Upload soon.... </h3>
+                            
+                            <form id="movieRequestForm" class="request-form">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="userName" class="form-label">
+                                            <i class="fas fa-user me-2"></i>Your Name *
+                                        </label>
+                                        <input type="text" class="form-control" id="userName" name="name" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="fnamel" class="form-label">
+                                            <i class="fas fa-envelope me-2"></i>Movie Name
+                                        </label>
+                                        <input type="fname" class="form-control" id="movie" name="movie" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="movieTitle" class="form-label">
+                                            <i class="fas fa-film me-2"></i>Movie Title *
+                                        </label>
+                                        <input type="text" class="form-control" id="movieTitle" name="movie_title" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="releaseYear" class="form-label">
+                                            <i class="fas fa-calendar me-2"></i>Release Year
+                                        </label>
+                                        <input type="number" class="form-control" id="releaseYear" name="release_year" min="1900" max="2030">
+                                    </div>
+                                </div>
+                                
+                                      
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                              
+                                <!-- Hidden field for Web3Forms -->
+                                <input type="hidden" name="access_key" value="108ed3e8-e32f-4b50-be8e-2c59ee895c9a">
+                                <input type="hidden" name="subject" value="New Movie Request from Piyush-Movies">
+                                <input type="hidden" name="from_name" value="Piyush-Movies Request Form">
+                                
+                                <div class="text-center">
+                                    <button type="submit" class="btn request-submit-btn" id="submitBtn">
+                                        <i class="fas fa-paper-plane me-2"></i>
+                                        Submit Request
+                                    </button>
+                                </div>
+                            </form>
+                            
+                            <!-- Success/Error Messages -->
+                            <div id="formMessage" class="mt-3" style="display: none;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Results Section -->
+        <div id="searchSection" class="content-section">
+            <h2 class="section-title" id="searchTitle">Search Results</h2>
+            <div id="searchResults" class="grid-responsive"></div>
+            <div class="infinite-loading" id="searchInfiniteLoading">
+                <div class="spinner"></div>
+                Loading more results...
+            </div>
+        </div>
+
+        <!-- Genre Results Section -->
+        <div id="genreSection" class="content-section">
+            <h2 class="section-title" id="genreTitle">Genre Results</h2>
+            <div id="genreResults" class="grid-responsive"></div>
+            <div class="infinite-loading" id="genreInfiniteLoading">
+                <div class="spinner"></div>
+                Loading more results...
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="controls">
-    <div class="toggle">
-      <button id="langToggle" class="btn" title="Toggle Language">SW / EN</button>
-      <button id="themeToggle" class="btn" title="Dark/Light">🌙/☀️</button>
-    </div>
-    <button id="menuBtn" class="btn">Menu</button>
-  </div>
-</header>
 
-<div id="app">
-  <main>
-    <div class="left">
-      <div class="searchbar">
-        <input id="searchInput" placeholder="Search movies or channels... (tafuta)" />
-        <button id="searchBtn" class="btn">Search</button>
-      </div>
-      <div id="genreMenu" style="margin-bottom:10px;color:var(--muted)"></div>
-      <div id="grid" class="grid"></div>
-      <div id="loading" class="small" style="display:none">Loading...</div>
+    <!-- Media Details Modal -->
+    <div class="modal fade" id="mediaModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Media Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Media details will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <aside class="right">
-      <div class="player-card" id="playerCard">
-        <div style="display:flex;gap:8px;align-items:center;justify-content:space-between">
-          <div>
-            <div id="title" style="font-weight:700">Select a movie</div>
-            <div id="sub" class="small">Details will appear here</div>
-          </div>
-          <div style="text-align:right">
-            <div class="small">Language:</div>
-            <div id="subtitleLang" class="small">—</div>
-          </div>
+    <!-- Player Modal -->
+    <div class="modal fade player-modal" id="playerModal" tabindex="-1">
+        <div class="modal-dialog modal-fullscreen-lg-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="playerTitle">Now Playing</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <iframe id="playerIframe" class="player-iframe" allowfullscreen></iframe>
+                </div>
+            </div>
         </div>
+    </div>
 
-        <video id="video" controls playsinline preload="metadata" poster="" crossorigin="anonymous"></video>
-
-        <div class="player-controls">
-          <div style="display:flex;gap:6px;align-items:center">
-            <button class="btn" id="prevBtn">⏮</button>
-            <button class="btn" id="playBtn">▶️</button>
-            <button class="btn" id="nextBtn">⏭</button>
-            <button class="btn" id="rewBtn">⏪10s</button>
-            <button class="btn" id="fwdBtn">10s⏩</button>
-          </div>
-          <div style="display:flex;gap:6px;align-items:center">
-            <select id="qualitySelect" class="btn" style="min-width:110px"></select>
-            <button class="btn" id="rotateBtn">↻ Rotate</button>
-            <button class="btn" id="fullBtn">⤢</button>
-          </div>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Piyush-Movies. </p>
+            <p class="mt-2"><small>Website Owner piyush98981</small></p>
         </div>
+    </footer>
 
-        <div class="progress" title="Playback progress">
-          <i id="playProgress"></i>
-        </div>
-
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-          <div class="small" id="durationLabel">—</div>
-          <div style="display:flex;gap:8px">
-            <button class="btn" id="downloadBtn">⬇️ Download</button>
-            <button class="btn" id="detailsBtn">Details</button>
-          </div>
-        </div>
-      </div>
-
-      <div id="detailsPanel" class="player-card" style="display:none">
-        <h4 id="detailTitle">—</h4>
-        <p id="detailDesc" class="small"></p>
-        <div id="metaList" class="small"></div>
-      </div>
-    </aside>
-  </main>
-</div>
-
-<!-- Floating menu -->
-<div id="sideMenu" class="menu" style="display:none">
-  <h4 data-i18n="menu">Menu</h4>
-  <div id="menuItems"></div>
-</div>
-
-<!-- Scroll progress circle -->
-<div class="scroll-circle" id="scrollCircle" title="Scroll">
-  <svg class="scroll-svg" width="64" height="64" viewBox="0 0 36 36">
-    <path id="circleBg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2"/>
-    <path id="circleFill" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-      fill="none" stroke="#ff6b6b" stroke-width="2" stroke-dasharray="0 100" stroke-linecap="round"/>
-  </svg>
-  <div class="circle-icon" id="circleIcon">⬇️</div>
-</div>
-
-<footer>© Fredi Ezra — FredieMovieBox</footer>
-
-<script>
-/* ==========================
-   Config & Helpers
-   ========================== */
-const API_BASE = 'https://movieapi.giftedtech.co.ke';
-const i18nStrings = {
-  en:{
-    menu:'Menu', download:'Download', details:'Details', searching:'Searching...', loaded:'Loaded'
-  },
-  sw:{
-    menu:'Chaguo', download:'Pakua', details:'Maelezo', searching:'Inatafuta...', loaded:'Imepakia'
-  }
-};
-let LANG = 'sw';
-let THEME = 'dark';
-let currentList = [];
-let currentIndex = -1;
-let rotation = 0;
-
-/* Short function to translate small strings */
-function t(key){ return (i18nStrings[LANG] && i18nStrings[LANG][key]) || i18nStrings['en'][key] || key; }
-
-/* DOM refs */
-const grid = document.getElementById('grid');
-const loading = document.getElementById('loading');
-const searchInput = document.getElementById('searchInput');
-const searchBtn = document.getElementById('searchBtn');
-const titleEl = document.getElementById('title');
-const subEl = document.getElementById('sub');
-const video = document.getElementById('video');
-const playBtn = document.getElementById('playBtn');
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
-const rewBtn = document.getElementById('rewBtn');
-const fwdBtn = document.getElementById('fwdBtn');
-const rotateBtn = document.getElementById('rotateBtn');
-const fullBtn = document.getElementById('fullBtn');
-const qualitySelect = document.getElementById('qualitySelect');
-const durationLabel = document.getElementById('durationLabel');
-const downloadBtn = document.getElementById('downloadBtn');
-const detailsBtn = document.getElementById('detailsBtn');
-const detailPanel = document.getElementById('detailsPanel');
-const detailTitle = document.getElementById('detailTitle');
-const detailDesc = document.getElementById('detailDesc');
-const detailMeta = document.getElementById('metaList');
-const menuBtn = document.getElementById('menuBtn');
-const sideMenu = document.getElementById('sideMenu');
-const menuItems = document.getElementById('menuItems');
-const genreMenu = document.getElementById('genreMenu');
-const scrollCircle = document.getElementById('scrollCircle');
-const circleFill = document.getElementById('circleFill');
-const circleIcon = document.getElementById('circleIcon');
-const playProgress = document.getElementById('playProgress');
-const subtitleLang = document.getElementById('subtitleLang');
-const langToggle = document.getElementById('langToggle');
-const themeToggle = document.getElementById('themeToggle');
-
-/* Utility: format seconds */
-function fmtTime(s){
-  if(!s || isNaN(s)) return '--:--';
-  const mm = Math.floor(s/60); const ss = Math.floor(s%60);
-  return `${mm}:${ss.toString().padStart(2,'0')}`;
-}
-
-/* ================
-   API calls
-   ================ */
-async function apiSearch(q = 'a', page=1){
-  loading.style.display='block';
-  loading.textContent = t('searching');
-  try{
-    const res = await fetch(`${API_BASE}/api/search/${encodeURIComponent(q)}`);
-    const json = await res.json();
-    loading.style.display='none';
-    return json.results ? json.results.items : [];
-  }catch(e){
-    console.error(e);
-    loading.textContent = 'Error';
-    return [];
-  }
-}
-
-async function apiInfo(id){
-  try{
-    const res = await fetch(`${API_BASE}/api/info/${id}`);
-    const json = await res.json();
-    return json.results ? json.results.subject : null;
-  }catch(e){ console.error(e); return null; }
-}
-
-async function apiSources(id, season=null, episode=null){
-  try{
-    let url = `${API_BASE}/api/sources/${id}`;
-    if(season) url += `?season=${season}&episode=${episode}`;
-    const res = await fetch(url);
-    const json = await res.json();
-    return json.results || [];
-  }catch(e){ console.error(e); return []; }
-}
-
-/* ================
-   UI building
-   ================ */
-function renderGrid(items){
-  grid.innerHTML = '';
-  currentList = items;
-  items.forEach((it, idx)=>{
-    const c = document.createElement('div'); c.className='card';
-    c.innerHTML = `
-      <div class="cover" style="background-image:url('${it.thumbnail || (it.cover && it.cover.url) || ''}')"></div>
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <div style="font-weight:700">${it.title}</div>
-          <div class="meta">${it.genre || it.countryName || ''}</div>
-        </div>
-        <div style="text-align:right">
-          <div class="meta">${it.imdbRatingValue || ''} ⭐</div>
-          <div class="meta">${it.releaseDate || ''}</div>
-        </div>
-      </div>
-    `;
-    c.onclick = ()=> selectMovie(it, idx);
-    grid.appendChild(c);
-  });
-
-  // build genres menu (from results)
-  const genres = new Set();
-  items.forEach(i=>{
-    if(i.genre) i.genre.split(',').forEach(g=>genres.add(g.trim()));
-  });
-  genreMenu.innerHTML = 'Genres: ' + Array.from(genres).slice(0,8).map(g=>`<button class="btn" style="margin-right:6px" onclick="filterByGenre('${g}')">${g}</button>`).join('');
-}
-
-/* Filter helper */
-function filterByGenre(g){
-  const filtered = currentList.filter(i=> i.genre && i.genre.includes(g));
-  renderGrid(filtered);
-}
-
-/* Select movie - FIXED FUNCTION */
-async function selectMovie(movie, idx){
-  currentIndex = idx;
-  
-  // Update UI immediately
-  titleEl.textContent = movie.title;
-  subEl.textContent = `${movie.genre || ''} • ${movie.releaseDate || ''}`;
-  video.poster = movie.thumbnail || (movie.cover && movie.cover.url) || '';
-  
-  // Show loading state
-  loading.style.display = 'block';
-  loading.textContent = 'Loading movie details...';
-  
-  try {
-    // Get movie ID - try multiple possible fields
-    const movieId = movie.subjectId || movie.id || movie._id;
-    
-    if (!movieId) {
-      throw new Error('No movie ID found');
-    }
-    
-    // Fetch movie info and sources in parallel for better performance
-    const [info, sources] = await Promise.all([
-      apiInfo(movieId),
-      apiSources(movieId)
-    ]);
-    
-    // Use the fetched info or fallback to basic movie data
-    const movieData = info || movie;
-    
-    // Update details panel
-    detailTitle.textContent = movieData.title || movie.title;
-    detailDesc.textContent = movieData.description || movie.description || 'No description available';
-    detailMeta.innerHTML = `
-      <div>Duration: ${fmtTime(movieData.duration/1 || movieData.duration || 0)}</div>
-      <div>Country: ${movieData.countryName || ''}</div>
-      <div>IMDB: ${movieData.imdbRatingValue || ''}</div>
-    `;
-    subtitleLang.textContent = (movieData.subtitles || '—').split(',').slice(0,3).join(', ');
-    
-    // Build quality options
-    qualitySelect.innerHTML = '';
-    const qualMap = [];
-    
-    if (Array.isArray(sources) && sources.length > 0) {
-      sources.forEach((source, index) => {
-        const label = source.quality || source.resolution || `Quality ${index + 1}`;
-        const url = source.url || source.downloadUrl || source.videoUrl;
-        
-        if (url) {
-          qualMap.push({label, url});
-          const opt = document.createElement('option');
-          opt.value = qualMap.length - 1;
-          opt.textContent = label;
-          qualitySelect.appendChild(opt);
-        }
-      });
-    } else if (movieData.trailer && movieData.trailer.videoAddress && movieData.trailer.videoAddress.url) {
-      // Fallback to trailer
-      qualMap.push({
-        label: 'Trailer', 
-        url: movieData.trailer.videoAddress.url
-      });
-      const opt = document.createElement('option');
-      opt.value = 0;
-      opt.textContent = 'Trailer';
-      qualitySelect.appendChild(opt);
-    } else {
-      // No sources available
-      const opt = document.createElement('option');
-      opt.value = -1;
-      opt.textContent = 'No sources available';
-      qualitySelect.appendChild(opt);
-    }
-    
-    // Auto-play first available source
-    if (qualMap.length > 0) {
-      qualitySelect.value = 0;
-      setVideoSource(qualMap[0].url);
-    }
-    
-    // Store sources for download
-    video.dataset.sources = JSON.stringify(qualMap);
-    
-    // Hide details panel by default
-    detailPanel.style.display = 'none';
-    
-  } catch (error) {
-    console.error('Error loading movie:', error);
-    alert('Failed to load movie details. Please try again.');
-  } finally {
-    loading.style.display = 'none';
-  }
-}
-
-/* Set video src */
-function setVideoSource(src){
-  if(!src) return;
-  
-  video.src = src;
-  video.load();
-  
-  // Auto-play when source is set
-  video.play().catch(e => {
-    console.log('Auto-play prevented:', e);
-    // User interaction might be required for autoplay
-  });
-}
-
-/* Player controls */
-playBtn.onclick = ()=> {
-  if(video.paused) { 
-    video.play(); 
-    playBtn.textContent='⏸'; 
-  } else { 
-    video.pause(); 
-    playBtn.textContent='▶️'; 
-  }
-};
-video.onplay = ()=> playBtn.textContent='⏸';
-video.onpause = ()=> playBtn.textContent='▶️';
-prevBtn.onclick = ()=> {
-  if(currentIndex > 0) {
-    const prevMovie = currentList[currentIndex - 1];
-    selectMovie(prevMovie, currentIndex - 1);
-  }
-};
-nextBtn.onclick = ()=> {
-  if(currentIndex < currentList.length - 1) {
-    const nextMovie = currentList[currentIndex + 1];
-    selectMovie(nextMovie, currentIndex + 1);
-  }
-};
-rewBtn.onclick = ()=> { 
-  video.currentTime = Math.max(0, video.currentTime - 10); 
-};
-fwdBtn.onclick = ()=> { 
-  video.currentTime = Math.min(video.duration || 0, video.currentTime + 10); 
-};
-
-rotateBtn.onclick = ()=>{
-  rotation = (rotation + 90) % 360;
-  video.style.transform = `rotate(${rotation}deg)`;
-};
-
-fullBtn.onclick = async ()=>{
-  try{
-    if(!document.fullscreenElement) {
-      await video.requestFullscreen();
-    } else {
-      await document.exitFullscreen();
-    }
-  }catch(e){ console.warn('Fullscreen error:', e); }
-};
-
-video.ontimeupdate = ()=>{
-  const pct = (video.currentTime / (video.duration || 1)) * 100;
-  playProgress.style.width = pct + '%';
-  durationLabel.textContent = `${fmtTime(video.currentTime)} / ${fmtTime(video.duration)}`;
-};
-
-/* Details toggle */
-detailsBtn.onclick = ()=>{
-  detailPanel.style.display = detailPanel.style.display === 'none' ? 'block' : 'none';
-};
-
-/* Download logic */
-downloadBtn.onclick = async ()=>{
-  try {
-    const sources = JSON.parse(video.dataset.sources || '[]');
-    if(!sources.length){ 
-      alert('No downloadable sources available'); 
-      return; 
-    }
-    
-    const selIndex = parseInt(qualitySelect.value) || 0;
-    const selectedSource = sources[selIndex] || sources[0];
-    
-    if(!selectedSource || !selectedSource.url){ 
-      alert('No valid download URL'); 
-      return; 
-    }
-    
-    const movieTitle = titleEl.textContent || 'movie';
-    const fileName = `${movieTitle.replace(/\s+/g,'_')}_${selectedSource.label || 'video'}.mp4`;
-    
-    // Simple download approach
-    const a = document.createElement('a');
-    a.href = selectedSource.url;
-    a.download = fileName;
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    
-    alert(`Download started: ${fileName}`);
-    
-  } catch(error) {
-    console.error('Download error:', error);
-    alert('Download failed: ' + error.message);
-  }
-};
-
-/* Menu */
-menuBtn.onclick = ()=> {
-  sideMenu.style.display = sideMenu.style.display === 'none' ? 'block' : 'none';
-};
-
-function buildMenuFromList(items){
-  menuItems.innerHTML = '';
-  const categories = new Set();
-  items.forEach(i => { 
-    if(i.genre) i.genre.split(',').forEach(g=>categories.add(g.trim())); 
-  });
-  
-  Array.from(categories).slice(0,10).forEach(g=>{
-    const btn = document.createElement('div'); 
-    btn.className='item'; 
-    btn.textContent = g;
-    btn.onclick = ()=> filterByGenre(g);
-    menuItems.appendChild(btn);
-  });
-}
-
-/* Search */
-searchBtn.onclick = async ()=>{
-  const query = searchInput.value.trim();
-  if(!query) {
-    // If search is empty, show some default content
-    const items = await apiSearch('a');
-    renderGrid(items);
-    buildMenuFromList(items);
-    return;
-  }
-  
-  const results = await apiSearch(query);
-  renderGrid(results);
-  buildMenuFromList(results);
-};
-
-/* Allow Enter key for search */
-searchInput.addEventListener('keydown', (e)=> {
-  if(e.key === 'Enter') searchBtn.click();
-});
-
-/* Initial load */
-(async function init(){
-  // Apply theme
-  document.body.setAttribute('data-theme', THEME);
-  
-  // Load initial movies
-  const initialMovies = await apiSearch('a');
-  renderGrid(initialMovies);
-  buildMenuFromList(initialMovies);
-})();
-
-/* Scroll circle behaviour */
-function updateScrollCircle(){
-  const scrolled = window.scrollY;
-  const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-  const percentage = totalHeight > 0 ? (scrolled / totalHeight) : 0;
-  
-  const dashValue = `${(percentage * 100).toFixed(1)} 100`;
-  circleFill.setAttribute('stroke-dasharray', dashValue);
-  
-  if(scrolled === 0){
-    circleIcon.textContent = '⬇️';
-    circleFill.setAttribute('stroke', '#4dd0e1');
-  } else {
-    circleIcon.textContent = '⬆️';
-    circleFill.setAttribute('stroke', '#ff6b6b');
-  }
-  
-  if(percentage >= 0.999){
-    circleFill.setAttribute('stroke', '#28c76f');
-    circleIcon.textContent = '✔️';
-  }
-}
-
-window.addEventListener('scroll', updateScrollCircle);
-updateScrollCircle();
-
-scrollCircle.onclick = ()=> {
-  if(window.scrollY === 0) {
-    window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
-  } else {
-    window.scrollTo({top: 0, behavior: 'smooth'});
-  }
-};
-
-/* Language & theme toggles */
-langToggle.onclick = ()=> {
-  LANG = LANG === 'sw' ? 'en' : 'sw';
-  
-  // Update UI texts
-  document.querySelectorAll('[data-i18n]').forEach(el=>{
-    const key = el.getAttribute('data-i18n');
-    el.textContent = t(key);
-  });
-  
-  // Update button text
-  langToggle.textContent = LANG === 'sw' ? 'SW / EN' : 'EN / SW';
-  
-  // Update search placeholder
-  searchInput.placeholder = LANG === 'sw' 
-    ? 'Search movies or channels... (tafuta)'
-    : 'Search movies or channels... (search)';
-};
-
-themeToggle.onclick = ()=> {
-  THEME = THEME === 'dark' ? 'light' : 'dark';
-  document.body.setAttribute('data-theme', THEME);
-  themeToggle.textContent = THEME === 'dark' ? '🌙/☀️' : '☀️/🌙';
-};
-
-/* Make functions available globally */
-window.filterByGenre = filterByGenre;
-window.selectMovie = selectMovie;
-
-/* End of script */
-</script>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="Movie-css-js/app.js?v=3.3"></script>
 </body>
 </html>
